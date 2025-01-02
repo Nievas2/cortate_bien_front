@@ -1,11 +1,12 @@
 /** @type {import('tailwindcss').Config} */
-const config = {
+import tailwindcssAnimate from "tailwindcss-animate"
+export default {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
@@ -71,7 +72,18 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"],
+      },
+      colors: {
+        "black-main": "#000000",
+        "gray-main": "#080808",
+        "blue-main": "#0d3868",
+      },
+      maxWidth: {
+        "8xl": "1360px",
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 }
