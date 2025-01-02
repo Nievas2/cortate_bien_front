@@ -1,11 +1,18 @@
 import { Button } from "@/components/ui/button"
 import { Icon } from "@iconify/react/dist/iconify.js"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 const SubscriptionSection = () => {
   return (
-    <section id="pricing" className="w-full">
-      <div className="flex flex-col gap-8 px-4 md:px-6">
-
+    <main className="flex flex-col gap-8 w-full bg-gradient-to-t from-gray-main/20 to-gray-main">
+      <section className="flex flex-col gap-8 px-4 md:px-6">
         <div className="flex flex-col gap-4 items-center justify-center text-center">
           <div className="flex flex-col gap-4">
             <h2 className="text-3xl font-bold tracking-tighter text-white sm:text-5xl">
@@ -15,16 +22,16 @@ const SubscriptionSection = () => {
             <p className="max-w-[600px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
               Elige el plan que mejor se adapte a tus necesidades
             </p>
-
           </div>
-
         </div>
 
-        <div className="grid max-w-5xl gap-8 lg:grid-cols-3 mx-auto">
+        <div className="grid max-w-5xl gap-8 gap-y-14 lg:grid-cols-3 mx-auto">
           {/* Gratuito Plan */}
           <div className="flex flex-col gap-2 rounded-lg border bg-[#080808] p-10">
             <h3 className="text-2xl font-bold text-white">Gratuito</h3>
-            <span className="text-base font-extralight text-gray-400">Perfecto para empresas pequeñas</span>
+            <span className="text-base font-extralight text-gray-400">
+              Perfecto para empresas pequeñas
+            </span>
 
             <ul className="my-4 space-y-2 text-gray-400">
               <li className="flex gap-4 text-base items-center">
@@ -50,7 +57,9 @@ const SubscriptionSection = () => {
               POPULAR
             </div>
             <h3 className="text-2xl font-bold text-white">Mensual</h3>
-            <span className="text-base font-extralight text-gray-400">Perfecto para empresas pequeñas</span>
+            <span className="text-base font-extralight text-gray-400">
+              Perfecto para empresas pequeñas
+            </span>
 
             <div className="text-center">
               <span className="text-4xl font-bold text-white">$59</span>
@@ -80,7 +89,9 @@ const SubscriptionSection = () => {
           {/* Enterprise Plan */}
           <div className="flex flex-col gap-4 rounded-lg border bg-[#080808] p-10">
             <h3 className="text-2xl font-bold text-white">Anual</h3>
-            <span className="text-base font-extralight text-gray-400">Perfecto para empresas pequeñas</span>
+            <span className="text-base font-extralight text-gray-400">
+              Perfecto para empresas pequeñas
+            </span>
 
             <div className="text-center">
               <span className="text-4xl font-bold text-white">$99</span>
@@ -104,12 +115,53 @@ const SubscriptionSection = () => {
               </li>
             </ul>
             <Button className="mt-auto bg-[#007FFF] text-white hover:bg-[#0d3868]">
-            Comenzar ahora
+              Comenzar ahora
             </Button>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section className="flex flex-col gap-8 px-4 md:px-6 pb-3 w-full">
+        <div className="flex flex-col gap-4 items-center justify-center text-center">
+          <div className="flex flex-col gap-4">
+            <p className="max-w-[600px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+              Mas detalles sobre cada plan que nosotros ofrecemos.
+            </p>
+          </div>
+        </div>
+
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="border border-gray-main text-base">
+                Caracteristicas
+              </TableHead>
+              <TableHead className="border border-gray-main text-base">
+                Gratuito
+              </TableHead>
+              <TableHead className="border border-gray-main text-base">
+                Mensual
+              </TableHead>
+              <TableHead className="border border-gray-main text-base">
+                Anual
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell className="border border-gray-main">
+                ¿Cuánto cuesta?
+              </TableCell>
+              <TableCell className="border border-gray-main">Nada</TableCell>
+              <TableCell className="border border-gray-main">Algo</TableCell>
+              <TableCell className="border border-gray-main">
+                Bastante
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </section>
+    </main>
   )
 }
 export default SubscriptionSection

@@ -159,7 +159,7 @@ const Navbar = () => {
               </div>
 
               {authUser ? (
-                <Button variant="auth" onClick={logOut}>
+                <Button variant="simple" onClick={logOut}>
                   Cerrar sesion
                 </Button>
               ) : (
@@ -169,7 +169,7 @@ const Navbar = () => {
                     className="w-full"
                     onClick={GoToTop}
                   >
-                    <Button variant="auth" className="w-full">
+                    <Button variant="simple" className="w-full">
                       Iniciar sesion
                     </Button>
                   </Link>
@@ -179,7 +179,7 @@ const Navbar = () => {
                     className="w-full"
                     onClick={GoToTop}
                   >
-                    <Button variant="auth" className="w-full">
+                    <Button variant="simple" className="w-full">
                       Registrarse
                     </Button>
                   </Link>

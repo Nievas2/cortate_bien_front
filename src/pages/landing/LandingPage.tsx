@@ -1,9 +1,12 @@
+import FeatureSection from "./components/FeatureSection"
+import HeroSection from "./components/HeroSection"
 import SubscriptionSection from "./components/SubscriptionSection"
 
 const LandingPage = () => {
   return (
-    <div className="text-3xl">
-      <span className="text-[#007FFF]">Testing</span>LandingPage
+    <div className="flex flex-col w-full">
+      <HeroSection/>
+      <FeatureSection />
       <SubscriptionSection />
     </div>
   )
