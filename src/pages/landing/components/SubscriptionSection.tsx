@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Icon } from "@iconify/react/dist/iconify.js"
+import { motion } from "framer-motion"
 import {
   Table,
   TableBody,
@@ -15,19 +16,35 @@ const SubscriptionSection = () => {
       <section className="flex flex-col gap-8 px-4 md:px-6">
         <div className="flex flex-col gap-4 items-center justify-center text-center">
           <div className="flex flex-col gap-4">
-            <h2 className="text-3xl font-bold tracking-tighter text-white sm:text-5xl">
+            <motion.h2
+              initial={{ y: 100 }}
+              whileInView={{ y: 0 }}
+              viewport={{ once: true }}
+              className="text-3xl font-bold tracking-tighter text-white sm:text-5xl"
+            >
               Planes y precios
-            </h2>
+            </motion.h2>
 
-            <p className="max-w-[600px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+            <motion.p
+              initial={{ y: 50 }}
+              whileInView={{ y: 0 }}
+              viewport={{ once: true }}
+              className="max-w-[600px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed"
+            >
               Elige el plan que mejor se adapte a tus necesidades
-            </p>
+            </motion.p>
           </div>
         </div>
 
         <div className="grid max-w-5xl gap-8 gap-y-14 lg:grid-cols-3 mx-auto">
           {/* Gratuito Plan */}
-          <div className="flex flex-col gap-2 rounded-lg border bg-[#080808] p-10">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="flex flex-col gap-2 rounded-lg border bg-[#080808] p-10"
+          >
             <h3 className="text-2xl font-bold text-white">Gratuito</h3>
             <span className="text-base font-extralight text-gray-400">
               Perfecto para empresas pequeñas
@@ -50,9 +67,15 @@ const SubscriptionSection = () => {
             <Button className="mt-auto bg-[#007FFF] text-white hover:bg-[#0d3868]">
               Comenzar gratis
             </Button>
-          </div>
+          </motion.div>
           {/* Pro Plan */}
-          <div className="flex flex-col gap-4 rounded-lg border border-[#007FFF] bg-[#0d3868] p-10 relative w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="flex flex-col gap-4 rounded-lg border border-[#007FFF] bg-[#0d3868] p-10 relative w-full"
+          >
             <div className="absolute -top-4 left-0 right-0 mx-auto rounded-full bg-[#007FFF] px-3 py-1 text-sm text-white w-fit">
               POPULAR
             </div>
@@ -85,9 +108,15 @@ const SubscriptionSection = () => {
             <Button className="mt-auto bg-white text-[#007FFF] hover:bg-gray-100">
               Comenzar ahora
             </Button>
-          </div>
+          </motion.div>
           {/* Enterprise Plan */}
-          <div className="flex flex-col gap-4 rounded-lg border bg-[#080808] p-10">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="flex flex-col gap-4 rounded-lg border bg-[#080808] p-10"
+          >
             <h3 className="text-2xl font-bold text-white">Anual</h3>
             <span className="text-base font-extralight text-gray-400">
               Perfecto para empresas pequeñas
@@ -117,7 +146,7 @@ const SubscriptionSection = () => {
             <Button className="mt-auto bg-[#007FFF] text-white hover:bg-[#0d3868]">
               Comenzar ahora
             </Button>
-          </div>
+          </motion.div>
         </div>
       </section>
 
