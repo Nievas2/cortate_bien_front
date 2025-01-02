@@ -21,12 +21,12 @@ function App() {
             <Route path="/" element={<LandingPage />} />
 
             <Route
-              path="/login"
+              path="/auth/iniciar-sesion"
               element={authUser ? <Navigate to="/home" /> : <LoginPage />}
             />
             <Route path="/auth/auth" element={<AuthPage />} />
             <Route
-              path="/signup"
+              path="/auth/registrarse"
               element={authUser ? <Navigate to="/home" /> : <RegisterPage />}
             />
 

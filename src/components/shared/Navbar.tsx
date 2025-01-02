@@ -86,7 +86,7 @@ const Navbar = () => {
                       className="relative group"
                     >
                       Cerrar sesion
-                      <div className="absolute -inset-1 bg-gradient-to-r from-blue-main to-blue-main rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
+                      <div className="absolute -inset-1 bg-gradient-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
                     </Button>
                   ) : (
                     <>
@@ -96,7 +96,7 @@ const Navbar = () => {
                         className="relative group"
                       >
                         <Button variant="auth">Iniciar sesion</Button>
-                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-main to-blue-main rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
+                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
                       </Link>
 
                       <Link
@@ -105,7 +105,7 @@ const Navbar = () => {
                         className="relative group"
                       >
                         <Button variant="auth">Registrarse</Button>
-                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-main to-blue-main rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
+                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
                       </Link>
                     </>
                   )}
@@ -212,13 +212,13 @@ function NavbarItemDestock({
     <NavLink
       onClick={GoToTop}
       to={location}
-      className={`rounded-md px-3 py-2 text-sm font-medium relative group hover:text-yellow-main transition-all duration-300 ${
-        pathname === location ? "text-yellow-main" : "text-black-main"
+      className={`rounded-md px-3 py-[6px] text-sm font-medium relative group hover:text-blue-main transition-all duration-300 ${
+        pathname === location ? "text-white" : "text-black-main"
       }`}
     >
       {name}
       <span
-        className={`h-[2.5px] inline-block bg-yellow-main absolute left-1/2 -translate-x-1/2 bottom-[1px] transition-[width] ease duration-[400ms] ${
+        className={`h-[2.5px] inline-block bg-blue-secondary absolute left-1/2 -translate-x-1/2 bottom-[1px] transition-[width] ease duration-[400ms] ${
           pathname === location ? "w-[80%]" : "w-0"
         }`}
       >
@@ -244,7 +244,7 @@ function NavbarItemMobile({
       to={location}
       className={`block rounded-md px-3 py-2 text-base font-medium ${
         location === pathname
-          ? "bg-blue-main/50 text-white"
+          ? "bg-blue-secondary/50 text-white"
           : "text-white hover:bg-gray-main/80 hover:text-white border border-gray-main"
       } transition-colors duration-300`}
       onClick={() => {

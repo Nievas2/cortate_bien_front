@@ -78,7 +78,8 @@ export default {
       colors: {
         "black-main": "#000000",
         "gray-main": "#080808",
-        "blue-main": "#0d3868",
+        "blue-main": "#007FFF",
+        "blue-secondary":"#0d3868",
       },
       maxWidth: {
         "8xl": "1360px",
