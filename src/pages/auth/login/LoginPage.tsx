@@ -76,7 +76,7 @@ const LoginPage = () => {
                 <div className="flex flex-col gap-5 mx-auto">
                   <div className="flex flex-col gap-4 md:gap-6">
                     <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-white md:text-2xl">
-                      Ingrese su email
+                      Ingrese sus <span className="text-blue-main">datos</span>
                     </h1>
 
                     <div className="flex flex-col gap-4 md:gap-6">
