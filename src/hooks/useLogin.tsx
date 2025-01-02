@@ -2,8 +2,8 @@ import { useState } from "react"
 import axiosInstance from "@/api/axiosInstance";
 import { useAuthContext } from "@/contexts/authContext";
 
-interface LoginParams {
-  username : string;
+export interface LoginParams {
+  email : string;
   password : string;
 }
 
@@ -11,11 +11,11 @@ const useLogin = () => {
   const [ loading, setLoading ] = useState(false);
   const { setAuthUser } = useAuthContext();
 
-  const login = async ({ username, password }: LoginParams) => {
+  const login = async ({ email, password }: LoginParams) => {
     setLoading(true);
 
     try {
-      const response = await axiosInstance.post("/login", {username, password});
+      const response = await axiosInstance.post("/login", {email, password});
 
       const data = response.data;
       

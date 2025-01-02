@@ -27,11 +27,7 @@ const Navbar = () => {
     }
   }, [open])
   return (
-    <nav
-      className={`sticky w-full top-0 z-50 transition-colors duration-200 ${
-        pathname == "/" ? "bg-gray-main" : "bg-white"
-      }`}
-    >
+    <nav className="sticky w-full top-0 z-50 transition-colors duration-200 bg-gray-main">
       <div className="mx-auto max-w-8xl p-4 2xl:pl-0">
         <div className="relative flex h-10 items-center gap-10">
           <div className="flex items-center justify-between w-full">
@@ -212,9 +208,9 @@ function NavbarItemDestock({
     <NavLink
       onClick={GoToTop}
       to={location}
-      className={`rounded-md px-3 py-[6px] text-sm font-medium relative group hover:text-blue-main transition-all duration-300 ${
-        pathname === location ? "text-white" : "text-black-main"
-      }`}
+      className={`rounded-md px-3 py-[6px] text-sm font-medium relative group hover:text-blue-main transition-all duration-300 text-white
+  
+      `}
     >
       {name}
       <span
@@ -245,7 +241,7 @@ function NavbarItemMobile({
       className={`block rounded-md px-3 py-2 text-base font-medium ${
         location === pathname
           ? "bg-blue-secondary/50 text-white"
-          : "text-white hover:bg-gray-main/80 hover:text-white border border-gray-main"
+          : "text-white border border-gray-main"
       } transition-colors duration-300`}
       onClick={() => {
         GoToTop()
