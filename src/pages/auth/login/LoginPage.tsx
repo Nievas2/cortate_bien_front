@@ -116,13 +116,13 @@ const LoginPage = () => {
                             onClick={togglePasswordVisibility}
                           >
                             <Icon
-                              className={`h-5 w-5 text-main transition-opacity duration-200 ${
+                              className={`h-5 w-5 text-black transition-opacity duration-200 ${
                                 showPassword ? "opacity-100" : "opacity-0"
                               }`}
                               icon="ph:eye-bold"
                             />
                             <Icon
-                              className={`h-5 w-5 text-main transition-opacity duration-200 absolute ${
+                              className={`h-5 w-5 text-black transition-opacity duration-200 absolute ${
                                 showPassword ? "opacity-0" : "opacity-100"
                               }`}
                               icon="ph:eye-closed-bold"

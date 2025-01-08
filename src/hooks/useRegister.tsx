@@ -1,35 +1,48 @@
-import axiosInstance from "@/api/axiosInstance";
-import { useAuthContext } from "@/contexts/authContext";
+import axiosInstance from "@/api/axiosInstance"
+/* import { useAuthContext } from "@/contexts/authContext" */
+import { Register } from "@/services/AuthService"
 import { useState } from "react"
 
-interface RegisterParams {
-  username : string;
-  email    : string;
-  password : string;
-}
-
 export const useRegister = () => {
-  const [loading, setLoading] = useState(false);
-  const { setAuthUser } = useAuthContext() || {};
+  const [loading, setLoading] = useState(false)
+ /*  const { setAuthUser } = useAuthContext() || {} */
 
-  const register = async ({ username, email, password }: RegisterParams) => {
-    setLoading(true);
+  const register = async ({
+    nombre,
+    apellido,
+    fechaDeNacimiento,
+    email,
+    telefono,
+    rol,
+    password,
+  }: Register) => {
+    setLoading(true)
 
     try {
-      const res = await axiosInstance.post("/register", {username, email, password});
-      const data = res.data;
+      const res = await axiosInstance.post("auth/register", {
+        nombre,
+        apellido,
+        fechaDeNacimiento,
+        email,
+        telefono,
+        rol,
+        password,
+      })
+      console.log(res);
       
-      if (data.error) throw new Error(data.error)
+      const data = res.data
 
-      localStorage.setItem("user", JSON.stringify(data));
-      localStorage.setItem("user-token", data.accesToken);
-      setAuthUser(data)
+      if (data.error) throw new Error(data.error)
+/* 
+      localStorage.setItem("user", JSON.stringify(data))
+      localStorage.setItem("user-token", data.accesToken)
+      setAuthUser(data) */
     } catch (error) {
-      
+      throw error
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return { loading, register }
 }

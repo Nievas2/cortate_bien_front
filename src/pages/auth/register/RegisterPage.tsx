@@ -1,26 +1,21 @@
-const RegisterPage = () => {
-  return (
-    <div>RegisterPage</div>
-  )
-}
-export default RegisterPage
-
-
-/* import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
 import { Link } from "react-router-dom"
-
 import { Icon } from "@iconify/react/dist/iconify.js"
-
 import { useFormik } from "formik"
-
 import { useMemo, useState } from "react"
+import { useRegister } from "@/hooks/useRegister"
+import { signupSchema } from "@/utils/schemas/signUp"
+import { Register } from "@/services/AuthService"
 
-import { signupSchema } from "../../utils/schemas/Signup"
-import { Register } from "../../services/AuthService"
-import { useRegister } from "../../hooks/useRegister"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const RegisterPage = () => {
   const { loading, register } = useRegister()
@@ -36,14 +31,16 @@ const RegisterPage = () => {
     setShowConfirmPassword((prevState) => !prevState)
   }
 
-  const { handleSubmit, errors, touched, getFieldProps } = useFormik({
+  const { handleSubmit, errors, touched, getFieldProps, values } = useFormik({
     initialValues: {
-      name: "",
-      surname: "",
+      nombre: "",
+      apellido: "",
+      fechaDeNacimiento: "",
       email: "",
+      telefono: "",
+      rol: "",
       password: "",
       confirmPassword: "",
-      dob: "",
     },
     validationSchema: signupSchema,
     onSubmit: async (values) => {
@@ -57,15 +54,18 @@ const RegisterPage = () => {
 
   async function registerFunction(values: Register) {
     try {
-      await register(values)
+      const response = await register(values)
+      console.log(response );
+      return response
+      
     } catch (error) {
       console.error("Registration failed:", error)
     }
   }
-
+/* 
   function loginGoogle() {
     window.open(`${import.meta.env.VITE_API_URL}user/auth/google`, "_self")
-  }
+  } */
 
   const passwordMatchClass = useMemo(
     () =>
@@ -76,13 +76,13 @@ const RegisterPage = () => {
   )
 
   return (
-    <div className="flex items-center justify-center w-full min-h-screen">
-      <form onSubmit={handleSubmit} noValidate>
-        <div className="flex flex-col gap-5 px-4 py-7 mx-auto ">
-          <div className="w-full sm:w-96 rounded-lg shadow p-6 sm:p-8 flex flex-col gap-3 bg-gray-main">
+    <section className="flex items-center justify-center w-full min-h-screen py-8">
+      <div className="w-full sm:w-[450px] rounded-lg shadow p-6 sm:p-8 flex flex-col gap-3 bg-gray-main">
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="flex flex-col gap-5 px-4 py-7 mx-auto ">
             <div className="flex flex-col gap-4 md:gap-6">
-              <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                Crear una cuenta
+              <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-white md:text-2xl">
+                Ingrese sus <span className="text-blue-main">datos</span>
               </h1>
 
               <div className="flex flex-col gap-4 md:gap-6">
@@ -94,13 +94,13 @@ const RegisterPage = () => {
                   <Input
                     type="text"
                     placeholder="Nombre"
-                    {...getFieldProps("name")}
+                    {...getFieldProps("nombre")}
                     disabled={loading}
                   />
 
-                  {touched.name && errors.name && (
+                  {touched.nombre && errors.nombre && (
                     <small className="font-bold text-[#ff4444]">
-                      {errors.name}
+                      {errors.nombre}
                     </small>
                   )}
                 </div>
@@ -112,13 +112,13 @@ const RegisterPage = () => {
                   <Input
                     type="text"
                     placeholder="Apellido"
-                    {...getFieldProps("surname")}
+                    {...getFieldProps("apellido")}
                     disabled={loading}
                   />
 
-                  {touched.surname && errors.surname && (
+                  {touched.apellido && errors.apellido && (
                     <small className="font-bold text-[#ff4444]">
-                      {errors.surname}
+                      {errors.apellido}
                     </small>
                   )}
                 </div>
@@ -140,6 +140,25 @@ const RegisterPage = () => {
                     </small>
                   )}
                 </div>
+
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-row gap-2 items-end">
+                    <Label>Telefono</Label>
+                  </div>
+
+                  <Input
+                    type="telefono"
+                    {...getFieldProps("telefono")}
+                    placeholder="3544888888"
+                  />
+
+                  {touched.telefono && errors.telefono && (
+                    <small className="font-bold text-[#ff4444]">
+                      {errors.telefono}
+                    </small>
+                  )}
+                </div>
+
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-row gap-2 items-end">
                     <Label>Fecha de nacimiento</Label>
@@ -147,13 +166,13 @@ const RegisterPage = () => {
 
                   <Input
                     type="date"
-                    {...getFieldProps("dob")}
+                    {...getFieldProps("fechaDeNacimiento")}
                     placeholder="example@gmail.com"
                   />
 
-                  {touched.dob && errors.dob && (
+                  {touched.fechaDeNacimiento && errors.fechaDeNacimiento && (
                     <small className="font-bold text-[#ff4444]">
-                      {errors.dob}
+                      {errors.fechaDeNacimiento}
                     </small>
                   )}
                 </div>
@@ -175,13 +194,13 @@ const RegisterPage = () => {
                       onClick={togglePasswordVisibility}
                     >
                       <Icon
-                        className={`h-5 w-5 text-main transition-opacity duration-200 ${
+                        className={`h-5 w-5 text-black transition-opacity duration-200 ${
                           showPassword ? "opacity-100" : "opacity-0"
                         }`}
                         icon="ph:eye-bold"
                       />
                       <Icon
-                        className={`h-5 w-5 text-main transition-opacity duration-200 absolute ${
+                        className={`h-5 w-5 text-black transition-opacity duration-200 absolute ${
                           showPassword ? "opacity-0" : "opacity-100"
                         }`}
                         icon="ph:eye-closed-bold"
@@ -213,13 +232,13 @@ const RegisterPage = () => {
                       onClick={toggleConfirmPasswordVisibility}
                     >
                       <Icon
-                        className={`h-5 w-5 text-main transition-opacity duration-200 ${
+                        className={`h-5 w-5 text-black transition-opacity duration-200 ${
                           showConfirmPassword ? "opacity-100" : "opacity-0"
                         }`}
                         icon="ph:eye-bold"
                       />
                       <Icon
-                        className={`h-5 w-5 text-main transition-opacity duration-200 absolute ${
+                        className={`h-5 w-5 text-black transition-opacity duration-200 absolute ${
                           showConfirmPassword ? "opacity-0" : "opacity-100"
                         }`}
                         icon="ph:eye-closed-bold"
@@ -240,9 +259,27 @@ const RegisterPage = () => {
                   )}
                 </div>
 
+                <div className="flex flex-col w-full">
+                  <Select onValueChange={(e) => (values.rol = e)}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Rol" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-main text-white w-full">
+                      <SelectItem value="BARBERO">Barbero</SelectItem>
+                      <SelectItem value="CLIENTE">Usuario</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {touched.rol && errors.rol && (
+                    <small className="font-bold text-[#ff4444]">
+                      {errors.rol}
+                    </small>
+                  )}
+                </div>
+
                 <div className="flex flex-col gap-5">
                   <Button
-                    variant="authButton"
+                    variant="auth"
                     className="w-full rounded-lg"
                     type="submit"
                     id="register"
@@ -252,9 +289,9 @@ const RegisterPage = () => {
                   >
                     Registrarse
                   </Button>
-                </div>
+                </div>{/* 
 
-                <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-black after:mt-0.5 after:flex-1 after:border-t after:border-black">
+                <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-white after:mt-0.5 after:flex-1 after:border-t after:border-white">
                   <p className="mx-4 mb-0 text-center dark:text-white">o</p>
                 </div>
 
@@ -265,7 +302,7 @@ const RegisterPage = () => {
                 >
                   <Icon className="h-6 w-6" icon="logos:google-icon" />
                   <span className="text-sm">Continuar con Google</span>
-                </button>
+                </button> */}
 
                 <p className="text-sm font-light text-center">
                   ¿Ya tienes una cuenta?{" "}
@@ -279,10 +316,10 @@ const RegisterPage = () => {
               </div>
             </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </section>
   )
 }
 
-export default RegisterPage */
+export default RegisterPage

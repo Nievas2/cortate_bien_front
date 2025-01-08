@@ -22,12 +22,12 @@ function App() {
 
             <Route
               path="/auth/iniciar-sesion"
-              element={authUser ? <Navigate to="/home" /> : <LoginPage />}
+              element={authUser ? <Navigate to="/" /> : <LoginPage />}
             />
             <Route path="/auth/auth" element={<AuthPage />} />
             <Route
               path="/auth/registrarse"
-              element={authUser ? <Navigate to="/home" /> : <RegisterPage />}
+              element={authUser ? <Navigate to="/" /> : <RegisterPage />}
             />
 
             {/* <Route

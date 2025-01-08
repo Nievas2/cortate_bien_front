@@ -6,11 +6,13 @@ export interface Login {
 }
 
 export interface Register {
-  name: string
-  surname: string
+  nombre: string
+  apellido: string
+  fechaDeNacimiento: string
   email: string
+  telefono: string
   password: string
-  dob: string
+  rol: string
 }
 
 export function login(user: Login) {
@@ -52,7 +54,7 @@ export function register(user: Register) {
 export function recoveryPasswordFunction(email: string) {
   try {
     const response = axiosInstance.post("user/pass/recovery", {
-      email: email
+      email: email,
     })
     return response
   } catch (error) {
@@ -63,7 +65,7 @@ export function recoveryPasswordFunction(email: string) {
 export function putPassword(password: string, token: string) {
   try {
     const response = axiosInstance.put(`user/reset?token=${token}`, {
-      password: password
+      password: password,
     })
     return response
   } catch (error) {

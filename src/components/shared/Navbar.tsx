@@ -214,7 +214,7 @@ function NavbarItemDestock({
     >
       {name}
       <span
-        className={`h-[2.5px] inline-block bg-blue-secondary absolute left-1/2 -translate-x-1/2 bottom-[1px] transition-[width] ease duration-[400ms] ${
+        className={`h-[2.5px] inline-block bg-blue-secondary absolute left-1/2 -translate-x-1/2 bottom-[1px] transition-[width] ease duration-300 ${
           pathname === location ? "w-[80%]" : "w-0"
         }`}
       >
