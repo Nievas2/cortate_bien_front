@@ -7,6 +7,8 @@ import LoginPage from "./pages/auth/login/LoginPage"
 import AuthPage from "./pages/auth/auth/AuthPage"
 import RegisterPage from "./pages/auth/register/RegisterPage"
 import LandingPage from "./pages/landing/LandingPage"
+import { ProtectedRoute } from "./components/shared/ProtectedRoute"
+import DashboardPage from "./pages/dashboard/DashboardPage"
 function App() {
   const location = useLocation()
   const { authUser } = useAuthContext()
@@ -16,7 +18,7 @@ function App() {
       <section className="w-full font-poppins flex flex-col justify-center items-center min-h-screen">
         <Navbar />
 
-        <div className="flex w-full flex-1 max-w-8xl pb-4">
+        <div className="flex w-full flex-1 max-w-8xl">
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<LandingPage />} />
 
@@ -30,14 +32,14 @@ function App() {
               element={authUser ? <Navigate to="/" /> : <RegisterPage />}
             />
 
-            {/* <Route
-              path="/user-dashboard"
+            <Route
+              path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <UserDashboardPage />
+                  <DashboardPage />
                 </ProtectedRoute>
               }
-            /> */}
+            />
 
             <Route path="/404" element={<NotFoundPage />} />
             <Route path="/*" element={<Navigate to="/404" replace />} />
