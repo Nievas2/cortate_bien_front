@@ -74,14 +74,14 @@ const Navbar = () => {
                     name="Inicio"
                   />
 
+                  <NavbarItemDestock
+                    location="/dashboard"
+                    pathname={pathname}
+                    name="Dashboard"
+                  />
                   {/* User session */}
                   {authUser != null ? (
                     <>
-                      <NavbarItemDestock
-                        location="/dashboard"
-                        pathname={pathname}
-                        name="Dashboard"
-                      />
                       <Button
                         variant="auth"
                         onClick={logOut}
