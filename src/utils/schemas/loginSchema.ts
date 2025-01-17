@@ -1,6 +1,9 @@
-import * as yup from "yup"
+import z from "zod"
 
-export const loginSchema = yup.object({
-  email : yup.string().required("El email es requerido").email("Formato invalido"),
-  password : yup.string().required("La contraseña es requerida"),
+export const loginSchema = z.object({
+  email: z.string().email("Formato invalido"),
+  password: z
+    .string()
+    .nonempty("La contraseña es requerida")
+    .min(8, "La contraseña debe tener al menos 8 caracteres"),
 })

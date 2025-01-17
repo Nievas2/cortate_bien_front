@@ -3,11 +3,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Link } from "react-router-dom"
 import { Icon } from "@iconify/react/dist/iconify.js"
-import { useFormik } from "formik"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { useRegister } from "@/hooks/useRegister"
 import { signupSchema } from "@/utils/schemas/signUp"
 import { Register } from "@/services/AuthService"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 import {
   Select,
@@ -16,12 +16,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useForm } from "react-hook-form"
 
 const RegisterPage = () => {
   const { loading, register } = useRegister()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [passwordMatchMessage, setPasswordMatchMessage] = useState("")
+  const {
+    register: registerForm,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    getValues,
+  } = useForm({
+    defaultValues: {
+      nombre: "",
+      apellido: "",
+      fechaDeNacimiento: new Date().toISOString().split("T")[0],
+      email: "",
+      telefono: "",
+      password: "",
+      confirmPassword: "",
+      tipoDeCuenta: "",
+    },
+    resolver: zodResolver(signupSchema),
+  })
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState)
@@ -31,54 +50,24 @@ const RegisterPage = () => {
     setShowConfirmPassword((prevState) => !prevState)
   }
 
-  const { handleSubmit, errors, touched, getFieldProps, values } = useFormik({
-    initialValues: {
-      nombre: "",
-      apellido: "",
-      fechaDeNacimiento: "",
-      email: "",
-      telefono: "",
-      rol: "",
-      password: "",
-      confirmPassword: "",
-    },
-    validationSchema: signupSchema,
-    onSubmit: async (values) => {
-      if (values.password !== values.confirmPassword) {
-        setPasswordMatchMessage("Las contraseñas no coinciden")
-        return
-      }
-      await registerFunction(values)
-    },
-  })
-
-  async function registerFunction(values: Register) {
+  const registerFunction = async (values: Register) => {
     try {
       const response = await register(values)
-      console.log(response );
+      console.log(response)
       return response
-      
     } catch (error) {
       console.error("Registration failed:", error)
     }
   }
-/* 
+  /* 
   function loginGoogle() {
     window.open(`${import.meta.env.VITE_API_URL}user/auth/google`, "_self")
   } */
-
-  const passwordMatchClass = useMemo(
-    () =>
-      passwordMatchMessage === "Las contraseñas coinciden"
-        ? "text-[#40944A]"
-        : "text-[#ff4444]",
-    [passwordMatchMessage]
-  )
-
+  console.log(getValues())
   return (
     <section className="flex items-center justify-center w-full min-h-screen py-8">
       <div className="w-full sm:w-[450px] rounded-lg shadow p-6 sm:p-8 flex flex-col gap-3 bg-gray-main">
-        <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleSubmit(registerFunction)} noValidate>
           <div className="flex flex-col gap-5 px-4 py-7 mx-auto ">
             <div className="flex flex-col gap-4 md:gap-6">
               <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-white md:text-2xl">
@@ -94,15 +83,13 @@ const RegisterPage = () => {
                   <Input
                     type="text"
                     placeholder="Nombre"
-                    {...getFieldProps("nombre")}
+                    {...registerForm("nombre")}
                     disabled={loading}
                   />
 
-                  {touched.nombre && errors.nombre && (
-                    <small className="font-bold text-[#ff4444]">
-                      {errors.nombre}
-                    </small>
-                  )}
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.nombre?.message}
+                  </small>
                 </div>
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-row gap-2 items-end">
@@ -112,15 +99,13 @@ const RegisterPage = () => {
                   <Input
                     type="text"
                     placeholder="Apellido"
-                    {...getFieldProps("apellido")}
+                    {...registerForm("apellido")}
                     disabled={loading}
                   />
 
-                  {touched.apellido && errors.apellido && (
-                    <small className="font-bold text-[#ff4444]">
-                      {errors.apellido}
-                    </small>
-                  )}
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.apellido?.message}
+                  </small>
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -130,15 +115,13 @@ const RegisterPage = () => {
 
                   <Input
                     type="email"
-                    {...getFieldProps("email")}
+                    {...registerForm("email")}
                     placeholder="example@gmail.com"
                   />
 
-                  {touched.email && errors.email && (
-                    <small className="font-bold text-[#ff4444]">
-                      {errors.email}
-                    </small>
-                  )}
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.email?.message}
+                  </small>
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -148,15 +131,13 @@ const RegisterPage = () => {
 
                   <Input
                     type="telefono"
-                    {...getFieldProps("telefono")}
+                    {...registerForm("telefono")}
                     placeholder="3544888888"
                   />
 
-                  {touched.telefono && errors.telefono && (
-                    <small className="font-bold text-[#ff4444]">
-                      {errors.telefono}
-                    </small>
-                  )}
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.telefono?.message}
+                  </small>
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -166,15 +147,16 @@ const RegisterPage = () => {
 
                   <Input
                     type="date"
-                    {...getFieldProps("fechaDeNacimiento")}
-                    placeholder="example@gmail.com"
+                    {...registerForm("fechaDeNacimiento")}
+                    onChange={(e) =>
+                      setValue("fechaDeNacimiento", e.target.value)
+                    } // Directamente el string en formato "YYYY-MM-DD"
+                    placeholder="YYYY-MM-DD"
                   />
 
-                  {touched.fechaDeNacimiento && errors.fechaDeNacimiento && (
-                    <small className="font-bold text-[#ff4444]">
-                      {errors.fechaDeNacimiento}
-                    </small>
-                  )}
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.fechaDeNacimiento?.message}
+                  </small>
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -184,7 +166,7 @@ const RegisterPage = () => {
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder="•••••••••••••••"
-                      {...getFieldProps("password")}
+                      {...registerForm("password")}
                       disabled={loading}
                     />
 
@@ -208,11 +190,9 @@ const RegisterPage = () => {
                     </button>
                   </div>
 
-                  {touched.password && errors.password && (
-                    <small className="font-bold text-[#ff4444]">
-                      {errors.password}
-                    </small>
-                  )}
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.password?.message}
+                  </small>
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -222,7 +202,7 @@ const RegisterPage = () => {
                     <Input
                       type={showConfirmPassword ? "text" : "password"}
                       placeholder="•••••••••••••••"
-                      {...getFieldProps("confirmPassword")}
+                      {...registerForm("confirmPassword")}
                       disabled={loading}
                     />
 
@@ -246,35 +226,25 @@ const RegisterPage = () => {
                     </button>
                   </div>
 
-                  {touched.confirmPassword && errors.confirmPassword && (
-                    <small className="font-bold text-[#ff4444]">
-                      {errors.confirmPassword}
-                    </small>
-                  )}
-
-                  {passwordMatchMessage && (
-                    <small className={`font-bold ${passwordMatchClass}`}>
-                      {passwordMatchMessage}
-                    </small>
-                  )}
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.confirmPassword?.message}
+                  </small>
                 </div>
 
                 <div className="flex flex-col w-full">
-                  <Select onValueChange={(e) => (values.rol = e)}>
+                  <Select onValueChange={(e) => setValue("tipoDeCuenta", e)}>
                     <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Rol" />
+                      <SelectValue placeholder="Tipo de cuenta" />
                     </SelectTrigger>
                     <SelectContent className="bg-gray-main text-white w-full">
                       <SelectItem value="BARBERO">Barbero</SelectItem>
-                      <SelectItem value="CLIENTE">Usuario</SelectItem>
+                      <SelectItem value="CLIENTE">Cliente</SelectItem>
                     </SelectContent>
                   </Select>
 
-                  {touched.rol && errors.rol && (
-                    <small className="font-bold text-[#ff4444]">
-                      {errors.rol}
-                    </small>
-                  )}
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.tipoDeCuenta && "El tipo de cuenta es requerido"}
+                  </small>
                 </div>
 
                 <div className="flex flex-col gap-5">
@@ -289,7 +259,8 @@ const RegisterPage = () => {
                   >
                     Registrarse
                   </Button>
-                </div>{/* 
+                </div>
+                {/* 
 
                 <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-white after:mt-0.5 after:flex-1 after:border-t after:border-white">
                   <p className="mx-4 mb-0 text-center dark:text-white">o</p>

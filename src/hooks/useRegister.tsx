@@ -13,7 +13,7 @@ export const useRegister = () => {
     fechaDeNacimiento,
     email,
     telefono,
-    rol,
+    tipoDeCuenta,
     password,
   }: Register) => {
     setLoading(true)
@@ -25,9 +25,10 @@ export const useRegister = () => {
         fechaDeNacimiento,
         email,
         telefono,
-        rol,
+        tipoDeCuenta,
         password,
       })
+      return res
       console.log(res);
       
       const data = res.data

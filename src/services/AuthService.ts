@@ -12,7 +12,7 @@ export interface Register {
   email: string
   telefono: string
   password: string
-  rol: string
+  tipoDeCuenta: string
 }
 
 export function login(user: Login) {
