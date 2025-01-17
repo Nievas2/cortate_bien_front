@@ -210,11 +210,15 @@ function AddBarberShopDialog() {
         <div className="flex flex-col gap-2">
           <Label>Ciudad</Label>
 
-          {isSuccess && data?.data === Array (
+          {isSuccess && data?.data === Array ? (
             <CountrySelect
               countries={data?.data}
               onChange={handleSelectCountry}
             />
+          ) : (
+            <span className="text-sm text-red-600">
+              Algo salio mal en la busqueda del listado de los paises
+            </span>
           )}
 
           <span className="text-sm text-red-600">
