@@ -66,8 +66,9 @@ function AddBarberShopDialog() {
   const { data, isSuccess } = useQuery({
     queryKey: ["countries"],
     queryFn: getCountries,
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 60 * 24,
   })
-  console.log(data)
 
   const {
     register,
@@ -91,6 +92,7 @@ function AddBarberShopDialog() {
     },
     resolver: zodResolver(barberSchema),
   })
+
   const handleSubmitForm = (data: any) => {
     console.log(data)
   }
@@ -103,11 +105,11 @@ function AddBarberShopDialog() {
     const newSubCategories = images.filter((_: any, i: number) => i !== index)
     setImages(newSubCategories)
   }
-  console.log(errors)
 
   function handleSelectCountry(country: string) {
     setValue("ciudad_id", country.toString())
   }
+
   function handleAddHour() {
     const data = {
       dia: "",
