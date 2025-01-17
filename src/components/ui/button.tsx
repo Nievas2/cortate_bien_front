@@ -20,7 +20,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         simple:
           "bg-transparent rounded-full border border-blue-main hover:bg-blue-main/80 hover:shadow-md hover:shadow-blue-main/50",
-        auth: "bg-transparent rounded-full border border-blue-secondary group-hover:bg-blue-secondary/80",
+        auth: "bg-transparent rounded-full border border-blue-secondary group-hover:bg-blue-secondary/80 text-white",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -9,6 +9,8 @@ import RegisterPage from "./pages/auth/register/RegisterPage"
 import LandingPage from "./pages/landing/LandingPage"
 import { ProtectedRoute } from "./components/shared/ProtectedRoute"
 import DashboardPage from "./pages/dashboard/DashboardPage"
+import AppointmentsPage from "./pages/dashboard/appointment/AppointmentsPage"
+import ReviewsPage from "./pages/dashboard/review/ReviewsPage"
 function App() {
   const location = useLocation()
   const { authUser } = useAuthContext()
@@ -37,6 +39,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/appointments"
+              element={
+                <ProtectedRoute>
+                  <AppointmentsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/reviews"
+              element={
+                <ProtectedRoute>
+                  <ReviewsPage />
                 </ProtectedRoute>
               }
             />

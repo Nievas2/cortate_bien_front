@@ -76,14 +76,21 @@ const Navbar = () => {
 
                   {/* User session */}
                   {authUser != null ? (
-                    <Button
-                      variant="auth"
-                      onClick={logOut}
-                      className="relative group"
-                    >
-                      Cerrar sesion
-                      <div className="absolute -inset-1 bg-gradient-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
-                    </Button>
+                    <>
+                      <NavbarItemDestock
+                        location="/dashboard"
+                        pathname={pathname}
+                        name="Dashboard"
+                      />
+                      <Button
+                        variant="auth"
+                        onClick={logOut}
+                        className="relative group"
+                      >
+                        Cerrar sesion
+                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
+                      </Button>
+                    </>
                   ) : (
                     <>
                       <Link

@@ -15,14 +15,16 @@ const SideBar = ({ open }: { open: boolean; setOpen: Function }) => {
   const pathname = useLocation()
   return (
     <aside
-      className={`bg-black-main h-full p-2 flex flex-col gap-2 transition-all duration-300 sticky ${
+      className={`bg-black-main h-full p-2 flex flex-col gap-2 transition-all duration-300 absolute z-50 sm:sticky ${
         open ? "-left-0 w-[320px] border-r border-r-gray-800" : "-left-full w-0"
       }`}
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header */}
       <div
-        className={`flex items-center gap-2 p-4 ${open ? "flex" : "hidden"}`}
+        className={`flex items-center justify-end sm:justify-start gap-2 p-4 ${
+          open ? "flex" : "hidden"
+        }`}
       >
         <Icon
           icon="radix-icons:scissors"
