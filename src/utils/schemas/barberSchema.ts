@@ -1,14 +1,16 @@
 import z from "zod"
 const horarioSchema = z.object({
-  dia: z.enum([
-    "LUNES",
-    "MARTES",
-    "MIERCOLES",
-    "JUEVES",
-    "VIERNES",
-    "SABADO",
-    "DOMINGO",
-  ]).default("LUNES"),
+  dia: z
+    .enum([
+      "LUNES",
+      "MARTES",
+      "MIERCOLES",
+      "JUEVES",
+      "VIERNES",
+      "SABADO",
+      "DOMINGO",
+    ])
+    .default("LUNES"),
   hora_apertura: z
     .string()
     .nonempty("La hora de apertura es requerida")
@@ -63,8 +65,11 @@ export const barberSchema = z.object({
       message: "Expected number, received a string",
     }),
   cantidadDeMinutosPorTurno: z
-    .number()
-    .nonnegative("La cantidad de minutos por turno no puede ser negativa"),
+    .string()
+    .min(1, "La cantidad de minutos por turno debe ser mayor a 1")
+    .refine((val) => !Number.isNaN(parseInt(val, 10)), {
+      message: "Expected number, received a string",
+    }),
   direccion: z
     .string()
     .nonempty("La direccion es requerida")
@@ -80,5 +85,5 @@ export const barberSchema = z.object({
     .string()
     .nonempty("La imagen de perfil es requerida")
     .url("La imagen de perfil debe ser una url"),
-  horarios: z.array(horarioSchema),
+    horarioPorDia: z.array(horarioSchema),
 })

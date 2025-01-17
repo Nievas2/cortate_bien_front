@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useForm } from "react-hook-form"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
@@ -24,6 +24,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import CountrySelect from "./CountrySelect"
+import { Hour } from "@/interfaces/Hour"
+import { createbarber } from "@/services/BarberService"
+import { Barber } from "@/interfaces/Barber"
 
 const AddBarberShop = () => {
   return (
@@ -52,13 +55,7 @@ const AddBarberShop = () => {
   )
 }
 export default AddBarberShop
-interface Hour {
-  dia: string
-  hora_apertura: string
-  hora_cierre: string
-  pausa_inicio: string
-  pausa_fin: string
-}
+
 function AddBarberShopDialog() {
   const [images, setImages] = useState([""])
   const [hours, setHours] = useState<null | Hour[]>()
@@ -68,6 +65,13 @@ function AddBarberShopDialog() {
     queryFn: getCountries,
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
+  })
+
+  const { mutate } = useMutation({
+    mutationKey: ["create-barber"],
+    mutationFn: (values: any) => {
+      return createbarber(values)
+    },
   })
 
   const {
@@ -84,7 +88,7 @@ function AddBarberShopDialog() {
       direccion: "",
       cantidadDeMinutosPorTurno: 30,
       ciudad_id: "",
-      horarios: hours,
+      horarioPorDia: hours,
       imagen_perfil: "",
       imagenes: images,
     },
@@ -92,7 +96,7 @@ function AddBarberShopDialog() {
   })
 
   const handleSubmitForm = (data: any) => {
-    console.log(data)
+    mutate(data)
   }
 
   const handleAddImages = () => {
@@ -321,7 +325,7 @@ function AddBarberShopDialog() {
                   </Select>
 
                   <small className="font-bold text-[#ff4444]">
-                    {errors.horarios?.[index]?.dia?.message}
+                    {errors.horarioPorDia?.[index]?.dia?.message}
                   </small>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -330,10 +334,10 @@ function AddBarberShopDialog() {
                     placeholder="Ingrese una hora entre 00:00 y 23:59"
                     defaultValue={hour.hora_apertura}
                     type="text"
-                    {...register(`horarios.${index}.hora_apertura`)}
+                    {...register(`horarioPorDia.${index}.hora_apertura`)}
                   />
                   <small className="font-bold text-[#ff4444]">
-                    {errors.horarios?.[index]?.hora_apertura?.message}
+                    {errors.horarioPorDia?.[index]?.hora_apertura?.message}
                   </small>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -341,10 +345,10 @@ function AddBarberShopDialog() {
                   <Input
                     placeholder="Ingrese una hora entre 00:00 y 23:59"
                     type="text"
-                    {...register(`horarios.${index}.hora_cierre`)}
+                    {...register(`horarioPorDia.${index}.hora_cierre`)}
                   />
                   <small className="font-bold text-[#ff4444]">
-                    {errors.horarios?.[index]?.hora_cierre?.message}
+                    {errors.horarioPorDia?.[index]?.hora_cierre?.message}
                   </small>
                 </div>
 
@@ -353,10 +357,10 @@ function AddBarberShopDialog() {
                   <Input
                     placeholder="Ingrese una hora entre 00:00 y 23:59"
                     type="text"
-                    {...register(`horarios.${index}.pausa_inicio`)}
+                    {...register(`horarioPorDia.${index}.pausa_inicio`)}
                   />
                   <small className="font-bold text-[#ff4444]">
-                    {errors.horarios?.[index]?.pausa_inicio?.message}
+                    {errors.horarioPorDia?.[index]?.pausa_inicio?.message}
                   </small>
                 </div>
 
@@ -365,10 +369,10 @@ function AddBarberShopDialog() {
                   <Input
                     placeholder="Ingrese una hora entre 00:00 y 23:59"
                     type="text"
-                    {...register(`horarios.${index}.pausa_fin`)}
+                    {...register(`horarioPorDia.${index}.pausa_fin`)}
                   />
                   <small className="font-bold text-[#ff4444]">
-                    {errors.horarios?.[index]?.pausa_fin?.message}
+                    {errors.horarioPorDia?.[index]?.pausa_fin?.message}
                   </small>
                 </div>
               </div>
