@@ -26,7 +26,7 @@ import {
 import CountrySelect from "./CountrySelect"
 import { Hour } from "@/interfaces/Hour"
 import { createbarber } from "@/services/BarberService"
-import { Barber } from "@/interfaces/Barber"
+/* import { Barber } from "@/interfaces/Barber" */
 
 const AddBarberShop = () => {
   return (

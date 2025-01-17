@@ -1,5 +1,5 @@
 import axiosInstance from "@/api/axiosInstance"
-import { Barber } from "@/interfaces/Barber"
+/* import { Barber } from "@/interfaces/Barber" */
 
 export async function createbarber(barber: any) {
   console.log(barber);
