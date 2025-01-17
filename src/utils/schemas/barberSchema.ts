@@ -1,16 +1,14 @@
 import z from "zod"
-enum DiaEnum {
-  LUNES = "LUNES",
-  MARTES = "MARTES",
-  MIERCOLES = "MIERCOLES",
-  JUEVES = "JUEVES",
-  VIERNES = "VIERNES",
-  SABADO = "SABADO",
-  DOMINGO = "DOMINGO",
-}
-
 const horarioSchema = z.object({
-  dia: z.nativeEnum(DiaEnum, { required_error: "El dia es requerido" }),
+  dia: z.enum([
+    "LUNES",
+    "MARTES",
+    "MIERCOLES",
+    "JUEVES",
+    "VIERNES",
+    "SABADO",
+    "DOMINGO",
+  ]).default("LUNES"),
   hora_apertura: z
     .string()
     .nonempty("La hora de apertura es requerida")
@@ -51,13 +49,19 @@ export const barberSchema = z.object({
     .min(3, "La descripcion debe tener al menos 3 caracteres")
     .max(400, "La descripcion no puede tener más de 400 caracteres"),
   latitud: z
-    .number()
+    .string()
     .min(3, "La latitud debe tener almenos 3 caracteres")
-    .max(30, "La latitud no debe tener mas de 30 caracteres"),
+    .max(30, "La latitud no debe tener mas de 30 caracteres")
+    .refine((val) => !Number.isNaN(parseInt(val, 10)), {
+      message: "Expected number, received a string",
+    }),
   longitud: z
-    .number()
+    .string()
     .min(3, "La latitud debe tener almenos 3 caracteres")
-    .max(30, "La latitud no debe tener mas de 30 caracteres"),
+    .max(30, "La latitud no debe tener mas de 30 caracteres")
+    .refine((val) => !Number.isNaN(parseInt(val, 10)), {
+      message: "Expected number, received a string",
+    }),
   cantidadDeMinutosPorTurno: z
     .number()
     .nonnegative("La cantidad de minutos por turno no puede ser negativa"),

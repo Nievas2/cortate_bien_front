@@ -79,14 +79,12 @@ function AddBarberShopDialog() {
     defaultValues: {
       nombre: "",
       descripcion: "",
-      latitud: "",
-      longitud: "",
+      latitud: 0,
+      longitud: 0,
       direccion: "",
       cantidadDeMinutosPorTurno: 30,
       ciudad_id: "",
-
       horarios: hours,
-
       imagen_perfil: "",
       imagenes: images,
     },
@@ -102,8 +100,8 @@ function AddBarberShopDialog() {
   }
 
   const handleRemoveImages = (index: number) => {
-    const newSubCategories = images.filter((_: any, i: number) => i !== index)
-    setImages(newSubCategories)
+    const newImages = images.filter((_: any, i: number) => i !== index)
+    setImages(newImages)
   }
 
   function handleSelectCountry(country: string) {
@@ -125,6 +123,14 @@ function AddBarberShopDialog() {
     updatedHours.push(data)
     setHours(updatedHours)
   }
+
+  const handleRemoveHour = (index: number) => {
+    if (hours != null && hours != undefined) {
+      const newhours = hours.filter((_: any, i: number) => i !== index)
+      setHours(newhours)
+    }
+  }
+  console.log(errors)
 
   return (
     <form
@@ -160,7 +166,7 @@ function AddBarberShopDialog() {
         <div className="flex flex-col gap-2">
           <Label>Latitud</Label>
           <Input
-            type="text"
+            type="number"
             placeholder="latitud"
             {...register("latitud")}
             /* disabled={loading} */
@@ -173,7 +179,7 @@ function AddBarberShopDialog() {
         <div className="flex flex-col gap-2">
           <Label>Longitud</Label>
           <Input
-            type="text"
+            type="number"
             placeholder="longitud"
             {...register("longitud")}
             /* disabled={loading} */
@@ -212,7 +218,7 @@ function AddBarberShopDialog() {
         <div className="flex flex-col gap-2">
           <Label>Ciudad</Label>
 
-          {isSuccess && data?.data === Array ? (
+          {isSuccess && Array.isArray(data?.data) ? (
             <CountrySelect
               countries={data?.data}
               onChange={handleSelectCountry}
@@ -256,20 +262,23 @@ function AddBarberShopDialog() {
         ))}
 
         <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-between w-full gap-4">
-          <Button type="button" variant="auth" onClick={handleAddImages}>
+          <Button type="button" variant="secondary" onClick={handleAddImages}>
+            <Icon icon="material-symbols:add" width="18" height="18" />
             Agregar una imagen
           </Button>
           <Button
             type="button"
-            variant="auth"
+            variant="simple"
             onClick={() => {
               if (images.length > 1)
                 return handleRemoveImages(images.length - 1)
             }}
           >
+            <Icon icon="mdi:trash-outline" width="18" height="18" />
             Quitar la ultima imagen
           </Button>
         </div>
+        <hr />
 
         {hours != null &&
           hours.map(
@@ -301,18 +310,18 @@ function AddBarberShopDialog() {
                       <SelectValue placeholder="Selecciona un día" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Lunes">Lunes</SelectItem>
-                      <SelectItem value="Martes">Martes</SelectItem>
-                      <SelectItem value="Miércoles">Miércoles</SelectItem>
-                      <SelectItem value="Jueves">Jueves</SelectItem>
-                      <SelectItem value="Viernes">Viernes</SelectItem>
-                      <SelectItem value="Sábado">Sábado</SelectItem>
-                      <SelectItem value="Domingo">Domingo</SelectItem>
+                      <SelectItem value="LUNES">Lunes</SelectItem>
+                      <SelectItem value="MARTES">Martes</SelectItem>
+                      <SelectItem value="MIERCOLES">Miércoles</SelectItem>
+                      <SelectItem value="JUEVES">Jueves</SelectItem>
+                      <SelectItem value="VIERNES">Viernes</SelectItem>
+                      <SelectItem value="SABADO">Sábado</SelectItem>
+                      <SelectItem value="DOMINGO">Domingo</SelectItem>
                     </SelectContent>
                   </Select>
 
                   <small className="font-bold text-[#ff4444]">
-                    {errors.imagenes?.[index]?.message}
+                    {errors.horarios?.[index]?.dia?.message}
                   </small>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -366,9 +375,20 @@ function AddBarberShopDialog() {
             )
           )}
 
-        <div className="flex flex-col gap-2">
+        <div className="flex sm:flex-row sm:justify-between flex-col justify-center gap-2">
           <Button variant="secondary" type="button" onClick={handleAddHour}>
+            <Icon icon="material-symbols:add" width="18" height="18" />
             Agregar un horario
+          </Button>
+          <Button
+            variant="simple"
+            type="button"
+            onClick={() => {
+              if (hours != undefined) return handleRemoveHour(hours?.length - 1)
+            }}
+          >
+            <Icon icon="mdi:trash-outline" width="18" height="18" />
+            Quitar el ultimo horaio
           </Button>
         </div>
 
