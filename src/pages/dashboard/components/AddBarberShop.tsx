@@ -210,7 +210,7 @@ function AddBarberShopDialog() {
         <div className="flex flex-col gap-2">
           <Label>Ciudad</Label>
 
-          {isSuccess && (
+          {isSuccess && data?.data === Array (
             <CountrySelect
               countries={data?.data}
               onChange={handleSelectCountry}
