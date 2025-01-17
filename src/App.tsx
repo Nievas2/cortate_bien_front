@@ -7,7 +7,6 @@ import LoginPage from "./pages/auth/login/LoginPage"
 import AuthPage from "./pages/auth/auth/AuthPage"
 import RegisterPage from "./pages/auth/register/RegisterPage"
 import LandingPage from "./pages/landing/LandingPage"
-import { ProtectedRoute } from "./components/shared/ProtectedRoute"
 import DashboardPage from "./pages/dashboard/DashboardPage"
 import AppointmentsPage from "./pages/dashboard/appointment/AppointmentsPage"
 import ReviewsPage from "./pages/dashboard/review/ReviewsPage"
@@ -37,27 +36,20 @@ function App() {
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
+                /*  <ProtectedRoute>
+                </ProtectedRoute> */
+                <DashboardPage />
               }
             />
             <Route
               path="/dashboard/appointments"
-              element={
-                <ProtectedRoute>
-                  <AppointmentsPage />
-                </ProtectedRoute>
-              }
+              element={<AppointmentsPage />}
             />
-            <Route
-              path="/dashboard/reviews"
-              element={
-                <ProtectedRoute>
-                  <ReviewsPage />
-                </ProtectedRoute>
-              }
-            />
+            {/* <ProtectedRoute>
+                </ProtectedRoute> */}
+            {/* <ProtectedRoute>
+              </ProtectedRoute> */}
+            <Route path="/dashboard/reviews" element={<ReviewsPage />} />
 
             <Route path="/404" element={<NotFoundPage />} />
             <Route path="/*" element={<Navigate to="/404" replace />} />
