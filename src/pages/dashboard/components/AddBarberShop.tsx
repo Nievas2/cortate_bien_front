@@ -8,12 +8,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useForm } from "react-hook-form"
+import { useQuery } from "@tanstack/react-query"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { barberSchema } from "@/utils/schemas/barberSchema"
+import { getCountries } from "@/services/CountryService"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import CountrySelect from "./CountrySelect"
 
 const AddBarberShop = () => {
   return (
@@ -42,13 +52,28 @@ const AddBarberShop = () => {
   )
 }
 export default AddBarberShop
-
+interface Hour {
+  dia: string
+  hora_apertura: string
+  hora_cierre: string
+  pausa_inicio: string
+  pausa_fin: string
+}
 function AddBarberShopDialog() {
   const [images, setImages] = useState([""])
+  const [hours, setHours] = useState<null | Hour[]>()
+
+  const { data, isSuccess } = useQuery({
+    queryKey: ["countries"],
+    queryFn: getCountries,
+  })
+  console.log(data)
+
   const {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
   } = useForm({
     defaultValues: {
       nombre: "",
@@ -59,10 +84,10 @@ function AddBarberShopDialog() {
       cantidadDeMinutosPorTurno: 30,
       ciudad_id: "",
 
-      horarioPorDia: "",
+      horarios: hours,
 
       imagen_perfil: "",
-      imagenes: "",
+      imagenes: images,
     },
     resolver: zodResolver(barberSchema),
   })
@@ -78,10 +103,33 @@ function AddBarberShopDialog() {
     const newSubCategories = images.filter((_: any, i: number) => i !== index)
     setImages(newSubCategories)
   }
+  console.log(errors)
+
+  function handleSelectCountry(country: string) {
+    setValue("ciudad_id", country.toString())
+  }
+  function handleAddHour() {
+    const data = {
+      dia: "",
+      hora_apertura: "",
+      hora_cierre: "",
+      pausa_inicio: "",
+      pausa_fin: "",
+    }
+    if (hours === null || hours == undefined) {
+      return setHours([data])
+    }
+    const updatedHours = [...hours]
+    updatedHours.push(data)
+    setHours(updatedHours)
+  }
 
   return (
-    <form onSubmit={handleSubmit(handleSubmitForm)}>
-      <div className="flex flex-col gap-3">
+    <form
+      className="flex flex-col w-full"
+      onSubmit={handleSubmit(handleSubmitForm)}
+    >
+      <div className="flex flex-col gap-3 w-full">
         <div className="flex flex-col gap-2">
           <Label>Nombre</Label>
 
@@ -161,27 +209,16 @@ function AddBarberShopDialog() {
 
         <div className="flex flex-col gap-2">
           <Label>Ciudad</Label>
-          <Input
-            type="text"
-            placeholder="ciudad_id"
-            {...register("ciudad_id")}
-            /* disabled={loading} */
-          />
+
+          {isSuccess && (
+            <CountrySelect
+              countries={data?.data}
+              onChange={handleSelectCountry}
+            />
+          )}
+
           <span className="text-sm text-red-600">
             {errors.ciudad_id?.message}
-          </span>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label>Horario por dia</Label>
-          <Input
-            type="text"
-            placeholder="horarioPorDia"
-            {...register("horarioPorDia")}
-            /* disabled={loading} */
-          />
-          <span className="text-sm text-red-600">
-            {errors.horarioPorDia?.message}
           </span>
         </div>
 
@@ -189,7 +226,7 @@ function AddBarberShopDialog() {
           <Label>Imagen de perfil</Label>
           <Input
             type="text"
-            placeholder="imagen_perfil"
+            placeholder="Imagen de foto de perfil"
             {...register("imagen_perfil")}
             /* disabled={loading} */
           />
@@ -197,24 +234,22 @@ function AddBarberShopDialog() {
             {errors.imagen_perfil?.message}
           </span>
         </div>
-
+        <Label>Agregar imagenes</Label>
         {images.map((image, index: number) => (
           <div key={index}>
             <Input
-              className="bg-[#334155] ring-white border border-[#455166]"
               placeholder="Ingrese una imagen"
               defaultValue={image}
               type="url"
-              {...register(`imagenes`)}
-              /*  disabled={isPending} */
+              {...register(`imagenes.${index}`)} // Registrar dinámicamente cada input
             />
             <small className="font-bold text-[#ff4444]">
-              {errors.imagenes?.message}
+              {errors.imagenes?.[index]?.message}
             </small>
           </div>
         ))}
 
-        <div className="flex w-full gap-4">
+        <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-between w-full gap-4">
           <Button type="button" variant="auth" onClick={handleAddImages}>
             Agregar una imagen
           </Button>
@@ -230,11 +265,108 @@ function AddBarberShopDialog() {
           </Button>
         </div>
 
+        {hours != null &&
+          hours.map(
+            (
+              hour: {
+                dia: string
+                hora_apertura: string
+                hora_cierre: string
+                pausa_inicio: string
+                pausa_fin: string
+              },
+              index: number
+            ) => (
+              <div className="flex flex-col gap-2" key={crypto.randomUUID()}>
+                <div className="flex flex-col gap-2">
+                  <Label>Dia</Label>
+                  <Select
+                    onValueChange={(e) => {
+                      const updatedHours = [...hours] // Crear una copia del array
+                      updatedHours[index] = {
+                        ...updatedHours[index], // Mantener los otros valores del objeto
+                        dia: e, // Actualizar solo el campo "dia"
+                      }
+                      setHours(updatedHours) // Actualizar el estado con el nuevo array
+                    }}
+                    value={hour.dia}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Selecciona un día" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Lunes">Lunes</SelectItem>
+                      <SelectItem value="Martes">Martes</SelectItem>
+                      <SelectItem value="Miércoles">Miércoles</SelectItem>
+                      <SelectItem value="Jueves">Jueves</SelectItem>
+                      <SelectItem value="Viernes">Viernes</SelectItem>
+                      <SelectItem value="Sábado">Sábado</SelectItem>
+                      <SelectItem value="Domingo">Domingo</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.imagenes?.[index]?.message}
+                  </small>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>Horario de apertura</Label>
+                  <Input
+                    placeholder="Ingrese una hora entre 00:00 y 23:59"
+                    defaultValue={hour.hora_apertura}
+                    type="text"
+                    {...register(`horarios.${index}.hora_apertura`)}
+                  />
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.horarios?.[index]?.hora_apertura?.message}
+                  </small>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>Horario de cierre</Label>
+                  <Input
+                    placeholder="Ingrese una hora entre 00:00 y 23:59"
+                    type="text"
+                    {...register(`horarios.${index}.hora_cierre`)}
+                  />
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.horarios?.[index]?.hora_cierre?.message}
+                  </small>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label>Inicio del descanso</Label>
+                  <Input
+                    placeholder="Ingrese una hora entre 00:00 y 23:59"
+                    type="text"
+                    {...register(`horarios.${index}.pausa_inicio`)}
+                  />
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.horarios?.[index]?.pausa_inicio?.message}
+                  </small>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label>Inicio del descanso</Label>
+                  <Input
+                    placeholder="Ingrese una hora entre 00:00 y 23:59"
+                    type="text"
+                    {...register(`horarios.${index}.pausa_fin`)}
+                  />
+                  <small className="font-bold text-[#ff4444]">
+                    {errors.horarios?.[index]?.pausa_fin?.message}
+                  </small>
+                </div>
+              </div>
+            )
+          )}
+
         <div className="flex flex-col gap-2">
-          <Button variant="auth">Agregar un horario</Button>
+          <Button variant="secondary" type="button" onClick={handleAddHour}>
+            Agregar un horario
+          </Button>
         </div>
 
-        <Button variant="auth" type="submit">
+        <Button variant="simple" type="submit">
           Agregar barberia
         </Button>
       </div>

@@ -76,5 +76,5 @@ export const barberSchema = z.object({
     .string()
     .nonempty("La imagen de perfil es requerida")
     .url("La imagen de perfil debe ser una url"),
-  horarios: z.array(horarioSchema).nonempty("Los horarios son requeridos"),
+  horarios: z.array(horarioSchema),
 })
