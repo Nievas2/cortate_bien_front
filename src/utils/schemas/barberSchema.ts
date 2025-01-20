@@ -26,15 +26,17 @@ const horarioSchema = z.object({
         "El formato de la hora debe ser valido (HH:MM, entre 00:00 y 23:59).",
     }),
   pausa_inicio: z
-  .string()
-  .optional()
-  .or(z.literal(""))
-  .refine(
-    (value) => value === "" || /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value!),
-    {
-      message: "El formato de la hora debe ser valido (HH:MM, entre 00:00 y 23:59).",
-    }
-  ),
+    .string()
+    .optional()
+    .or(z.literal(""))
+    .refine(
+      (value) =>
+        value === "" || /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value!),
+      {
+        message:
+          "El formato de la hora debe ser valido (HH:MM, entre 00:00 y 23:59).",
+      }
+    ),
   pausa_fin: z
     .string()
     .optional()
@@ -88,12 +90,20 @@ export const barberSchema = z.object({
 
   ciudad_id: z.string().nonempty("La ciudad es requerida"),
   imagenes: z
-    .array(z.string().url("La imagen debe ser una url"))
+    .array(
+      z
+        .string()
+        .url("La imagen debe ser una url")
+        .startsWith("https://", {
+          message: "Debe utilizar el protocolo https://",
+        })
+    )
     .nonempty("Las imagenes son requeridas")
     .max(5, "No puedes subir mas de 5 imagenes"),
   imagen_perfil: z
     .string()
     .nonempty("La imagen de perfil es requerida")
-    .url("La imagen de perfil debe ser una url"),
+    .url("La imagen de perfil debe ser una url")
+    .startsWith("https://", { message: "Debe utilizar el protocolo https://" }),
   horarioPorDia: z.array(horarioSchema),
 })

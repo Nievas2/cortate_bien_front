@@ -38,32 +38,55 @@ export async function createbarber(barber: any) {
   }
 }
 
-export async function updateBarber(barber: Barber, id: string) {
-  barber.horarioPorDia.forEach((element: any) => {
-    console.log(element.pausa_inicio.length)
-
-    if (element.pausa_inicio.length === 0) element.pausa_inicio = null
-    if (element.pausa_fin.length === 0) element.pausa_fin = null
+export async function updateBarber(
+  barber: Barber,
+  id: string,
+  barberUpdated: Barber
+) {
+  // Normalizar los campos del objeto actualizado
+  barberUpdated.horarioPorDia.forEach((element) => {
+    if (element.pausa_inicio != null && element.pausa_inicio.length === 0)
+      element.pausa_inicio = null
+    if (element.pausa_fin != null && element.pausa_fin.length === 0)
+      element.pausa_fin = null
   })
-  console.log(barber)
+
+  // Comparar barber y barberUpdated para generar un JSON con solo los cambios
+  const updatedFields: Partial<Barber> = getUpdatedFields(barber, barberUpdated)
 
   try {
-    const res = axiosInstance.post(`barberia/update/${id}`, {
-      nombre: barber.nombre,
-      descripcion: barber.descripcion,
-      latitud: barber.latitud,
-      longitud: barber.longitud,
-      direccion: barber.direccion,
-      cantidadDeMinutosPorTurno: barber.cantidadDeMinutosPorTurno,
-      ciudad_id: barber.ciudad_id,
-      imagenes: barber.imagenes,
-      imagen_perfil: barber.imagen_perfil,
-      horarioPorDia: barber.horarioPorDia,
-    })
+    // Enviar solo los campos modificados a la API
+    const res = await axiosInstance.put(
+      `barberia/update/${id}`,
+      updatedFields
+    )
     return res
   } catch (error) {
     throw error
   }
+}
+
+// Función para comparar dos objetos y devolver los campos actualizados
+function getUpdatedFields(original: Barber, updated: Barber): Partial<Barber> {
+  const updatedFields: Partial<Barber> = {}
+
+  for (const key in updated) {
+    if (Object.prototype.hasOwnProperty.call(updated, key)) {
+      const originalValue = (original as any)[key]
+      const updatedValue = (updated as any)[key]
+
+      // Comparar valores (considera arrays, objetos, y valores simples)
+      if (Array.isArray(originalValue) && Array.isArray(updatedValue)) {
+        if (JSON.stringify(originalValue) !== JSON.stringify(updatedValue)) {
+          (updatedFields as any)[key] = updatedValue
+        }
+      } else if (originalValue !== updatedValue) {
+        updatedFields[key as keyof Barber] = updatedValue
+      }
+    }
+  }
+
+  return updatedFields
 }
 
 export async function getBarbersById(id: string) {

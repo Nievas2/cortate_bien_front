@@ -24,6 +24,8 @@ const Layout = ({
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
   })
+  console.log(data?.data);
+  
 
   return (
     <div className="flex relative w-full">

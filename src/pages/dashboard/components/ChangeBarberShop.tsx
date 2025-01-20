@@ -27,9 +27,11 @@ import {
 
 import CountrySelect from "./CountrySelect"
 import { Hour } from "@/interfaces/Hour"
-import { createbarber, updatebarber } from "@/services/BarberService"
-import { Barber } from "@/interfaces/Barber"
+import { createbarber, updateBarber } from "@/services/BarberService"
+import { Barber, Barber2 } from "@/interfaces/Barber"
 import { Link } from "react-router-dom"
+import StateSelect from "./StateSelect"
+import CitySelect from "./CitySelect"
 interface ChangeBarberShopProps {
   barbers?: Barber[]
 }
@@ -46,7 +48,7 @@ const ChangeBarberShop = ({ barbers }: ChangeBarberShopProps) => {
             >
               <Dialog>
                 <DialogTrigger className="absolute top-2 right-2 z-50 flex gap-2">
-                  <Button variant="ghost" size="xs" className="rounded-sm">
+                  <Button variant="simple" size="xs" className="rounded-sm">
                     <Icon
                       icon="material-symbols:delete"
                       width="16"
@@ -81,7 +83,7 @@ const ChangeBarberShop = ({ barbers }: ChangeBarberShopProps) => {
                 to={`/dashboard/barber?id=${barber.id}`}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               >
-                <Button variant="simple">{barber.nombre}</Button>
+                <Button variant="secondary">{barber.nombre}</Button>
               </Link>
             </div>
           ))}
@@ -110,32 +112,54 @@ const ChangeBarberShop = ({ barbers }: ChangeBarberShopProps) => {
 export default ChangeBarberShop
 
 interface ChangeBarberShopDialogProps {
-  barber?: Barber
+  barber?: Barber2
 }
 
-export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) {
-  const [images, setImages] = useState([""])
-  const [hours, setHours] = useState<null | Hour[]>()
-
+export function ChangeBarberShopDialog({
+  barber,
+}: ChangeBarberShopDialogProps) {
+  const [countryId, setCountryId] = useState<undefined | number>()
+  const [stateId, setStateId] = useState<undefined | number>()
+  const [images, setImages] = useState(
+    barber?.imagenes ? barber?.imagenes : [""]
+  )
+  const [hours, setHours] = useState<Hour[] | undefined>(
+    barber?.horarios ? barber?.horarios : undefined
+  )
   const { data, isSuccess } = useQuery({
     queryKey: ["countries"],
     queryFn: getCountries,
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
   })
-  console.log(barber);
-  
-  const { mutate : update } = useMutation({
+
+  const { mutate } = useMutation({
     mutationKey: ["create-barber"],
     mutationFn: (values: any) => {
       return createbarber(values)
     },
   })
 
-  const { mutate } = useMutation({
+  const { mutate: update } = useMutation({
     mutationKey: ["update-barber"],
     mutationFn: (values: any) => {
-      return updateBarber(values)
+      if (barber != undefined) {
+        const barber2: Barber = {
+          id: barber.id,
+          nombre: barber.nombre,
+          descripcion: barber.descripcion,
+          latitud: barber.latitud,
+          longitud: barber.longitud,
+          direccion: barber.direccion,
+          cantidadDeMinutosPorTurno: barber.cantidadDeMinutosPorTurno,
+          ciudad_id: barber.ciudad_id,
+          imagenes: barber.imagenes,
+          imagen_perfil: barber.imagen_perfil,
+          horarioPorDia: barber.horarios,
+        }
+        return updateBarber(barber2, barber.id!, values)
+      }
+      throw new Error("Barberia no encontrada")
     },
   })
 
@@ -146,21 +170,24 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
     setValue,
   } = useForm({
     defaultValues: {
-      nombre: "",
-      descripcion: "",
-      latitud: 0,
-      longitud: 0,
-      direccion: "",
-      cantidadDeMinutosPorTurno: 30,
-      ciudad_id: "",
+      nombre: barber?.nombre ? barber?.nombre : "",
+      descripcion: barber?.descripcion ? barber?.descripcion : "",
+      latitud: barber?.latitud ? barber.latitud.toString() : "0",
+      longitud: barber?.longitud ? barber.longitud.toString() : "0",
+      direccion: barber?.direccion ? barber?.direccion : "",
+      cantidadDeMinutosPorTurno: barber?.cantidadDeMinutosPorTurno
+        ? barber?.cantidadDeMinutosPorTurno.toString()
+        : 30,
+      ciudad_id: barber?.ciudad_id ? barber?.ciudad_id : "",
       horarioPorDia: hours,
-      imagen_perfil: "",
+      imagen_perfil: barber?.imagen_perfil ? barber?.imagen_perfil : "",
       imagenes: images,
     },
     resolver: zodResolver(barberSchema),
   })
 
   const handleSubmitForm = (data: any) => {
+    if (barber != undefined) return update(data)
     mutate(data)
   }
 
@@ -173,8 +200,8 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
     setImages(newImages)
   }
 
-  function handleSelectCountry(country: string) {
-    setValue("ciudad_id", country.toString())
+  function handleSelectCountry(country: number) {
+    setCountryId(country)
   }
 
   function handleAddHour() {
@@ -199,8 +226,6 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
       setHours(newhours)
     }
   }
-
-  console.log(errors)
 
   return (
     <form
@@ -231,6 +256,7 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
             {errors.descripcion?.message}
           </span>
         </div>
+
         <div className="flex flex-col gap-2">
           <Label>Latitud</Label>
           <Input
@@ -243,6 +269,7 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
             {errors.latitud?.message}
           </span>
         </div>
+
         <div className="flex flex-col gap-2">
           <Label>Longitud</Label>
           <Input
@@ -255,6 +282,7 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
             {errors.longitud?.message}
           </span>
         </div>
+
         <div className="flex flex-col gap-2">
           <Label>Direccion</Label>
           <Input
@@ -267,6 +295,7 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
             {errors.direccion?.message}
           </span>
         </div>
+
         <div className="flex flex-col gap-2">
           <Label>Cantidad de minutos por turno</Label>
           <Input
@@ -279,8 +308,9 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
             {errors.cantidadDeMinutosPorTurno?.message}
           </span>
         </div>
+
         <div className="flex flex-col gap-2">
-          <Label>Ciudad</Label>
+          <Label>Pais</Label>
           {isSuccess && Array.isArray(data?.data) ? (
             <CountrySelect
               countries={data?.data}
@@ -291,10 +321,32 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
               Algo salio mal en la busqueda del listado de los paises
             </span>
           )}
-          <span className="text-sm text-red-600">
-            {errors.ciudad_id?.message}
-          </span>
         </div>
+        {countryId && (
+          <div className="flex flex-col gap-2">
+            <Label>Estado / provincia</Label>
+            <StateSelect
+              countryId={countryId}
+              onChange={(state: number) => setStateId(state)}
+            />
+          </div>
+        )}
+
+        {stateId && (
+          <div className="flex flex-col gap-2">
+            <Label>Ciudad</Label>
+            <CitySelect
+              stateId={stateId}
+              onChange={(city: number) =>
+                setValue("ciudad_id", city.toString())
+              }
+            />
+          </div>
+        )}
+        <span className="text-sm text-red-600">
+          {errors.ciudad_id?.message}
+        </span>
+
         <div className="flex flex-col gap-2">
           <Label>Imagen de perfil</Label>
           <Input
@@ -307,6 +359,7 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
             {errors.imagen_perfil?.message}
           </span>
         </div>
+
         <Label>Agregar imagenes</Label>
         {images.map((image, index: number) => (
           <div key={index}>
@@ -339,7 +392,7 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
           </Button>
         </div>
         <hr />
-        {hours != null &&
+        {hours != undefined &&
           hours.map(
             (
               hour: {
@@ -430,6 +483,7 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
               </div>
             )
           )}
+
         <div className="flex sm:flex-row sm:justify-between flex-col justify-center gap-2">
           <Button variant="secondary" type="button" onClick={handleAddHour}>
             <Icon icon="material-symbols:add" width="18" height="18" />
@@ -439,13 +493,15 @@ export function ChangeBarberShopDialog({ barber }: ChangeBarberShopDialogProps) 
             variant="simple"
             type="button"
             onClick={() => {
-              if (hours != undefined) return handleRemoveHour(hours?.length - 1)
+              if (hours != undefined && hours.length > 1)
+                return handleRemoveHour(hours?.length - 1)
             }}
           >
             <Icon icon="mdi:trash-outline" width="18" height="18" />
             Quitar el ultimo horaio
           </Button>
         </div>
+
         <Button variant="simple" type="submit">
           Agregar barberia
         </Button>
