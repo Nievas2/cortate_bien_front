@@ -15,7 +15,7 @@ const CountrySelect = ({
   }))
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 text-black">
       <Select
         id="country"
         options={options}

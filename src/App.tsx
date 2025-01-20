@@ -53,14 +53,14 @@ function App() {
             />
 
             <Route
-              path="/dashboard/appointments"
+              path="/dashboard/barber/appointments"
               element={<AppointmentsPage />}
             />
             {/* <ProtectedRoute>
                 </ProtectedRoute> */}
             {/* <ProtectedRoute>
               </ProtectedRoute> */}
-            <Route path="/dashboard/reviews" element={<ReviewsPage />} />
+            <Route path="/dashboard/barber/reviews" element={<ReviewsPage />} />
 
             <Route path="/404" element={<NotFoundPage />} />
             <Route path="/*" element={<Navigate to="/404" replace />} />

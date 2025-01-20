@@ -38,7 +38,7 @@ export async function createbarber(barber: any) {
   }
 }
 
-export async function updatebarber(barber: Barber, id: string) {
+export async function updateBarber(barber: Barber, id: string) {
   barber.horarioPorDia.forEach((element: any) => {
     console.log(element.pausa_inicio.length)
 
