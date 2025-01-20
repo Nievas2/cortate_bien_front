@@ -10,6 +10,7 @@ import LandingPage from "./pages/landing/LandingPage"
 import DashboardPage from "./pages/dashboard/DashboardPage"
 import AppointmentsPage from "./pages/dashboard/appointment/AppointmentsPage"
 import ReviewsPage from "./pages/dashboard/review/ReviewsPage"
+import BarberPage from "./pages/dashboard/barber/BarberPage"
 function App() {
   const location = useLocation()
   const { authUser } = useAuthContext()
@@ -41,6 +42,16 @@ function App() {
                 <DashboardPage />
               }
             />
+            
+            <Route
+              path="/dashboard/barber"
+              element={
+                /*  <ProtectedRoute>
+                </ProtectedRoute> */
+                <BarberPage />
+              }
+            />
+
             <Route
               path="/dashboard/appointments"
               element={<AppointmentsPage />}

@@ -9,14 +9,16 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90 rounded-full",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-red-500 text-white hover:bg-red-500/90",
         outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
           "bg-blue-main rounded-full border border-blue-main hover:bg-blue-main/80 hover:shadow-md hover:shadow-blue-main/50",
         ghost: "hover:bg-accent hover:text-accent-foreground",
+        barberDash:
+          "flex flex-col items-center justify-center rounded-xl border border-blue-main group-hover:bg-blue-main/80 group-hover:text-white",
         link: "text-primary underline-offset-4 hover:underline",
         simple:
           "bg-transparent rounded-full border border-blue-main hover:bg-blue-main/80 hover:shadow-md hover:shadow-blue-main/50 text-white",
@@ -25,8 +27,10 @@ const buttonVariants = cva(
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
+        xs: "h-6 rounded-full px-1",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
+        barberDash: " size-48",
       },
     },
     defaultVariants: {

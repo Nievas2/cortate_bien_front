@@ -1,6 +1,7 @@
 import { Hour } from "./Hour"
 
 export interface Barber {
+  id?: string
   nombre: string
   descripcion: string
   latitud: number
@@ -10,5 +11,5 @@ export interface Barber {
   ciudad_id: string
   imagenes: string[]
   imagen_perfil: string
-  horarios: Hour[] | null
+  horarioPorDia: Hour[]
 }

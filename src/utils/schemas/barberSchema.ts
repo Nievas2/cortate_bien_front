@@ -27,16 +27,28 @@ const horarioSchema = z.object({
     }),
   pausa_inicio: z
     .string()
-    .refine((value) => /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
-      message:
-        "El formato de la hora debe ser valido (HH:MM, entre 00:00 y 23:59).",
-    }),
+    .optional()
+    .or(z.literal(""))
+    .refine(
+      (value) =>
+        value === "" || /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value!),
+      {
+        message:
+          "El formato de la hora debe ser valido (HH:MM, entre 00:00 y 23:59).",
+      }
+    ),
   pausa_fin: z
     .string()
-    .refine((value) => /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
-      message:
-        "El formato de la hora debe ser valido (HH:MM, entre 00:00 y 23:59).",
-    }),
+    .optional()
+    .or(z.literal(""))
+    .refine(
+      (value) =>
+        value === "" || /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value!),
+      {
+        message:
+          "El formato de la hora debe ser valido (HH:MM, entre 00:00 y 23:59).",
+      }
+    ),
 })
 
 export const barberSchema = z.object({
@@ -85,5 +97,5 @@ export const barberSchema = z.object({
     .string()
     .nonempty("La imagen de perfil es requerida")
     .url("La imagen de perfil debe ser una url"),
-    horarioPorDia: z.array(horarioSchema),
+  horarioPorDia: z.array(horarioSchema),
 })

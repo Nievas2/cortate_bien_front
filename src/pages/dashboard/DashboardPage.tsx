@@ -1,11 +1,28 @@
-import AddBarberShop from "./components/AddBarberShop"
-import Layout from "./layout"
+import { useQuery } from "@tanstack/react-query"
+import ChangeBarberShop from "./components/ChangeBarberShop"
+import { getBarbersById } from "@/services/BarberService"
+import { useAuthContext } from "@/contexts/authContext"
 
 const DashboardPage = () => {
-  return (
-    <Layout>
-      <AddBarberShop />
-    </Layout>
-  )
+  const { authUser } = useAuthContext()
+
+  const { data } = useQuery({
+    queryKey: ["getbarberyid"],
+    queryFn: getBarbers,
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 60 * 24,
+  })
+
+  async function getBarbers() {
+    if (authUser != undefined) {
+      console.log(authUser)
+
+      const res = await getBarbersById(authUser.user.sub)
+
+      return res
+    }
+  }
+
+  return <ChangeBarberShop barbers={data?.data} />
 }
 export default DashboardPage

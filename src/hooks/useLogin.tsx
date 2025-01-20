@@ -25,8 +25,14 @@ const useLogin = () => {
 
       localStorage.setItem("token", data.accesToken)
       const user = decodeJwt(data.accesToken)
-      localStorage.setItem("user", JSON.stringify(user))
-      setAuthUser(data)
+      const userAuth = {
+        user: user,
+        token: data.accesToken,
+      }
+      localStorage.setItem("user", JSON.stringify(userAuth))
+      console.log(userAuth);
+      
+      setAuthUser(userAuth)
 
       return null
     } catch (error: any) {

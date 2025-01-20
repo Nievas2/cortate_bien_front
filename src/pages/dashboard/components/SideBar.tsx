@@ -16,7 +16,7 @@ const SideBar = ({ open }: { open: boolean; setOpen: Function }) => {
   return (
     <aside
       className={`bg-black-main h-full p-2 flex flex-col gap-2 transition-all duration-300 absolute z-50 sm:sticky ${
-        open ? "-left-0 w-[320px] border-r border-r-gray-800" : "-left-full w-0"
+        open ? "-left-0 w-[260px] border-r border-r-gray-800" : "-left-full w-0"
       }`}
       onClick={(e) => e.stopPropagation()}
     >
