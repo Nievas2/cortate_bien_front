@@ -257,30 +257,31 @@ export function ChangeBarberShopDialog({
           </span>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <Label>Latitud</Label>
-          <Input
-            type="number"
-            placeholder="latitud"
-            {...register("latitud")}
-            /* disabled={loading} */
-          />
-          <span className="text-sm text-red-600">
-            {errors.latitud?.message}
-          </span>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label>Longitud</Label>
-          <Input
-            type="number"
-            placeholder="longitud"
-            {...register("longitud")}
-            /* disabled={loading} */
-          />
-          <span className="text-sm text-red-600">
-            {errors.longitud?.message}
-          </span>
+        <div className="flex gap-2">
+          <div className="flex flex-col gap-2">
+            <Label>Latitud</Label>
+            <Input
+              type="number"
+              placeholder="latitud"
+              {...register("latitud")}
+              /* disabled={loading} */
+            />
+            <span className="text-sm text-red-600">
+              {errors.latitud?.message}
+            </span>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label>Longitud</Label>
+            <Input
+              type="number"
+              placeholder="longitud"
+              {...register("longitud")}
+              /* disabled={loading} */
+            />
+            <span className="text-sm text-red-600">
+              {errors.longitud?.message}
+            </span>
+          </div>
         </div>
 
         <div className="flex flex-col gap-2">
@@ -435,50 +436,55 @@ export function ChangeBarberShopDialog({
                     {errors.horarioPorDia?.[index]?.dia?.message}
                   </small>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <Label>Horario de apertura</Label>
-                  <Input
-                    placeholder="Ingrese una hora entre 00:00 y 23:59"
-                    defaultValue={hour.hora_apertura}
-                    type="text"
-                    {...register(`horarioPorDia.${index}.hora_apertura`)}
-                  />
-                  <small className="font-bold text-red-500">
-                    {errors.horarioPorDia?.[index]?.hora_apertura?.message}
-                  </small>
+                <div className="flex gap-2">
+                  <div className="flex flex-col gap-2 w-full">
+                    <Label>Horario de apertura</Label>
+                    <Input
+                      placeholder="Ingrese una hora entre 00:00 y 23:59"
+                      defaultValue={hour.hora_apertura}
+                      type="text"
+                      {...register(`horarioPorDia.${index}.hora_apertura`)}
+                    />
+                    <small className="font-bold text-red-500">
+                      {errors.horarioPorDia?.[index]?.hora_apertura?.message}
+                    </small>
+                  </div>
+                  <div className="flex flex-col gap-2 w-full">
+                    <Label>Horario de cierre</Label>
+                    <Input
+                      placeholder="Ingrese una hora entre 00:00 y 23:59"
+                      type="text"
+                      {...register(`horarioPorDia.${index}.hora_cierre`)}
+                    />
+                    <small className="font-bold text-red-500">
+                      {errors.horarioPorDia?.[index]?.hora_cierre?.message}
+                    </small>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <Label>Horario de cierre</Label>
-                  <Input
-                    placeholder="Ingrese una hora entre 00:00 y 23:59"
-                    type="text"
-                    {...register(`horarioPorDia.${index}.hora_cierre`)}
-                  />
-                  <small className="font-bold text-red-500">
-                    {errors.horarioPorDia?.[index]?.hora_cierre?.message}
-                  </small>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Label>Inicio del descanso</Label>
-                  <Input
-                    placeholder="Ingrese una hora entre 00:00 y 23:59"
-                    type="text"
-                    {...register(`horarioPorDia.${index}.pausa_inicio`)}
-                  />
-                  <small className="font-bold text-red-500">
-                    {errors.horarioPorDia?.[index]?.pausa_inicio?.message}
-                  </small>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Label>Inicio del descanso</Label>
-                  <Input
-                    placeholder="Ingrese una hora entre 00:00 y 23:59"
-                    type="text"
-                    {...register(`horarioPorDia.${index}.pausa_fin`)}
-                  />
-                  <small className="font-bold text-red-500">
-                    {errors.horarioPorDia?.[index]?.pausa_fin?.message}
-                  </small>
+
+                <div className="flex gap-2">
+                  <div className="flex flex-col gap-2 w-full">
+                    <Label>Inicio del descanso</Label>
+                    <Input
+                      placeholder="Ingrese una hora entre 00:00 y 23:59"
+                      type="text"
+                      {...register(`horarioPorDia.${index}.pausa_inicio`)}
+                    />
+                    <small className="font-bold text-red-500">
+                      {errors.horarioPorDia?.[index]?.pausa_inicio?.message}
+                    </small>
+                  </div>
+                  <div className="flex flex-col gap-2 w-full">
+                    <Label>Inicio del descanso</Label>
+                    <Input
+                      placeholder="Ingrese una hora entre 00:00 y 23:59"
+                      type="text"
+                      {...register(`horarioPorDia.${index}.pausa_fin`)}
+                    />
+                    <small className="font-bold text-red-500">
+                      {errors.horarioPorDia?.[index]?.pausa_fin?.message}
+                    </small>
+                  </div>
                 </div>
               </div>
             )
@@ -489,17 +495,19 @@ export function ChangeBarberShopDialog({
             <Icon icon="material-symbols:add" width="18" height="18" />
             Agregar un horario
           </Button>
-          <Button
-            variant="simple"
-            type="button"
-            onClick={() => {
-              if (hours != undefined && hours.length > 1)
-                return handleRemoveHour(hours?.length - 1)
-            }}
-          >
-            <Icon icon="mdi:trash-outline" width="18" height="18" />
-            Quitar el ultimo horaio
-          </Button>
+          {hours != undefined && hours.length > 1 && (
+            <Button
+              variant="simple"
+              type="button"
+              onClick={() => {
+                if (hours != undefined && hours.length > 1)
+                  return handleRemoveHour(hours?.length - 1)
+              }}
+            >
+              <Icon icon="mdi:trash-outline" width="18" height="18" />
+              Quitar el ultimo horaio
+            </Button>
+          )}
         </div>
 
         <Button variant="simple" type="submit">
