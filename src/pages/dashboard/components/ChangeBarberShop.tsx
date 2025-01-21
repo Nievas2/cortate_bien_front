@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { barberSchema } from "@/utils/schemas/barberSchema"
@@ -232,6 +232,28 @@ export function ChangeBarberShopDialog({
     }
   }
   console.log(errors)
+  const [position, setPosition] = useState({
+    lat: 0,
+    lng: 0,
+  })
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setValue("latitud", position.coords.latitude.toString())
+        setValue("longitud", position.coords.longitude.toString())
+        setPosition({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        })
+      },
+      (error) => {
+        setError(error.message || "Error al obtener la ubicación")
+      },
+      { enableHighAccuracy: true }
+    )
+  }, [])
 
   return (
     <form
@@ -271,8 +293,14 @@ export function ChangeBarberShopDialog({
               {errors.descripcion?.message}
             </span>
           </div>
-
-          <MapSelector setValue={setValue} />
+          {position.lat != 0 && <MapSelector position={position} />}
+          {error && (
+            <div className="text-red-500 text-sm">
+              Si no desea que la app use su ubicación o en los campos siguientes
+              aparecen valores en 0, debera ingresar la longitud y latitud
+              manualmente.
+            </div>
+          )}
 
           <div className="flex gap-2">
             <div className="flex flex-col gap-2 w-full">
