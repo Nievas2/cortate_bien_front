@@ -27,7 +27,6 @@ const RegisterPage = () => {
     handleSubmit,
     formState: { errors },
     setValue,
-    getValues,
   } = useForm({
     defaultValues: {
       nombre: "",
