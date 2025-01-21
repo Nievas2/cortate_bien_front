@@ -3,7 +3,7 @@ import Layout from "./Layout"
 const AdminsPage = () => {
   return (
     <Layout>
-        as
+        Algun dia habra algo acá, por ahora no hay nada
     </Layout>
   )
 }

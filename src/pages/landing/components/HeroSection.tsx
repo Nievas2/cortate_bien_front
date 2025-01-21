@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom"
 
 const HeroSection = () => {
   return (
@@ -13,8 +14,12 @@ const HeroSection = () => {
         </p>
       </div>
       <div className="flex gap-4 items-center justify-center">
-        <Button variant="simple">Comenzar ahora</Button>
-        <Button variant="secondary">Ver demo</Button>
+        <Link to="/prices">
+          <Button variant="simple">Ver los precios</Button>
+        </Link>
+        <Link to="/auth/registrarse">
+          <Button variant="secondary">Registrarse</Button>
+        </Link>
       </div>
     </section>
   )

@@ -15,6 +15,7 @@ import { ProtectedRoute } from "./components/shared/ProtectedRoute"
 import AdminsPage from "./pages/admins/AdminsPage"
 import { ProtectedAdminRoute } from "./components/shared/ProtectedAdminRoute"
 import DisabledBarberiesPage from "./pages/admins/disabledBarberies/DisabledBarberiesPage"
+import PricesPage from "./pages/prices/PricesPage"
 function App() {
   const location = useLocation()
   const { authUser } = useAuthContext()
@@ -29,14 +30,22 @@ function App() {
             <Route path="/" element={<LandingPage />} />
 
             <Route
+              path="/prices"
+              element={authUser ? <PricesPage /> : <Navigate to="/login" />}
+            />
+
+            <Route
               path="/auth/iniciar-sesion"
               element={authUser ? <Navigate to="/" /> : <LoginPage />}
             />
+
             <Route path="/auth/auth" element={<AuthPage />} />
+
             <Route
               path="/auth/registrarse"
               element={authUser ? <Navigate to="/" /> : <RegisterPage />}
             />
+
             {/* Dashboard barbers */}
             <Route
               path="/dashboard"

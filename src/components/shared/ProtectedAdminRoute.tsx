@@ -6,7 +6,7 @@ export const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ c
   const { authUser } = useAuthContext();
 
   if (authUser?.user.rol === "USER") {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;

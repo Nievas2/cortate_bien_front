@@ -15,9 +15,20 @@ const DisabledBarberiesPage = () => {
   return (
     <Layout>
       <section className="flex flex-wrap ">
-        {data?.data.results.map((barbery: any) => (
-          <CardBarberyDisabled key={barbery.id} barbery={barbery} />
-        ))}
+        {
+          // @ts-ignore
+          data?.data.results.length === 0 ? (
+            <span className="text-center w-full">
+              No hay barberias deshabilitadas
+            </span>
+          ) : (
+            <>
+              {data?.data.results.map((barbery: any) => (
+                <CardBarberyDisabled key={barbery.id} barbery={barbery} />
+              ))}
+            </>
+          )
+        }
       </section>
     </Layout>
   )

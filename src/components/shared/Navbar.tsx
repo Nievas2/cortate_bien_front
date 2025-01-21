@@ -75,6 +75,12 @@ const Navbar = () => {
                   />
 
                   <NavbarItemDestock
+                    location="/prices"
+                    pathname={pathname}
+                    name="Precios"
+                  />
+
+                  <NavbarItemDestock
                     location="/dashboard"
                     pathname={pathname}
                     name="Dashboard"
@@ -160,6 +166,13 @@ const Navbar = () => {
                 <NavbarItemMobile
                   name="Inicio"
                   location="/"
+                  pathname={pathname}
+                  setOpen={setOpen}
+                />
+
+                <NavbarItemMobile
+                  name="Precios"
+                  location="/prices"
                   pathname={pathname}
                   setOpen={setOpen}
                 />

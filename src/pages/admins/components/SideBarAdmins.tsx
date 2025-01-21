@@ -33,13 +33,8 @@ const SideBarAdmins = ({ open }: { open: boolean }) => {
           open ? "flex" : "hidden"
         }`}
       >
-        <Icon
-          icon="radix-icons:scissors"
-          height={30}
-          width={30}
-          color="white"
-        />
-        <span className="font-semibold">Cortate bien</span>
+        <Icon className="text-white" icon="mdi:emoji-cool-outline" width="30" height="30" />
+        <span className="font-semibold">Los admins</span>
       </div>
 
       <div
