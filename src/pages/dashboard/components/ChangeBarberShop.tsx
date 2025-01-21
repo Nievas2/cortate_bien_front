@@ -32,6 +32,7 @@ import { Barber } from "@/interfaces/Barber"
 import { Link } from "react-router-dom"
 import StateSelect from "./StateSelect"
 import CitySelect from "./CitySelect"
+import MapSelector from "@/hooks/dashboard/MapSelector"
 interface ChangeBarberShopProps {
   Barbers?: Barber[]
   refetch: Function
@@ -270,6 +271,8 @@ export function ChangeBarberShopDialog({
               {errors.descripcion?.message}
             </span>
           </div>
+
+          <MapSelector />
 
           <div className="flex gap-2">
             <div className="flex flex-col gap-2">
