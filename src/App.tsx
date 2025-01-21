@@ -11,6 +11,7 @@ import DashboardPage from "./pages/dashboard/DashboardPage"
 import AppointmentsPage from "./pages/dashboard/appointment/AppointmentsPage"
 import ReviewsPage from "./pages/dashboard/review/ReviewsPage"
 import BarberPage from "./pages/dashboard/barber/BarberPage"
+import { ProtectedRoute } from "./components/shared/ProtectedRoute"
 function App() {
   const location = useLocation()
   const { authUser } = useAuthContext()
@@ -37,30 +38,37 @@ function App() {
             <Route
               path="/dashboard"
               element={
-                /*  <ProtectedRoute>
-                </ProtectedRoute> */
-                <DashboardPage />
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/dashboard/barber"
               element={
-                /*  <ProtectedRoute>
-                </ProtectedRoute> */
-                <BarberPage />
+                <ProtectedRoute>
+                  <BarberPage />
+                </ProtectedRoute>
               }
             />
 
             <Route
               path="/dashboard/barber/appointments"
-              element={<AppointmentsPage />}
+              element={
+                <ProtectedRoute>
+                  <AppointmentsPage />
+                </ProtectedRoute>
+              }
             />
-            {/* <ProtectedRoute>
-                </ProtectedRoute> */}
-            {/* <ProtectedRoute>
-              </ProtectedRoute> */}
-            <Route path="/dashboard/barber/reviews" element={<ReviewsPage />} />
+            <Route
+              path="/dashboard/barber/reviews"
+              element={
+                <ProtectedRoute>
+                  <ReviewsPage />
+                </ProtectedRoute>
+              }
+            />
 
             <Route path="/404" element={<NotFoundPage />} />
             <Route path="/*" element={<Navigate to="/404" replace />} />

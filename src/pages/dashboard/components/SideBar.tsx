@@ -41,7 +41,7 @@ const SideBar = ({
       href: `/dashboard/barber/reviews?id=${barber?.id}`,
     },
   ]
-  console.log(pathname)
+  console.log(barber)
 
   return (
     <aside
@@ -110,7 +110,7 @@ const SideBar = ({
         <p className="mx-1 mb-0 text-center text-xs">{barber?.nombre}</p>
       </div>
       {/* Footer */}
-      {barber != undefined && (
+      {barber != undefined ? (
         <div
           className={`${
             open ? "flex flex-col w-full gap-2" : "hidden"
@@ -144,6 +144,8 @@ const SideBar = ({
             <Icon icon="tabler:logout" width={20} height={20} /> Cerrar sesion
           </Button>
         </div>
+      ) : (
+        <small className="font-bold text-xs text-red-500 p-1">Su barberia no ha sido aceptada aun por un administrador</small>
       )}
     </aside>
   )

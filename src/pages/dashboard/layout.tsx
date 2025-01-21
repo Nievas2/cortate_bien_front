@@ -1,36 +1,34 @@
 import { Button } from "@/components/ui/button"
 import SideBar from "./components/SideBar"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Icon } from "@iconify/react/dist/iconify.js"
-import { useQuery } from "@tanstack/react-query"
 import { getBarberById } from "@/services/BarberService"
 import { useLocation } from "react-router-dom"
 
-const Layout = ({
-  children,
-}: {
-  children: React.ReactNode
-}) => {
-  
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  const [barbery, setBarbery] = useState()
   const [open, setOpen] = useState(true)
   const { search } = useLocation()
   const id = search.split("=")[1]
 
+  async function getBarbery() {
+    try {
+      const res = await getBarberById(id)
+      setBarbery(res.data)
+      return res
+    } catch (error) {
+      throw error
+    }
+  }
 
-
-  const { data } = useQuery({
-    queryKey: ["getbarberbyid"],
-    queryFn: () => getBarberById(id),
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 60 * 24,
-  })
-  console.log(data?.data);
-  
+  useEffect(() => {
+    getBarbery()
+  }, [])
 
   return (
     <div className="flex relative w-full">
       <div>
-        <SideBar open={open} setOpen={setOpen} barber={data?.data} />
+        <SideBar open={open} setOpen={setOpen} barber={barbery} />
       </div>
       <div className="relative">
         <Button

@@ -29,14 +29,15 @@ import CountrySelect from "./CountrySelect"
 import { Hour } from "@/interfaces/Hour"
 import { createbarber, updateBarber } from "@/services/BarberService"
 import { Barber } from "@/interfaces/Barber"
-/* import { Link } from "react-router-dom" */
+import { Link } from "react-router-dom"
 import StateSelect from "./StateSelect"
 import CitySelect from "./CitySelect"
 interface ChangeBarberShopProps {
   barbers?: Barber[]
+  refetch: Function
 }
 
-const ChangeBarberShop = ({ barbers }: ChangeBarberShopProps) => {
+const ChangeBarberShop = ({ barbers, refetch }: ChangeBarberShopProps) => {
   return (
     <section className="flex flex-wrap items-center justify-center gap-8 w-full">
       {barbers != undefined && (
@@ -79,12 +80,12 @@ const ChangeBarberShop = ({ barbers }: ChangeBarberShopProps) => {
                 className="absolute w-full h-full rounded-xl"
                 alt="imagen not found"
               />
-              <a
-                href={`/dashboard/barber?id=${barber.id}`}
+              <Link
+                to={`/dashboard/barber?id=${barber.id}`}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               >
                 <Button variant="secondary">{barber.nombre}</Button>
-              </a>
+              </Link>
             </div>
           ))}
         </>
@@ -103,7 +104,7 @@ const ChangeBarberShop = ({ barbers }: ChangeBarberShopProps) => {
           <DialogHeader>
             <DialogTitle>Agregar una barberia</DialogTitle>
           </DialogHeader>
-          <ChangeBarberShopDialog />
+          <ChangeBarberShopDialog refetch={refetch} />
         </DialogContent>
       </Dialog>
     </section>
@@ -113,10 +114,12 @@ export default ChangeBarberShop
 
 interface ChangeBarberShopDialogProps {
   barber?: Barber
+  refetch?: Function
 }
 
 export function ChangeBarberShopDialog({
   barber,
+  refetch,
 }: ChangeBarberShopDialogProps) {
   const [countryId, setCountryId] = useState<undefined | number>()
   const [stateId, setStateId] = useState<undefined | number>()
@@ -140,14 +143,21 @@ export function ChangeBarberShopDialog({
     staleTime: 1000 * 60 * 60 * 24,
   })
 
-  const { mutate, isSuccess } = useMutation({
+  const { mutate, isSuccess, isPending } = useMutation({
     mutationKey: ["create-barber"],
     mutationFn: (values: any) => {
       return createbarber(values)
     },
+    onSuccess: () => {
+      if (refetch) return refetch()
+    },
   })
 
-  const { mutate: update, isSuccess: isSuccessUpdate } = useMutation({
+  const {
+    mutate: update,
+    isSuccess: isSuccessUpdate,
+    isPending: isPendingUpdate,
+  } = useMutation({
     mutationKey: ["update-barber"],
     mutationFn: (values: any) => {
       if (barber != undefined) {
@@ -241,7 +251,7 @@ export function ChangeBarberShopDialog({
               type="text"
               placeholder="Ingrese su nombre"
               {...register("nombre")}
-              /* disabled={loading} */
+              disabled={isPending || isPendingUpdate}
             />
             <span className="text-sm text-red-600">
               {errors.nombre?.message}
@@ -254,7 +264,7 @@ export function ChangeBarberShopDialog({
               placeholder="Ingrese una descripcion"
               {...register("descripcion")}
               rows={4}
-              /* disabled={loading} */
+              disabled={isPending || isPendingUpdate}
             />
             <span className="text-sm text-red-600">
               {errors.descripcion?.message}
@@ -268,19 +278,20 @@ export function ChangeBarberShopDialog({
                 type="number"
                 placeholder="latitud"
                 {...register("latitud")}
-                /* disabled={loading} */
+                disabled={isPending || isPendingUpdate}
               />
               <span className="text-sm text-red-600">
                 {errors.latitud?.message}
               </span>
             </div>
+
             <div className="flex flex-col gap-2">
               <Label>Longitud</Label>
               <Input
                 type="number"
                 placeholder="longitud"
                 {...register("longitud")}
-                /* disabled={loading} */
+                disabled={isPending || isPendingUpdate}
               />
               <span className="text-sm text-red-600">
                 {errors.longitud?.message}
@@ -294,7 +305,7 @@ export function ChangeBarberShopDialog({
               type="text"
               placeholder="Ingrese su direccion"
               {...register("direccion")}
-              /* disabled={loading} */
+              disabled={isPending || isPendingUpdate}
             />
             <span className="text-sm text-red-600">
               {errors.direccion?.message}
@@ -307,7 +318,7 @@ export function ChangeBarberShopDialog({
               type="number"
               placeholder="Ingrese una cantidad de minutos por turno"
               {...register("cantidadDeMinutosPorTurno")}
-              /* disabled={loading} */
+              disabled={isPending || isPendingUpdate}
             />
             <span className="text-sm text-red-600">
               {errors.cantidadDeMinutosPorTurno?.message}
@@ -365,7 +376,7 @@ export function ChangeBarberShopDialog({
               type="text"
               placeholder="Imagen de foto de perfil"
               {...register("imagen_perfil")}
-              /* disabled={loading} */
+              disabled={isPending || isPendingUpdate}
             />
             <span className="text-sm text-red-600">
               {errors.imagen_perfil?.message}
@@ -388,7 +399,12 @@ export function ChangeBarberShopDialog({
           ))}
 
           <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-between w-full gap-4">
-            <Button type="button" variant="secondary" onClick={handleAddImages}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleAddImages}
+              disabled={isPending || isPendingUpdate}
+            >
               <Icon icon="material-symbols:add" width="18" height="18" />
               Agregar una imagen
             </Button>
@@ -399,6 +415,7 @@ export function ChangeBarberShopDialog({
                 if (images.length > 1)
                   return handleRemoveImages(images.length - 1)
               }}
+              disabled={isPending || isPendingUpdate}
             >
               <Icon icon="mdi:trash-outline" width="18" height="18" />
               Quitar la ultima imagen
@@ -432,6 +449,7 @@ export function ChangeBarberShopDialog({
                         setHours(updatedHours) // Actualizar el estado con el nuevo array
                       }}
                       value={hour.dia}
+                      disabled={isPending || isPendingUpdate}
                     >
                       <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Selecciona un día" />
@@ -458,6 +476,7 @@ export function ChangeBarberShopDialog({
                         defaultValue={hour.hora_apertura}
                         type="text"
                         {...register(`horarios.${index}.hora_apertura`)}
+                        disabled={isPending || isPendingUpdate}
                       />
                       <small className="font-bold text-red-500">
                         {errors.horarios?.[index]?.hora_apertura?.message}
@@ -468,6 +487,7 @@ export function ChangeBarberShopDialog({
                       <Input
                         placeholder="Una hora entre 00:00 y 23:59"
                         type="text"
+                        disabled={isPending || isPendingUpdate}
                         {...register(`horarios.${index}.hora_cierre`)}
                       />
                       <small className="font-bold text-red-500">
@@ -482,17 +502,20 @@ export function ChangeBarberShopDialog({
                       <Input
                         placeholder="Una hora entre 00:00 y 23:59"
                         type="text"
+                        disabled={isPending || isPendingUpdate}
                         {...register(`horarios.${index}.pausa_inicio`)}
                       />
                       <small className="font-bold text-red-500">
                         {errors.horarios?.[index]?.pausa_inicio?.message}
                       </small>
                     </div>
+
                     <div className="flex flex-col gap-2 w-full">
                       <Label>Inicio del descanso</Label>
                       <Input
                         placeholder="Una hora entre 00:00 y 23:59"
                         type="text"
+                        disabled={isPending || isPendingUpdate}
                         {...register(`horarios.${index}.pausa_fin`)}
                       />
                       <small className="font-bold text-red-500">
@@ -505,7 +528,12 @@ export function ChangeBarberShopDialog({
             )}
 
           <div className="flex sm:flex-row sm:justify-between flex-col justify-center gap-2">
-            <Button variant="secondary" type="button" onClick={handleAddHour}>
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={handleAddHour}
+              disabled={isPending || isPendingUpdate}
+            >
               <Icon icon="material-symbols:add" width="18" height="18" />
               Agregar un horario
             </Button>
@@ -517,6 +545,7 @@ export function ChangeBarberShopDialog({
                   if (hours != undefined && hours.length > 1)
                     return handleRemoveHour(hours?.length - 1)
                 }}
+                disabled={isPending || isPendingUpdate}
               >
                 <Icon icon="mdi:trash-outline" width="18" height="18" />
                 Quitar el ultimo horaio
@@ -524,7 +553,11 @@ export function ChangeBarberShopDialog({
             )}
           </div>
 
-          <Button variant="simple" type="submit">
+          <Button
+            variant="simple"
+            type="submit"
+            disabled={isPending || isPendingUpdate}
+          >
             Agregar barberia
           </Button>
         </div>
