@@ -1,13 +1,13 @@
-import { MapContainer, TileLayer, Marker } from "react-leaflet"
-import "leaflet/dist/leaflet.css"
-import IconMarker from "@/components/IconMarker"
+import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import IconMarker from "@/components/IconMarker";
 
 const MapSelector = ({
   position,
 }: {
-  position: { lat: number; lng: number }
+  position: { lat: number; lng: number };
 }) => {
-  console.log(position)
+  console.log(position);
 
   return (
     <div>
@@ -20,14 +20,24 @@ const MapSelector = ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
         />
-        {position && <Pointer position={position} />}
+        <Pointer position={position} />
+        <UpdateView position={position} />
       </MapContainer>
     </div>
-  )
+  );
+};
+
+export default MapSelector;
+
+function Pointer({ position }: { position: { lat: number; lng: number } }) {
+  return <Marker position={position} icon={IconMarker}></Marker>;
 }
 
-export default MapSelector
+function UpdateView({ position }: { position: { lat: number; lng: number } }) {
+  const map = useMap();
 
-function Pointer({ position }: any) {
-  return <Marker position={position} icon={IconMarker}></Marker>
+  // Actualiza la vista cuando la posición cambie
+  map.setView([position.lat, position.lng], map.getZoom());
+
+  return null;
 }

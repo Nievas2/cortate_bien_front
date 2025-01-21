@@ -293,7 +293,9 @@ export function ChangeBarberShopDialog({
               {errors.descripcion?.message}
             </span>
           </div>
+
           {position.lat != 0 && <MapSelector position={position} />}
+
           {error && (
             <div className="text-red-500 text-sm">
               Si no desea que la app use su ubicación o en los campos siguientes
@@ -308,7 +310,23 @@ export function ChangeBarberShopDialog({
               <Input
                 type="number"
                 placeholder="latitud"
-                {...register("latitud")}
+                value={position.lat || ""}
+                onChange={(e) => {
+                  const value = e.target.value
+                  const parsedValue = parseFloat(value)
+
+                  if (!isNaN(parsedValue)) {
+                    setValue("latitud", value)
+                    setPosition({
+                      ...position,
+                      lat: parsedValue,
+                    })
+                  } else if (value === "") {
+                    // Manejar campo vacío
+                    setValue("latitud", "")
+                    setPosition((prev) => ({ ...prev, lat: 0 })) // O usa un valor por defecto válido
+                  }
+                }}
                 disabled={isPending || isPendingUpdate}
               />
               <span className="text-sm text-red-600">
@@ -321,7 +339,23 @@ export function ChangeBarberShopDialog({
               <Input
                 type="number"
                 placeholder="longitud"
-                {...register("longitud")}
+                value={position.lng || ""}
+                onChange={(e) => {
+                  const value = e.target.value
+                  const parsedValue = parseFloat(value)
+
+                  if (!isNaN(parsedValue)) {
+                    setValue("longitud", value)
+                    setPosition({
+                      ...position,
+                      lng: parsedValue,
+                    })
+                  } else if (value === "") {
+                    // Manejar campo vacío
+                    setValue("longitud", "")
+                    setPosition((prev) => ({ ...prev, lng: 0 })) // O usa un valor por defecto válido
+                  }
+                }}
                 disabled={isPending || isPendingUpdate}
               />
               <span className="text-sm text-red-600">
