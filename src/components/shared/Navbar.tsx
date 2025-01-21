@@ -79,6 +79,13 @@ const Navbar = () => {
                     pathname={pathname}
                     name="Dashboard"
                   />
+
+                  <NavbarItemDestock
+                    location="/admins/dashboard"
+                    pathname={pathname}
+                    name="Admin dashboard"
+                  />
+
                   {/* User session */}
                   {authUser != null ? (
                     <>
@@ -158,8 +165,15 @@ const Navbar = () => {
                 />
 
                 <NavbarItemMobile
-                  name="test"
-                  location="/test"
+                  name="Dashboard"
+                  location="/dashboard"
+                  pathname={pathname}
+                  setOpen={setOpen}
+                />
+
+                <NavbarItemMobile
+                  name="Admin dashboard"
+                  location="/admins/dashboard"
                   pathname={pathname}
                   setOpen={setOpen}
                 />

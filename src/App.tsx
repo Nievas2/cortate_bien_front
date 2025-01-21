@@ -12,6 +12,9 @@ import AppointmentsPage from "./pages/dashboard/appointment/AppointmentsPage"
 import ReviewsPage from "./pages/dashboard/review/ReviewsPage"
 import BarberPage from "./pages/dashboard/barber/BarberPage"
 import { ProtectedRoute } from "./components/shared/ProtectedRoute"
+import AdminsPage from "./pages/admins/AdminsPage"
+import { ProtectedAdminRoute } from "./components/shared/ProtectedAdminRoute"
+import DisabledBarberiesPage from "./pages/admins/disabledBarberies/DisabledBarberiesPage"
 function App() {
   const location = useLocation()
   const { authUser } = useAuthContext()
@@ -34,7 +37,7 @@ function App() {
               path="/auth/registrarse"
               element={authUser ? <Navigate to="/" /> : <RegisterPage />}
             />
-
+            {/* Dashboard barbers */}
             <Route
               path="/dashboard"
               element={
@@ -67,6 +70,24 @@ function App() {
                 <ProtectedRoute>
                   <ReviewsPage />
                 </ProtectedRoute>
+              }
+            />
+            {/* Dashboard Admins */}
+            <Route
+              path="admins/dashboard"
+              element={
+                <ProtectedAdminRoute>
+                  <AdminsPage />
+                </ProtectedAdminRoute>
+              }
+            />
+
+            <Route
+              path="admins/dashboard/barberies/disabled"
+              element={
+                <ProtectedAdminRoute>
+                  <DisabledBarberiesPage />
+                </ProtectedAdminRoute>
               }
             />
 

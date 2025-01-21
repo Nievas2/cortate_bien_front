@@ -15,10 +15,7 @@ const DashboardPage = () => {
 
   async function getBarbers() {
     if (authUser != undefined) {
-      console.log(authUser)
-
       const res = await getBarbersById(authUser.user.sub)
-
       return res
     }
   }

@@ -56,10 +56,7 @@ export async function updateBarber(
 
   try {
     // Enviar solo los campos modificados a la API
-    const res = await axiosInstance.put(
-      `barberia/update/${id}`,
-      updatedFields
-    )
+    const res = await axiosInstance.put(`barberia/update/${id}`, updatedFields)
     return res
   } catch (error) {
     throw error
@@ -78,7 +75,7 @@ function getUpdatedFields(original: Barber, updated: Barber): Partial<Barber> {
       // Comparar valores (considera arrays, objetos, y valores simples)
       if (Array.isArray(originalValue) && Array.isArray(updatedValue)) {
         if (JSON.stringify(originalValue) !== JSON.stringify(updatedValue)) {
-          (updatedFields as any)[key] = updatedValue
+          ;(updatedFields as any)[key] = updatedValue
         }
       } else if (originalValue !== updatedValue) {
         updatedFields[key as keyof Barber] = updatedValue
@@ -96,6 +93,24 @@ export async function getBarbersById(id: string) {
     const res = await axiosInstance.get(`barberia/find/all/barbero/${id}`)
     console.log(res)
 
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function getbarberiesDisabled() {
+  try {
+    const res = await axiosInstance.get("barberia/find/all/disabled")
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function activeBarbery(id: string) {
+  try {
+    const res = await axiosInstance.patch(`barberia/active/${id}`)
     return res
   } catch (error) {
     throw error
