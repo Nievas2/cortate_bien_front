@@ -272,10 +272,10 @@ export function ChangeBarberShopDialog({
             </span>
           </div>
 
-          <MapSelector />
+          <MapSelector setValue={setValue} />
 
           <div className="flex gap-2">
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 w-full">
               <Label>Latitud</Label>
               <Input
                 type="number"
@@ -288,7 +288,7 @@ export function ChangeBarberShopDialog({
               </span>
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 w-full">
               <Label>Longitud</Label>
               <Input
                 type="number"
