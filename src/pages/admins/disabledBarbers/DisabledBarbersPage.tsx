@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
 import Layout from "../Layout"
-import { getbarberiesDisabled } from "@/services/BarberService"
+import { getBarbersDisabled } from "@/services/BarberService"
 import CardBarberyDisabled from "./components/CardBarberyDisabled"
 
-const DisabledBarberiesPage = () => {
+const DisabledBarbersPage = () => {
   const { data } = useQuery({
-    queryKey: ["disabledBarberies"],
-    queryFn: getbarberiesDisabled,
+    queryKey: ["disabledBarbers"],
+    queryFn: getBarbersDisabled,
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
   })
@@ -33,4 +33,4 @@ const DisabledBarberiesPage = () => {
     </Layout>
   )
 }
-export default DisabledBarberiesPage
+export default DisabledBarbersPage

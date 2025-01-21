@@ -99,7 +99,7 @@ export async function getBarbersById(id: string) {
   }
 }
 
-export async function getbarberiesDisabled() {
+export async function getBarbersDisabled() {
   try {
     const res = await axiosInstance.get("barberia/find/all/disabled")
     return res

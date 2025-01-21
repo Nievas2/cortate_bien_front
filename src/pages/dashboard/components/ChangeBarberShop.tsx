@@ -33,16 +33,16 @@ import { Link } from "react-router-dom"
 import StateSelect from "./StateSelect"
 import CitySelect from "./CitySelect"
 interface ChangeBarberShopProps {
-  barbers?: Barber[]
+  Barbers?: Barber[]
   refetch: Function
 }
 
-const ChangeBarberShop = ({ barbers, refetch }: ChangeBarberShopProps) => {
+const ChangeBarberShop = ({ Barbers, refetch }: ChangeBarberShopProps) => {
   return (
     <section className="flex flex-wrap items-center justify-center gap-8 w-full">
-      {barbers != undefined && (
+      {Barbers != undefined && (
         <>
-          {barbers?.map((barber) => (
+          {Barbers?.map((barber) => (
             <div
               className="flex flex-col items-center justify-center rounded-xl border border-blue-main group-hover:bg-blue-main/80 group-hover:text-white relative group size-48"
               key={barber.id}

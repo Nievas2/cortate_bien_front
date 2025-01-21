@@ -16,7 +16,7 @@ const SideBarAdmins = ({ open }: { open: boolean }) => {
     {
       name: "Barberias disabled",
       icon: "tabler:home",
-      href: `/admins/dashboard/barberies/disabled`,
+      href: `/admins/dashboard/Barbers/disabled`,
     },
   ]
 

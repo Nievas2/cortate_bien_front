@@ -20,6 +20,6 @@ const DashboardPage = () => {
     }
   }
 
-  return <ChangeBarberShop refetch={refetch} barbers={data?.data} />
+  return <ChangeBarberShop refetch={refetch} Barbers={data?.data} />
 }
 export default DashboardPage
