@@ -74,7 +74,7 @@ const Navbar = () => {
                     name="Inicio"
                   />
 
-<NavbarItemDestock
+                  <NavbarItemDestock
                     location="/barbers"
                     pathname={pathname}
                     name="Barberias"
@@ -95,7 +95,7 @@ const Navbar = () => {
                   <NavbarItemDestock
                     location="/admins/dashboard"
                     pathname={pathname}
-                    name="Admin dashboard"
+                    name="Admins"
                   />
 
                   {/* User session */}
