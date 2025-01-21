@@ -35,7 +35,8 @@ function App() {
               element={authUser ? <PricesPage /> : <Navigate to="/login" />}
             />
 
-            <Route path="/prices" element={<BarbersPage />} />
+
+            <Route path="/barbers" element={<BarbersPage />} />
 
             <Route
               path="/auth/iniciar-sesion"

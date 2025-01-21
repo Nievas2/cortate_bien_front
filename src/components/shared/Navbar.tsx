@@ -75,7 +75,7 @@ const Navbar = () => {
                   />
 
 <NavbarItemDestock
-                    location="/Barbers"
+                    location="/barbers"
                     pathname={pathname}
                     name="Barberias"
                   />

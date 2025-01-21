@@ -1,14 +1,8 @@
 import React from "react";
 import { Icon } from '@iconify/react';
+import { PaginationProps } from "../dashboard/Pagination";
 
-export interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  disabled: boolean
-}
-
-export const Pagination: React.FC<PaginationProps> = ({
+export const PaginationBarbers: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
