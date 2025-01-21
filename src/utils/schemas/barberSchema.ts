@@ -105,5 +105,5 @@ export const barberSchema = z.object({
     .nonempty("La imagen de perfil es requerida")
     .url("La imagen de perfil debe ser una url")
     .startsWith("https://", { message: "Debe utilizar el protocolo https://" }),
-  horarioPorDia: z.array(horarioSchema),
+  horarios: z.array(horarioSchema),
 })

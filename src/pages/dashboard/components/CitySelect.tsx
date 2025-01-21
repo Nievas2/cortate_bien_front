@@ -27,7 +27,7 @@ const CitySelect = ({
       <Select
         id="city"
         options={options}
-        onChange={(e) => {
+        onChange={(e: { id: number } | null) => {
           if (e != null) return onChange(e.id)
         }}
         placeholder="Seleccione una ciudad"

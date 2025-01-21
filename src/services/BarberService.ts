@@ -11,7 +11,7 @@ export async function getBarberById(id: string) {
 }
 
 export async function createbarber(barber: any) {
-  barber.horarioPorDia.forEach((element: any) => {
+  barber.horarios.forEach((element: any) => {
     console.log(element.pausa_inicio.length)
 
     if (element.pausa_inicio.length === 0) element.pausa_inicio = null
@@ -30,7 +30,7 @@ export async function createbarber(barber: any) {
       ciudad_id: barber.ciudad_id,
       imagenes: barber.imagenes,
       imagen_perfil: barber.imagen_perfil,
-      horarioPorDia: barber.horarioPorDia,
+      horarios: barber.horarios,
     })
     return res
   } catch (error) {
@@ -44,7 +44,7 @@ export async function updateBarber(
   barberUpdated: Barber
 ) {
   // Normalizar los campos del objeto actualizado
-  barberUpdated.horarioPorDia.forEach((element) => {
+  barberUpdated.horarios.forEach((element) => {
     if (element.pausa_inicio != null && element.pausa_inicio.length === 0)
       element.pausa_inicio = null
     if (element.pausa_fin != null && element.pausa_fin.length === 0)

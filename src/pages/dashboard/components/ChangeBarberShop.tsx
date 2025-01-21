@@ -28,8 +28,8 @@ import {
 import CountrySelect from "./CountrySelect"
 import { Hour } from "@/interfaces/Hour"
 import { createbarber, updateBarber } from "@/services/BarberService"
-import { Barber, Barber2 } from "@/interfaces/Barber"
-import { Link } from "react-router-dom"
+import { Barber } from "@/interfaces/Barber"
+/* import { Link } from "react-router-dom" */
 import StateSelect from "./StateSelect"
 import CitySelect from "./CitySelect"
 interface ChangeBarberShopProps {
@@ -79,12 +79,12 @@ const ChangeBarberShop = ({ barbers }: ChangeBarberShopProps) => {
                 className="absolute w-full h-full rounded-xl"
                 alt="imagen not found"
               />
-              <Link
-                to={`/dashboard/barber?id=${barber.id}`}
+              <a
+                href={`/dashboard/barber?id=${barber.id}`}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               >
                 <Button variant="secondary">{barber.nombre}</Button>
-              </Link>
+              </a>
             </div>
           ))}
         </>
@@ -112,7 +112,7 @@ const ChangeBarberShop = ({ barbers }: ChangeBarberShopProps) => {
 export default ChangeBarberShop
 
 interface ChangeBarberShopDialogProps {
-  barber?: Barber2
+  barber?: Barber
 }
 
 export function ChangeBarberShopDialog({
@@ -123,41 +123,35 @@ export function ChangeBarberShopDialog({
   const [images, setImages] = useState(
     barber?.imagenes ? barber?.imagenes : [""]
   )
+  if (barber != undefined) {
+    barber.horarios.forEach((element) => {
+      if (element.pausa_inicio == null) element.pausa_inicio = ""
+      if (element.pausa_fin == null) element.pausa_fin = ""
+    })
+  }
   const [hours, setHours] = useState<Hour[] | undefined>(
     barber?.horarios ? barber?.horarios : undefined
   )
-  const { data, isSuccess } = useQuery({
+
+  const { data, isSuccess: isSuccessCountries } = useQuery({
     queryKey: ["countries"],
     queryFn: getCountries,
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
   })
 
-  const { mutate } = useMutation({
+  const { mutate, isSuccess } = useMutation({
     mutationKey: ["create-barber"],
     mutationFn: (values: any) => {
       return createbarber(values)
     },
   })
 
-  const { mutate: update } = useMutation({
+  const { mutate: update, isSuccess: isSuccessUpdate } = useMutation({
     mutationKey: ["update-barber"],
     mutationFn: (values: any) => {
       if (barber != undefined) {
-        const barber2: Barber = {
-          id: barber.id,
-          nombre: barber.nombre,
-          descripcion: barber.descripcion,
-          latitud: barber.latitud,
-          longitud: barber.longitud,
-          direccion: barber.direccion,
-          cantidadDeMinutosPorTurno: barber.cantidadDeMinutosPorTurno,
-          ciudad_id: barber.ciudad_id,
-          imagenes: barber.imagenes,
-          imagen_perfil: barber.imagen_perfil,
-          horarioPorDia: barber.horarios,
-        }
-        return updateBarber(barber2, barber.id!, values)
+        return updateBarber(barber, barber.id!, values)
       }
       throw new Error("Barberia no encontrada")
     },
@@ -177,9 +171,9 @@ export function ChangeBarberShopDialog({
       direccion: barber?.direccion ? barber?.direccion : "",
       cantidadDeMinutosPorTurno: barber?.cantidadDeMinutosPorTurno
         ? barber?.cantidadDeMinutosPorTurno.toString()
-        : 30,
-      ciudad_id: barber?.ciudad_id ? barber?.ciudad_id : "",
-      horarioPorDia: hours,
+        : "30",
+      ciudad_id: barber?.ciudad_id ? barber?.ciudad_id.toString() : "",
+      horarios: hours,
       imagen_perfil: barber?.imagen_perfil ? barber?.imagen_perfil : "",
       imagenes: images,
     },
@@ -226,294 +220,315 @@ export function ChangeBarberShopDialog({
       setHours(newhours)
     }
   }
+  console.log(errors)
 
   return (
     <form
       className="flex flex-col w-full"
       onSubmit={handleSubmit(handleSubmitForm)}
     >
-      <div className="flex flex-col gap-3 w-full">
-        <div className="flex flex-col gap-2">
-          <Label>Nombre</Label>
-          <Input
-            type="text"
-            placeholder="nombre"
-            {...register("nombre")}
-            /* disabled={loading} */
-          />
-          <span className="text-sm text-red-600">{errors.nombre?.message}</span>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label>Descripcion</Label>
-          <Textarea
-            placeholder="descripcion"
-            {...register("descripcion")}
-            rows={4}
-            /* disabled={loading} */
-          />
-          <span className="text-sm text-red-600">
-            {errors.descripcion?.message}
-          </span>
-        </div>
-
-        <div className="flex gap-2">
-          <div className="flex flex-col gap-2">
-            <Label>Latitud</Label>
-            <Input
-              type="number"
-              placeholder="latitud"
-              {...register("latitud")}
-              /* disabled={loading} */
-            />
-            <span className="text-sm text-red-600">
-              {errors.latitud?.message}
-            </span>
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Longitud</Label>
-            <Input
-              type="number"
-              placeholder="longitud"
-              {...register("longitud")}
-              /* disabled={loading} */
-            />
-            <span className="text-sm text-red-600">
-              {errors.longitud?.message}
-            </span>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label>Direccion</Label>
-          <Input
-            type="text"
-            placeholder="direccion"
-            {...register("direccion")}
-            /* disabled={loading} */
-          />
-          <span className="text-sm text-red-600">
-            {errors.direccion?.message}
-          </span>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label>Cantidad de minutos por turno</Label>
-          <Input
-            type="number"
-            placeholder="cantidadDeMinutosPorTurno"
-            {...register("cantidadDeMinutosPorTurno")}
-            /* disabled={loading} */
-          />
-          <span className="text-sm text-red-600">
-            {errors.cantidadDeMinutosPorTurno?.message}
-          </span>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label>Pais</Label>
-          {isSuccess && Array.isArray(data?.data) ? (
-            <CountrySelect
-              countries={data?.data}
-              onChange={handleSelectCountry}
-            />
-          ) : (
-            <span className="text-sm text-red-600">
-              Algo salio mal en la busqueda del listado de los paises
-            </span>
-          )}
-        </div>
-        {countryId && (
-          <div className="flex flex-col gap-2">
-            <Label>Estado / provincia</Label>
-            <StateSelect
-              countryId={countryId}
-              onChange={(state: number) => setStateId(state)}
-            />
-          </div>
-        )}
-
-        {stateId && (
-          <div className="flex flex-col gap-2">
-            <Label>Ciudad</Label>
-            <CitySelect
-              stateId={stateId}
-              onChange={(city: number) =>
-                setValue("ciudad_id", city.toString())
-              }
-            />
-          </div>
-        )}
-        <span className="text-sm text-red-600">
-          {errors.ciudad_id?.message}
+      {isSuccess || isSuccessUpdate ? (
+        <span className="text-white text-center">
+          {barber != undefined
+            ? "Barberia actualizada correctamente"
+            : "Barberia creada correctamente"}
         </span>
-
-        <div className="flex flex-col gap-2">
-          <Label>Imagen de perfil</Label>
-          <Input
-            type="text"
-            placeholder="Imagen de foto de perfil"
-            {...register("imagen_perfil")}
-            /* disabled={loading} */
-          />
-          <span className="text-sm text-red-600">
-            {errors.imagen_perfil?.message}
-          </span>
-        </div>
-
-        <Label>Agregar imagenes</Label>
-        {images.map((image, index: number) => (
-          <div key={index}>
+      ) : (
+        <div className="flex flex-col gap-3 w-full">
+          <div className="flex flex-col gap-2">
+            <Label>Nombre</Label>
             <Input
-              placeholder="Ingrese una imagen"
-              defaultValue={image}
-              type="url"
-              {...register(`imagenes.${index}`)} // Registrar dinámicamente cada input
+              type="text"
+              placeholder="Ingrese su nombre"
+              {...register("nombre")}
+              /* disabled={loading} */
             />
-            <small className="font-bold text-red-500">
-              {errors.imagenes?.[index]?.message}
-            </small>
+            <span className="text-sm text-red-600">
+              {errors.nombre?.message}
+            </span>
           </div>
-        ))}
-        <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-between w-full gap-4">
-          <Button type="button" variant="secondary" onClick={handleAddImages}>
-            <Icon icon="material-symbols:add" width="18" height="18" />
-            Agregar una imagen
-          </Button>
-          <Button
-            type="button"
-            variant="simple"
-            onClick={() => {
-              if (images.length > 1)
-                return handleRemoveImages(images.length - 1)
-            }}
-          >
-            <Icon icon="mdi:trash-outline" width="18" height="18" />
-            Quitar la ultima imagen
-          </Button>
-        </div>
-        <hr />
-        {hours != undefined &&
-          hours.map(
-            (
-              hour: {
-                dia: string
-                hora_apertura: string
-                hora_cierre: string
-                pausa_inicio: string | null
-                pausa_fin: string | null
-              },
-              index: number
-            ) => (
-              <div className="flex flex-col gap-2" key={crypto.randomUUID()}>
-                <div className="flex flex-col gap-2">
-                  <Label>Dia</Label>
-                  <Select
-                    onValueChange={(e) => {
-                      const updatedHours = [...hours] // Crear una copia del array
-                      updatedHours[index] = {
-                        ...updatedHours[index], // Mantener los otros valores del objeto
-                        dia: e, // Actualizar solo el campo "dia"
-                      }
-                      setHours(updatedHours) // Actualizar el estado con el nuevo array
-                    }}
-                    value={hour.dia}
-                  >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Selecciona un día" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="LUNES">Lunes</SelectItem>
-                      <SelectItem value="MARTES">Martes</SelectItem>
-                      <SelectItem value="MIERCOLES">Miércoles</SelectItem>
-                      <SelectItem value="JUEVES">Jueves</SelectItem>
-                      <SelectItem value="VIERNES">Viernes</SelectItem>
-                      <SelectItem value="SABADO">Sábado</SelectItem>
-                      <SelectItem value="DOMINGO">Domingo</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <small className="font-bold text-red-500">
-                    {errors.horarioPorDia?.[index]?.dia?.message}
-                  </small>
-                </div>
-                <div className="flex gap-2">
-                  <div className="flex flex-col gap-2 w-full">
-                    <Label>Horario de apertura</Label>
-                    <Input
-                      placeholder="Ingrese una hora entre 00:00 y 23:59"
-                      defaultValue={hour.hora_apertura}
-                      type="text"
-                      {...register(`horarioPorDia.${index}.hora_apertura`)}
-                    />
-                    <small className="font-bold text-red-500">
-                      {errors.horarioPorDia?.[index]?.hora_apertura?.message}
-                    </small>
-                  </div>
-                  <div className="flex flex-col gap-2 w-full">
-                    <Label>Horario de cierre</Label>
-                    <Input
-                      placeholder="Ingrese una hora entre 00:00 y 23:59"
-                      type="text"
-                      {...register(`horarioPorDia.${index}.hora_cierre`)}
-                    />
-                    <small className="font-bold text-red-500">
-                      {errors.horarioPorDia?.[index]?.hora_cierre?.message}
-                    </small>
-                  </div>
-                </div>
 
-                <div className="flex gap-2">
-                  <div className="flex flex-col gap-2 w-full">
-                    <Label>Inicio del descanso</Label>
-                    <Input
-                      placeholder="Ingrese una hora entre 00:00 y 23:59"
-                      type="text"
-                      {...register(`horarioPorDia.${index}.pausa_inicio`)}
-                    />
-                    <small className="font-bold text-red-500">
-                      {errors.horarioPorDia?.[index]?.pausa_inicio?.message}
-                    </small>
-                  </div>
-                  <div className="flex flex-col gap-2 w-full">
-                    <Label>Inicio del descanso</Label>
-                    <Input
-                      placeholder="Ingrese una hora entre 00:00 y 23:59"
-                      type="text"
-                      {...register(`horarioPorDia.${index}.pausa_fin`)}
-                    />
-                    <small className="font-bold text-red-500">
-                      {errors.horarioPorDia?.[index]?.pausa_fin?.message}
-                    </small>
-                  </div>
-                </div>
-              </div>
-            )
+          <div className="flex flex-col gap-2">
+            <Label>Descripcion</Label>
+            <Textarea
+              placeholder="Ingrese una descripcion"
+              {...register("descripcion")}
+              rows={4}
+              /* disabled={loading} */
+            />
+            <span className="text-sm text-red-600">
+              {errors.descripcion?.message}
+            </span>
+          </div>
+
+          <div className="flex gap-2">
+            <div className="flex flex-col gap-2">
+              <Label>Latitud</Label>
+              <Input
+                type="number"
+                placeholder="latitud"
+                {...register("latitud")}
+                /* disabled={loading} */
+              />
+              <span className="text-sm text-red-600">
+                {errors.latitud?.message}
+              </span>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Longitud</Label>
+              <Input
+                type="number"
+                placeholder="longitud"
+                {...register("longitud")}
+                /* disabled={loading} */
+              />
+              <span className="text-sm text-red-600">
+                {errors.longitud?.message}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label>Direccion</Label>
+            <Input
+              type="text"
+              placeholder="Ingrese su direccion"
+              {...register("direccion")}
+              /* disabled={loading} */
+            />
+            <span className="text-sm text-red-600">
+              {errors.direccion?.message}
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label>Cantidad de minutos por turno</Label>
+            <Input
+              type="number"
+              placeholder="Ingrese una cantidad de minutos por turno"
+              {...register("cantidadDeMinutosPorTurno")}
+              /* disabled={loading} */
+            />
+            <span className="text-sm text-red-600">
+              {errors.cantidadDeMinutosPorTurno?.message}
+            </span>
+          </div>
+
+          {barber == undefined && (
+            <div className="flex flex-col gap-2">
+              <Label>Pais</Label>
+              {isSuccessCountries && Array.isArray(data?.data) ? (
+                <CountrySelect
+                  countries={data?.data}
+                  onChange={handleSelectCountry}
+                />
+              ) : (
+                <span className="text-sm text-red-600">
+                  Algo salio mal en la busqueda del listado de los paises
+                </span>
+              )}
+            </div>
           )}
 
-        <div className="flex sm:flex-row sm:justify-between flex-col justify-center gap-2">
-          <Button variant="secondary" type="button" onClick={handleAddHour}>
-            <Icon icon="material-symbols:add" width="18" height="18" />
-            Agregar un horario
-          </Button>
-          {hours != undefined && hours.length > 1 && (
+          {countryId && (
+            <div className="flex flex-col gap-2">
+              <Label>Estado / provincia</Label>
+              <StateSelect
+                countryId={countryId}
+                onChange={(state: number) => setStateId(state)}
+              />
+            </div>
+          )}
+
+          {stateId && (
+            <div className="flex flex-col gap-2">
+              <Label>Ciudad</Label>
+              <CitySelect
+                stateId={stateId}
+                onChange={(city: number) =>
+                  setValue("ciudad_id", city.toString())
+                }
+              />
+              <span className="text-sm text-red-600">
+                {errors.ciudad_id?.message}
+              </span>
+              <span className="text-green-500 text-sm font-bold">
+                Revise que cargo correctamente su ubicacion porque no podra
+                cambiarlo luego.
+              </span>
+            </div>
+          )}
+
+          <div className="flex flex-col gap-2">
+            <Label>Imagen de perfil</Label>
+            <Input
+              type="text"
+              placeholder="Imagen de foto de perfil"
+              {...register("imagen_perfil")}
+              /* disabled={loading} */
+            />
+            <span className="text-sm text-red-600">
+              {errors.imagen_perfil?.message}
+            </span>
+          </div>
+
+          <Label>Agregar imagenes</Label>
+          {images.map((image, index: number) => (
+            <div key={index}>
+              <Input
+                placeholder="Ingrese una imagen"
+                defaultValue={image}
+                type="url"
+                {...register(`imagenes.${index}`)} // Registrar dinámicamente cada input
+              />
+              <small className="font-bold text-red-500">
+                {errors.imagenes?.[index]?.message}
+              </small>
+            </div>
+          ))}
+
+          <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-between w-full gap-4">
+            <Button type="button" variant="secondary" onClick={handleAddImages}>
+              <Icon icon="material-symbols:add" width="18" height="18" />
+              Agregar una imagen
+            </Button>
             <Button
-              variant="simple"
               type="button"
+              variant="simple"
               onClick={() => {
-                if (hours != undefined && hours.length > 1)
-                  return handleRemoveHour(hours?.length - 1)
+                if (images.length > 1)
+                  return handleRemoveImages(images.length - 1)
               }}
             >
               <Icon icon="mdi:trash-outline" width="18" height="18" />
-              Quitar el ultimo horaio
+              Quitar la ultima imagen
             </Button>
-          )}
-        </div>
+          </div>
 
-        <Button variant="simple" type="submit">
-          Agregar barberia
-        </Button>
-      </div>
+          <hr />
+
+          {hours != undefined &&
+            hours.map(
+              (
+                hour: {
+                  dia: string
+                  hora_apertura: string
+                  hora_cierre: string
+                  pausa_inicio: string | null
+                  pausa_fin: string | null
+                },
+                index: number
+              ) => (
+                <div className="flex flex-col gap-2" key={crypto.randomUUID()}>
+                  <div className="flex flex-col gap-2">
+                    <Label>Dia</Label>
+                    <Select
+                      onValueChange={(e) => {
+                        const updatedHours = [...hours] // Crear una copia del array
+                        updatedHours[index] = {
+                          ...updatedHours[index], // Mantener los otros valores del objeto
+                          dia: e, // Actualizar solo el campo "dia"
+                        }
+                        setHours(updatedHours) // Actualizar el estado con el nuevo array
+                      }}
+                      value={hour.dia}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Selecciona un día" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="LUNES">Lunes</SelectItem>
+                        <SelectItem value="MARTES">Martes</SelectItem>
+                        <SelectItem value="MIERCOLES">Miércoles</SelectItem>
+                        <SelectItem value="JUEVES">Jueves</SelectItem>
+                        <SelectItem value="VIERNES">Viernes</SelectItem>
+                        <SelectItem value="SABADO">Sábado</SelectItem>
+                        <SelectItem value="DOMINGO">Domingo</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <small className="font-bold text-red-500">
+                      {errors.horarios?.[index]?.dia?.message}
+                    </small>
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="flex flex-col gap-2 w-full">
+                      <Label>Horario de apertura</Label>
+                      <Input
+                        placeholder="Una hora entre 00:00 y 23:59"
+                        defaultValue={hour.hora_apertura}
+                        type="text"
+                        {...register(`horarios.${index}.hora_apertura`)}
+                      />
+                      <small className="font-bold text-red-500">
+                        {errors.horarios?.[index]?.hora_apertura?.message}
+                      </small>
+                    </div>
+                    <div className="flex flex-col gap-2 w-full">
+                      <Label>Horario de cierre</Label>
+                      <Input
+                        placeholder="Una hora entre 00:00 y 23:59"
+                        type="text"
+                        {...register(`horarios.${index}.hora_cierre`)}
+                      />
+                      <small className="font-bold text-red-500">
+                        {errors.horarios?.[index]?.hora_cierre?.message}
+                      </small>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <div className="flex flex-col gap-2 w-full">
+                      <Label>Inicio del descanso</Label>
+                      <Input
+                        placeholder="Una hora entre 00:00 y 23:59"
+                        type="text"
+                        {...register(`horarios.${index}.pausa_inicio`)}
+                      />
+                      <small className="font-bold text-red-500">
+                        {errors.horarios?.[index]?.pausa_inicio?.message}
+                      </small>
+                    </div>
+                    <div className="flex flex-col gap-2 w-full">
+                      <Label>Inicio del descanso</Label>
+                      <Input
+                        placeholder="Una hora entre 00:00 y 23:59"
+                        type="text"
+                        {...register(`horarios.${index}.pausa_fin`)}
+                      />
+                      <small className="font-bold text-red-500">
+                        {errors.horarios?.[index]?.pausa_fin?.message}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
+
+          <div className="flex sm:flex-row sm:justify-between flex-col justify-center gap-2">
+            <Button variant="secondary" type="button" onClick={handleAddHour}>
+              <Icon icon="material-symbols:add" width="18" height="18" />
+              Agregar un horario
+            </Button>
+            {hours != undefined && hours.length > 1 && (
+              <Button
+                variant="simple"
+                type="button"
+                onClick={() => {
+                  if (hours != undefined && hours.length > 1)
+                    return handleRemoveHour(hours?.length - 1)
+                }}
+              >
+                <Icon icon="mdi:trash-outline" width="18" height="18" />
+                Quitar el ultimo horaio
+              </Button>
+            )}
+          </div>
+
+          <Button variant="simple" type="submit">
+            Agregar barberia
+          </Button>
+        </div>
+      )}
     </form>
   )
 }

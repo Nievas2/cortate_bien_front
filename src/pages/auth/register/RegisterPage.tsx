@@ -63,12 +63,11 @@ const RegisterPage = () => {
   function loginGoogle() {
     window.open(`${import.meta.env.VITE_API_URL}user/auth/google`, "_self")
   } */
-  console.log(getValues())
   return (
     <section className="flex items-center justify-center w-full min-h-screen py-8">
       <div className="w-full sm:w-[450px] rounded-lg shadow p-6 sm:p-8 flex flex-col gap-3 bg-gray-main">
         <form onSubmit={handleSubmit(registerFunction)} noValidate>
-          <div className="flex flex-col gap-5 px-4 py-7 mx-auto ">
+          <div className="flex flex-col gap-5 px-4 py-2 mx-auto ">
             <div className="flex flex-col gap-4 md:gap-6">
               <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-white md:text-2xl">
                 Ingrese sus <span className="text-blue-main">datos</span>

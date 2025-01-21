@@ -1,7 +1,10 @@
 import { getStates } from "@/services/State"
 import { useQuery } from "@tanstack/react-query"
 import Select from "react-select"
-
+interface State {
+  id: number
+  name: string
+}
 const StateSelect = ({
   onChange,
   countryId,
@@ -16,7 +19,7 @@ const StateSelect = ({
     staleTime: 1000 * 60 * 60 * 24,
   })
 
-  const options = states?.data.map((state: any) => ({
+  const options = states?.data.map((state: State) => ({
     id: state.id,
     value: state.name,
     label: state.name,
@@ -27,8 +30,8 @@ const StateSelect = ({
       <Select
         id="state"
         options={options}
-        onChange={(e) => {
-          if (e != null) return onChange(e.id!)
+        onChange={(e: { id: number } | null) => {
+          if (e != null) return onChange(e.id)
         }}
         placeholder="Seleccione un estado / provincia"
         isSearchable

@@ -11,19 +11,5 @@ export interface Barber {
   ciudad_id: string
   imagenes: string[]
   imagen_perfil: string
-  horarioPorDia: Hour[]
-}
-
-export interface Barber2 {
-  id?: string
-  nombre: string
-  descripcion: string
-  latitud: number
-  longitud: number
-  direccion: string
-  cantidadDeMinutosPorTurno: number
-  ciudad_id: string
-  imagenes: string[]
-  imagen_perfil: string
   horarios: Hour[]
 }
