@@ -61,7 +61,7 @@ const PasswordRecovery = () => {
 
   return (
     <section className="flex items-center justify-center w-full min-h-screen">
-      <div className="w-full sm:w-96 bg-main/20 rounded-lg shadow p-6 sm:p-8 flex flex-col gap-3 bg-white">
+      <div className="w-full sm:w-96 bg-main/20 rounded-lg shadow-sm p-6 sm:p-8 flex flex-col gap-3 bg-white">
         {token == undefined || error ? (
           <div className="flex flex-col items-center gap-4">
             <h4 className="text-white">

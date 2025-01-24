@@ -64,7 +64,7 @@ const RegisterPage = () => {
   } */
   return (
     <section className="flex items-center justify-center w-full min-h-screen py-8">
-      <div className="w-full sm:w-[450px] rounded-lg shadow p-6 sm:p-8 flex flex-col gap-3 bg-gray-main">
+      <div className="w-full sm:w-[450px] rounded-lg shadow-sm p-6 sm:p-8 flex flex-col gap-3 bg-gray-main">
         <form onSubmit={handleSubmit(registerFunction)} noValidate>
           <div className="flex flex-col gap-5 px-4 py-2 mx-auto ">
             <div className="flex flex-col gap-4 md:gap-6">

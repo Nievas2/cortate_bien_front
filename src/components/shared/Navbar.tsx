@@ -35,7 +35,7 @@ const Navbar = () => {
             <div className="items-center md:hidden">
               <button
                 type="button"
-                className="relative inline-flex items-center justify-center rounded-md text-white hover:bg-gray-main/80 hover:text-black-main focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                className="relative inline-flex items-center justify-center rounded-md text-white hover:bg-gray-main/80 hover:text-black-main focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white"
                 aria-controls="mobile-menu"
                 aria-expanded={open}
                 onClick={() => setOpen(!open)}
@@ -53,7 +53,7 @@ const Navbar = () => {
             </div>
 
             <Link
-              className={`flex flex-shrink-0 items-end justify-end gap-3 ${
+              className={`flex shrink-0 items-end justify-end gap-3 ${
                 authUser === null ? "-ml-[21px] md:ml-0" : ""
               }`}
               to="/"
@@ -107,7 +107,7 @@ const Navbar = () => {
                         className="relative group"
                       >
                         Cerrar sesion
-                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
+                        <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
                       </Button>
                     </>
                   ) : (
@@ -118,7 +118,7 @@ const Navbar = () => {
                         className="relative group"
                       >
                         <Button variant="auth">Iniciar sesion</Button>
-                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
+                        <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
                       </Link>
 
                       <Link
@@ -127,7 +127,7 @@ const Navbar = () => {
                         className="relative group"
                       >
                         <Button variant="auth">Registrarse</Button>
-                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
+                        <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
                       </Link>
                     </>
                   )}

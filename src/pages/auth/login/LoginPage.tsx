@@ -47,7 +47,7 @@ const LoginPage = () => {
 
   return (
     <section className="flex items-center justify-center w-full min-h-screen">
-      <div className="w-full sm:w-96 rounded-lg shadow p-6 sm:p-8 flex flex-col gap-3 bg-gray-main">
+      <div className="w-full sm:w-96 rounded-lg shadow-sm p-6 sm:p-8 flex flex-col gap-3 bg-gray-main">
         {/*         {success ? (
           <h1 className="text-white">
             Se le envio un correo de recuperacion a su correo, por favor revise
@@ -131,7 +131,7 @@ const LoginPage = () => {
                       disabled={loading}
                     >
                       {loading ? "Cargando..." : "Iniciar sesión"}
-                      <div className="absolute -inset-1 bg-gradient-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
+                      <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
                     </Button>
 
                     {/* <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-black after:mt-0.5 after:flex-1 after:border-t after:border-black">
@@ -211,7 +211,7 @@ const LoginPage = () => {
                     >
                       {loading ? "Cargando..." : "Enviar email"}
                     </Button>
-                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
+                    <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
                   </div>
                   <Button
                     className="font-semibold text-main hover:underline"

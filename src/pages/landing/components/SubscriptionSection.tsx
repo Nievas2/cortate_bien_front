@@ -12,7 +12,7 @@ import {
 
 const SubscriptionSection = () => {
   return (
-    <main className="flex flex-col gap-8 w-full bg-gradient-to-t from-gray-main/20 to-gray-main">
+    <main className="flex flex-col gap-8 w-full bg-linear-to-t from-gray-main/20 to-gray-main">
       <section className="flex flex-col gap-8 px-4 md:px-6">
         <div className="flex flex-col gap-4 items-center justify-center text-center">
           <div className="flex flex-col gap-4">

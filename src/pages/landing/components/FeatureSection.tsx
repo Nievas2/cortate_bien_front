@@ -2,7 +2,7 @@ import { Icon } from "@iconify/react/dist/iconify.js"
 import { motion } from "framer-motion"
 const FeatureSection = () => {
   return (
-    <section className="flex flex-col items-center justify-center w-full bg-gradient-to-b from-gray-main/40 to-gray-main py-10 relative">
+    <section className="flex flex-col items-center justify-center w-full bg-linear-to-b from-gray-main/40 to-gray-main py-10 relative">
       <div className="absolute inset-0 opacity-50">
         <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-secondary/40 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-secondary/40 rounded-full blur-3xl" />
