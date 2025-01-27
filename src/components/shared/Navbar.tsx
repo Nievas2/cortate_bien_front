@@ -11,7 +11,6 @@ const Navbar = () => {
   const { logOut } = useLogout()
   const { authUser } = useAuthContext()
   const [open, setOpen] = useState(false)
-  console.log(authUser)
 
   const { pathname } = useLocation()
   useEffect(() => {
@@ -34,9 +33,10 @@ const Navbar = () => {
           <div className="flex items-center justify-between w-full">
             {/* mobile buttons */}
             <div className="items-center md:hidden">
-              <button
+              <Button
+              variant="ghost"
                 type="button"
-                className="relative inline-flex items-center justify-center rounded-md text-white hover:bg-gray-main/80 hover:text-black-main focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white"
+                className="relative inline-flex items-center justify-center rounded-md text-white focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white"
                 aria-controls="mobile-menu"
                 aria-expanded={open}
                 onClick={() => setOpen(!open)}
@@ -50,7 +50,7 @@ const Navbar = () => {
                   width="24"
                   height="24"
                 />
-              </button>
+              </Button>
             </div>
 
             <Link
@@ -157,7 +157,8 @@ const Navbar = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-row items-center justify-end">
-              <button
+              <Button
+              variant="ghost"
                 type="button"
                 onClick={() => {
                   GoToTop()
@@ -170,7 +171,7 @@ const Navbar = () => {
                   width="24"
                   height="24"
                 />
-              </button>
+              </Button>
             </div>
 
             <div className="flex flex-col gap-6">
@@ -189,19 +190,23 @@ const Navbar = () => {
                   setOpen={setOpen}
                 />
 
-                <NavbarItemMobile
-                  name="Dashboard"
-                  location="/dashboard"
-                  pathname={pathname}
-                  setOpen={setOpen}
-                />
+                {authUser?.user.tipo_de_cuenta === "BARBERO" && (
+                  <NavbarItemMobile
+                    name="Dashboard"
+                    location="/dashboard"
+                    pathname={pathname}
+                    setOpen={setOpen}
+                  />
+                )}
 
-                <NavbarItemMobile
-                  name="Admin dashboard"
-                  location="/admins/dashboard"
-                  pathname={pathname}
-                  setOpen={setOpen}
-                />
+                {authUser?.user.rol === "ADMIN" && (
+                  <NavbarItemMobile
+                    name="Admin dashboard"
+                    location="/admins/dashboard"
+                    pathname={pathname}
+                    setOpen={setOpen}
+                  />
+                )}
               </div>
 
               {authUser ? (
