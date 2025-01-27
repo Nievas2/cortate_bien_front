@@ -12,7 +12,7 @@ import { useMutation } from "@tanstack/react-query"
 import { deletePlan } from "@/services/PlansService"
 import { ChangePlan } from "./ChangePlan"
 
-const CardPlan = ({ plan, refetch }: { plan: Plan, refetch?:Function }) => {
+const CardPlan = ({ plan, refetch }: { plan: Plan; refetch?: Function }) => {
   const { mutate } = useMutation({
     mutationKey: ["deletePlan"],
     mutationFn: async () => {
@@ -20,7 +20,7 @@ const CardPlan = ({ plan, refetch }: { plan: Plan, refetch?:Function }) => {
     },
   })
   return (
-    <div className="flex flex-col gap-2 max-w-72 shadow-xl border border-gray-main shadow-gray-main p-2 rounded-2xl">
+    <div className="flex flex-col gap-2 w-72 shadow-xl border border-gray-main shadow-gray-main p-2 rounded-2xl">
       <span>Nombre: {plan.nombre}</span>
       <span>Precio: {plan.precio}</span>
       <span> Turnos maximos: {plan.turnosMaximos}</span>
