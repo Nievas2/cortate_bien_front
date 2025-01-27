@@ -87,9 +87,17 @@ function getUpdatedFields(original: Barber, updated: Barber): Partial<Barber> {
 }
 
 /* Gets */
-export async function getBarbers() {
+export async function getBarbers({
+  page,
+  order,
+  city,
+}: {
+  page?: number
+  order?: string
+  city?: number
+}) {
   try {
-    const res = await axiosInstance.get("barberia/find/all")
+    const res = await axiosInstance.get(`barberia/find/all/${page}/${order}/${city}`, )
     return res
   } catch (error) {
     throw error

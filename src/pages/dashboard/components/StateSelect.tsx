@@ -1,5 +1,6 @@
 import { getStates } from "@/services/State"
 import { useQuery } from "@tanstack/react-query"
+import { useEffect } from "react"
 import Select from "react-select"
 interface State {
   id: number
@@ -12,7 +13,7 @@ const StateSelect = ({
   onChange: Function
   countryId: number
 }) => {
-  const { data: states } = useQuery({
+  const { data: states, refetch } = useQuery({
     queryKey: ["states"],
     queryFn: () => getStates(countryId),
     refetchOnWindowFocus: false,
@@ -24,6 +25,10 @@ const StateSelect = ({
     value: state.name,
     label: state.name,
   }))
+
+  useEffect(() => {
+    refetch()
+  }, [countryId])
 
   return (
     <div className="flex flex-col gap-2 text-black">
