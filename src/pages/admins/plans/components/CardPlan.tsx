@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/dialog"
 import { useMutation } from "@tanstack/react-query"
 import { deletePlan } from "@/services/PlansService"
-import ChangePlan from "./ChangePlan"
+import { ChangePlan } from "./ChangePlan"
 
-const CardPlan = ({ plan }: { plan: Plan }) => {
+const CardPlan = ({ plan, refetch }: { plan: Plan, refetch?:Function }) => {
   const { mutate } = useMutation({
     mutationKey: ["deletePlan"],
     mutationFn: async () => {
@@ -27,6 +27,20 @@ const CardPlan = ({ plan }: { plan: Plan }) => {
       <span> Dias: {plan.cantDias}</span>
       <span className="line-clamp-3 text-xs">{plan.descripcion}</span>
       <div className="flex w-full gap-4">
+        <Dialog>
+          <DialogTrigger>
+            <Button className="w-full" variant="secondary">
+              Editar
+            </Button>
+          </DialogTrigger>
+          <DialogContent forceMount>
+            <DialogHeader>
+              <DialogTitle>Editar plan</DialogTitle>
+            </DialogHeader>
+            <ChangePlan plan={plan} refetch={refetch} />
+          </DialogContent>
+        </Dialog>
+
         <Dialog>
           <DialogTrigger>
             <Button className="w-full" variant="ghost">
@@ -50,20 +64,6 @@ const CardPlan = ({ plan }: { plan: Plan }) => {
                 Eliminar
               </Button>
             </div>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog>
-          <DialogTrigger>
-            <Button className="w-full" variant="secondary">
-              Editar
-            </Button>
-          </DialogTrigger>
-          <DialogContent forceMount>
-            <DialogHeader>
-              <DialogTitle>Editar plan</DialogTitle>
-            </DialogHeader>
-            <ChangePlan />
           </DialogContent>
         </Dialog>
       </div>

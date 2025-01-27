@@ -11,10 +11,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import ChangePlan from "./components/ChangePlan"
-
+import { ChangePlan } from "./components/ChangePlan"
 const PlansPage = () => {
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["plans"],
     queryFn: getPlansAdmin,
   })
@@ -28,15 +27,15 @@ const PlansPage = () => {
             </DialogTrigger>
             <DialogContent forceMount>
               <DialogHeader>
-                <DialogTitle>Editar plan</DialogTitle>
+                <DialogTitle>Crear plan</DialogTitle>
               </DialogHeader>
-              <ChangePlan />
+              <ChangePlan refetch={refetch} />
             </DialogContent>
           </Dialog>
         </section>
-        <section className="flex flex-wrap">
+        <section className="flex flex-wrap gap-4">
           {data?.data.map((plan: Plan) => (
-            <CardPlan key={plan.id} plan={plan} />
+            <CardPlan key={plan.id} plan={plan} refetch={refetch} />
           ))}
         </section>
       </main>
