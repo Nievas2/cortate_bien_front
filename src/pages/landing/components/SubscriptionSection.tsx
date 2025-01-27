@@ -9,8 +9,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useQuery } from "@tanstack/react-query"
+import { getAllPlans } from "@/services/PlansService"
+import { Plan } from "@/interfaces/Plan"
+import { Link } from "react-router-dom"
+import { useAuthContext } from "@/contexts/authContext"
 
 const SubscriptionSection = () => {
+  const { authUser } = useAuthContext()
+  const { data } = useQuery({
+    queryKey: ["plans"],
+    queryFn: getAllPlans,
+  })
   return (
     <main className="flex flex-col gap-8 w-full bg-linear-to-t from-gray-main/20 to-gray-main">
       <section className="flex flex-col gap-8 px-4 md:px-6">
@@ -37,8 +47,60 @@ const SubscriptionSection = () => {
         </div>
 
         <div className="grid max-w-5xl gap-8 gap-y-14 lg:grid-cols-3 mx-auto">
-          {/* Gratuito Plan */}
-          <motion.div
+          {data?.data.map((plan: Plan, id: number) => (
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="flex flex-col gap-2 rounded-lg border bg-[#080808] p-10"
+              key={id}
+            >
+              <h3 className="text-2xl font-bold text-white">{plan.nombre}</h3>
+              <span className="text-base font-extralight text-gray-400">
+                {plan.descripcion}
+              </span>
+
+              <div className="text-center">
+                <span className="text-4xl font-bold text-white">
+                  $ {plan.precio}
+                </span>
+              </div>
+              <ul className="my-4 space-y-2 text-gray-400">
+                <li className="flex gap-4 text-base items-center">
+                  <Icon
+                    icon="fluent-mdl2:accept-medium"
+                    width="16"
+                    height="16"
+                  />
+                  {plan.turnosMaximos} turnos mensuales
+                </li>
+                <li className="flex gap-4 text-base items-center">
+                  <Icon
+                    icon="fluent-mdl2:accept-medium"
+                    width="16"
+                    height="16"
+                  />
+                  {plan.cantDias} días de prueba
+                </li>
+                {/* <li className="flex gap-4 text-base items-center">
+                  <Icon
+                    icon="fluent-mdl2:accept-medium"
+                    width="16"
+                    height="16"
+                  />
+                  Reportes básicos {plan.}
+                </li> */}
+              </ul>
+              <Link className="w-full" to={authUser == null ? "/auth/iniciar-sesion" : `/prices?id=${id}`}>
+                <Button className=" w-full bg-[#007FFF] text-white hover:bg-[#0d3868]">
+                  Comenzar ahora
+                </Button>
+              </Link>
+            </motion.div>
+          ))}
+
+          {/* <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2, delay: 0.2 }}
@@ -68,7 +130,8 @@ const SubscriptionSection = () => {
               Comenzar gratis
             </Button>
           </motion.div>
-          {/* Pro Plan */}
+          
+          
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -109,7 +172,8 @@ const SubscriptionSection = () => {
               Comenzar ahora
             </Button>
           </motion.div>
-          {/* Enterprise Plan */}
+          
+          
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -146,7 +210,7 @@ const SubscriptionSection = () => {
             <Button className="mt-auto bg-[#007FFF] text-white hover:bg-[#0d3868]">
               Comenzar ahora
             </Button>
-          </motion.div>
+          </motion.div> */}
         </div>
       </section>
 
