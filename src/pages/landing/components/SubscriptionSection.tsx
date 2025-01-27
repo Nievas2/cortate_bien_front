@@ -47,14 +47,14 @@ const SubscriptionSection = () => {
         </div>
 
         <div className="grid max-w-5xl gap-8 gap-y-14 lg:grid-cols-3 mx-auto">
-          {data?.data.map((plan: Plan, id: number) => (
+          {data?.data.map((plan: Plan) => (
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2, delay: 0.2 }}
               viewport={{ once: true }}
               className="flex flex-col gap-2 rounded-lg border bg-[#080808] p-10"
-              key={id}
+              key={plan.id}
             >
               <h3 className="text-2xl font-bold text-white">{plan.nombre}</h3>
               <span className="text-base font-extralight text-gray-400">
@@ -92,7 +92,14 @@ const SubscriptionSection = () => {
                   Reportes básicos {plan.}
                 </li> */}
               </ul>
-              <Link className="w-full" to={authUser == null ? "/auth/iniciar-sesion" : `/prices?id=${id}`}>
+              <Link
+                className="w-full"
+                to={
+                  authUser == null
+                    ? "/auth/iniciar-sesion"
+                    : `/prices?id=${plan.id}`
+                }
+              >
                 <Button className=" w-full bg-[#007FFF] text-white hover:bg-[#0d3868]">
                   Comenzar ahora
                 </Button>
