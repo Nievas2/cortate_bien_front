@@ -170,7 +170,7 @@ const RegisterPage = () => {
 
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                       onClick={togglePasswordVisibility}
                     >
                       <Icon
@@ -206,7 +206,7 @@ const RegisterPage = () => {
 
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                       onClick={toggleConfirmPasswordVisibility}
                     >
                       <Icon

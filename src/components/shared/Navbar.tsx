@@ -11,6 +11,7 @@ const Navbar = () => {
   const { logOut } = useLogout()
   const { authUser } = useAuthContext()
   const [open, setOpen] = useState(false)
+  console.log(authUser)
 
   const { pathname } = useLocation()
   useEffect(() => {
@@ -86,17 +87,22 @@ const Navbar = () => {
                     name="Precios"
                   />
 
-                  <NavbarItemDestock
-                    location="/dashboard"
-                    pathname={pathname}
-                    name="Dashboard"
-                  />
+                  {authUser != null &&
+                    authUser?.user.tipo_de_cuenta === "BARBERO" && (
+                      <NavbarItemDestock
+                        location="/dashboard"
+                        pathname={pathname}
+                        name="Dashboard"
+                      />
+                    )}
 
-                  <NavbarItemDestock
-                    location="/admins/dashboard"
-                    pathname={pathname}
-                    name="Admins"
-                  />
+                  {authUser?.user.rol === "ADMIN" && (
+                    <NavbarItemDestock
+                      location="/admins/dashboard"
+                      pathname={pathname}
+                      name="Admins"
+                    />
+                  )}
 
                   {/* User session */}
                   {authUser != null ? (

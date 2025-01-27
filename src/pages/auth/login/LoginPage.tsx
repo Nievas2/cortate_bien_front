@@ -37,7 +37,7 @@ const LoginPage = () => {
     window.open(`${import.meta.env.VITE_API_URL}user/auth/google`, "_self")
   } */
 
-  const loginFunction = handleSubmit(async (values) => {
+  const loginFunction = handleSubmit(async (values) => {    
     try {
       await login(values)
     } catch (error: any) {
@@ -68,7 +68,7 @@ const LoginPage = () => {
                     <Label>Email</Label>
 
                     <Input
-                      className="bg-light"
+                      className="bg-white"
                       type="email"
                       placeholder="email"
                       {...register("email")}
@@ -84,7 +84,7 @@ const LoginPage = () => {
 
                     <div className="relative">
                       <Input
-                        className="bg-light"
+                        className="bg-white"
                         type={showPassword ? "text" : "password"}
                         placeholder="•••••••••••••"
                         {...register("password")}
@@ -93,7 +93,7 @@ const LoginPage = () => {
 
                       <button
                         type="button"
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                         onClick={togglePasswordVisibility}
                       >
                         <Icon
@@ -185,7 +185,7 @@ const LoginPage = () => {
                       <Label>Email</Label>
 
                       <Input
-                        className="bg-light"
+                        className="bg-white"
                         type="email"
                         placeholder="email"
                         {...formik.getFieldProps("email")}

@@ -1,4 +1,6 @@
+import { decodeJwt } from "@/utils/decodeJwt"
 import { createContext, useContext, useState } from "react"
+import { useCookies } from "react-cookie"
 
 interface User {
   id: string
@@ -7,7 +9,7 @@ interface User {
   username: string
   email: string
   rol: string
-  tipo_de_cuenta: string
+  tipo_de_cuenta: "CLIENTE" | "BARBERO"
 }
 
 export interface AuthUser {
@@ -35,9 +37,24 @@ export const AuthContextProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const storedUser = localStorage.getItem("user")
+  const [cookies] = useCookies(["token"])
+  const token = cookies.token
+
+  let storedUser : AuthUser | null = null
+  if (token) {
+    try {
+      const user = decodeJwt(token) // Asegúrate de que esto devuelva una cadena JSON válida
+      storedUser = {
+        token,
+        user,
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error)
+    }
+  }
+
   const [authUser, setAuthUser] = useState<AuthUser | null>(
-    storedUser ? JSON.parse(storedUser) : null
+    storedUser ? storedUser : null
   )
 
   return (
