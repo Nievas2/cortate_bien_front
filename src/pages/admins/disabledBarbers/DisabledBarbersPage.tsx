@@ -9,26 +9,24 @@ const DisabledBarbersPage = () => {
     queryFn: getBarbersDisabled,
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
+    retry: false,
   })
   console.log(data)
 
   return (
     <Layout>
-      <section className="flex flex-wrap ">
-        {
-          // @ts-ignore
-          data?.data.results.length === 0 ? (
-            <span className="text-center w-full">
-              No hay barberias deshabilitadas
-            </span>
-          ) : (
-            <>
-              {data?.data.results.map((barbery: any) => (
-                <CardBarberyDisabled key={barbery.id} barbery={barbery} />
-              ))}
-            </>
-          )
-        }
+      <section className="flex flex-col ">
+        {data?.data.results.length === 0 ? (
+          <span className="text-center w-full">
+            No hay barberias deshabilitadas
+          </span>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {data?.data.results.map((barbery: any) => (
+              <CardBarberyDisabled key={barbery.id} barbery={barbery} />
+            ))}
+          </div>
+        )}
       </section>
     </Layout>
   )

@@ -7,8 +7,6 @@ const MapSelector = ({
 }: {
   position: { lat: number; lng: number }
 }) => {
-  console.log(position)
-
   return (
     <div>
       <MapContainer

@@ -49,7 +49,7 @@ const ChangeBarberShop = ({ Barbers, refetch }: ChangeBarberShopProps) => {
               key={barber.id}
             >
               <Dialog>
-                <DialogTrigger className="absolute top-2 right-2 z-50 flex gap-2">
+                <DialogTrigger className="absolute top-2 right-2 z-40 flex gap-2">
                   <Button variant="simple" size="xs" className="rounded-sm">
                     <Icon
                       icon="material-symbols:delete"
@@ -530,7 +530,8 @@ export function ChangeBarberShopDialog({
                       </SelectContent>
                     </Select>
                     <small className="font-bold text-red-500">
-                      {errors.horarios?.[index]?.dia?.message}
+                      {errors.horarios?.[index]?.dia?.message &&
+                        "El dia es requerido"}
                     </small>
                   </div>
                   <div className="flex gap-2">
@@ -592,6 +593,10 @@ export function ChangeBarberShopDialog({
               )
             )}
 
+          <small className="text-red-500 font-bold">
+            {hours == undefined && "Debe ingresar almenos un horario"}
+          </small>
+          
           <div className="flex sm:flex-row sm:justify-between flex-col justify-center gap-2">
             <Button
               variant="secondary"

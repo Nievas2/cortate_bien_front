@@ -28,10 +28,8 @@ const CardPlan = ({ plan, refetch }: { plan: Plan; refetch?: Function }) => {
       <span className="line-clamp-3 text-xs">{plan.descripcion}</span>
       <div className="flex w-full gap-4">
         <Dialog>
-          <DialogTrigger>
-            <Button className="w-full" variant="secondary">
-              Editar
-            </Button>
+          <DialogTrigger className="w-full">
+            <Button className="w-full" variant="secondary">Editar</Button>
           </DialogTrigger>
           <DialogContent forceMount>
             <DialogHeader>
@@ -42,7 +40,7 @@ const CardPlan = ({ plan, refetch }: { plan: Plan; refetch?: Function }) => {
         </Dialog>
 
         <Dialog>
-          <DialogTrigger>
+          <DialogTrigger className="w-full">
             <Button className="w-full" variant="ghost">
               Eliminar
             </Button>

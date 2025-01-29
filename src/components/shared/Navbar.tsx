@@ -39,7 +39,7 @@ const Navbar = () => {
     }
   }, [open])
   return (
-    <nav className="sticky w-full top-0 z-50 transition-colors duration-200 bg-gray-main border-b border-gray-800">
+    <nav className="sticky w-full top-0 z-50 transition-colors duration-200 bg-gray-main ">
       <div className="mx-auto max-w-8xl p-4 2xl:pl-0">
         <div className="relative flex h-10 items-center gap-10">
           <div className="flex items-center justify-between w-full">
@@ -203,7 +203,7 @@ const Navbar = () => {
           onClick={() => setOpen(!open)}
         >
           <div
-            className={`bg-black-main w-[280px] h-full p-6 flex flex-col gap-6 transition-all duration-300 ${
+            className={`bg-black-main w-[280px] border-r border-gray-main h-full p-6 flex flex-col gap-6 transition-all duration-300 ${
               open ? "translate-x-0" : "-translate-x-full"
             }`}
             onClick={(e) => e.stopPropagation()}

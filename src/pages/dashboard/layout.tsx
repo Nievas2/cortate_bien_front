@@ -27,15 +27,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="flex relative w-full">
-      <div>
+ 
         <SideBar open={open} setOpen={setOpen} barber={barbery} />
-      </div>
+ 
       <div className="relative">
         <Button
-          className={` rounded-full border border-blue-main transition-transform duration-150 size-12 hover:bg-blue-main hover:text-white ${
+           className={` rounded-full border border-blue-main transition-transform duration-150 size-12 hover:bg-blue-main hover:text-white z-40 ${
             open
-              ? "rotate-180 translate-x-2 sm:-translate-x-14 translate-y-2 absolute z-50 sm:absolute"
-              : "rotate-0 translate-y-2 translate-x-2 sm:translate-x-2 absolute z-50 sm:sticky"
+              ? "rotate-180 translate-x-2 sm:-translate-x-14 translate-y-2 fixed top-20 "
+              : "rotate-0 translate-y-2 translate-x-2 sm:translate-x-2 fixed sm:sticky top-20"
           }`}
           variant="ghost"
           size="sm"

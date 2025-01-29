@@ -6,7 +6,7 @@ export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ childr
   const { authUser } = useAuthContext();
 
   if (!authUser) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/auth/iniciar-sesion" replace />;
   }
 
   return <>{children}</>;

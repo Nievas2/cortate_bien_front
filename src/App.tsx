@@ -63,9 +63,14 @@ function App() {
             />
 
             {/* Dashboard Barbers */}
-            <Route path="/dashboard" element={<DashboardPage />} />
-            {/* <ProtectedRoute>
-              </ProtectedRoute> */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
 
             <Route
               path="/dashboard/barber"

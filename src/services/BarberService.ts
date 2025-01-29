@@ -12,13 +12,9 @@ export async function getBarberById(id: string) {
 
 export async function createbarber(barber: any) {
   barber.horarios.forEach((element: any) => {
-    console.log(element.pausa_inicio.length)
-
     if (element.pausa_inicio.length === 0) element.pausa_inicio = null
     if (element.pausa_fin.length === 0) element.pausa_fin = null
   })
-  console.log(barber)
-
   try {
     const res = axiosInstance.post("barberia/create", {
       nombre: barber.nombre,

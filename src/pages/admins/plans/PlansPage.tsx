@@ -33,7 +33,7 @@ const PlansPage = () => {
             </DialogContent>
           </Dialog>
         </section>
-        <section className="flex flex-wrap gap-4">
+        <section className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 place-items-center">
           {data?.data.map((plan: Plan) => (
             <CardPlan key={plan.id} plan={plan} refetch={refetch} />
           ))}
