@@ -18,6 +18,7 @@ import PricesPage from "./pages/prices/PricesPage"
 import BarbersPage from "./pages/barbers/BarberiesPage"
 import DisabledBarbersPage from "./pages/admins/disabledBarbers/DisabledBarbersPage"
 import PlansPage from "./pages/admins/plans/PlansPage"
+import ProfilePage from "./pages/profile/ProfilePage"
 function App() {
   const location = useLocation()
   const { authUser } = useAuthContext()
@@ -37,6 +38,17 @@ function App() {
             />
 
             <Route path="/barbers" element={<BarbersPage />} />
+
+            <Route
+              path="/profile"
+              element={
+                authUser?.user.rol === "USER" ? (
+                  <ProfilePage />
+                ) : (
+                  <Navigate to="/" />
+                )
+              }
+            />
 
             <Route
               path="/auth/iniciar-sesion"

@@ -1,16 +1,28 @@
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { Link, NavLink, useLocation } from "react-router-dom"
-
 import { Button } from "../ui/button"
 import { useEffect, useState } from "react"
 import { useAuthContext } from "@/contexts/authContext"
 import { useLogout } from "@/hooks/useLogout"
 import { GoToTop } from "@/utils/toUp"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const Navbar = () => {
   const { logOut } = useLogout()
   const { authUser } = useAuthContext()
   const [open, setOpen] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+  const handleDropdownClick = () => {
+    setIsDropdownOpen(false)
+  }
 
   const { pathname } = useLocation()
   useEffect(() => {
@@ -34,7 +46,7 @@ const Navbar = () => {
             {/* mobile buttons */}
             <div className="items-center md:hidden">
               <Button
-              variant="ghost"
+                variant="ghost"
                 type="button"
                 className="relative inline-flex items-center justify-center rounded-md text-white focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white"
                 aria-controls="mobile-menu"
@@ -107,14 +119,54 @@ const Navbar = () => {
                   {/* User session */}
                   {authUser != null ? (
                     <>
-                      <Button
-                        variant="auth"
-                        onClick={logOut}
-                        className="relative group"
-                      >
-                        Cerrar sesion
-                        <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
-                      </Button>
+                      {authUser?.user.rol === "USER" ? (
+                        <DropdownMenu
+                          open={isDropdownOpen}
+                          onOpenChange={setIsDropdownOpen}
+                        >
+                          <DropdownMenuTrigger>
+                            <Icon
+                              className="h-12 w-12 cursor-pointer"
+                              icon="carbon:user-avatar-filled"
+                            />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="bg-black-main w-[288px]">
+                            <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <Link to="/profile" onClick={handleDropdownClick}>
+                              <DropdownMenuItem className="flex gap-2 items-center hover:text-blue-main cursor-pointer">
+                                <Icon icon="material-symbols:person" />
+                                Mi perfil
+                              </DropdownMenuItem>
+                            </Link>
+                            <DropdownMenuItem
+                              className="hover:text-red-500 text-base cursor-pointer"
+                              onClick={logOut}
+                            >
+                              <button
+                                className="flex items-center flex-row gap-2 w-full cursor-pointer"
+                                onClick={handleDropdownClick}
+                              >
+                                <Icon
+                                  icon="material-symbols:logout"
+                                  width="24"
+                                  height="24"
+                                />
+                                <p>Cerrar sesión</p>
+                              </button>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      ) : (
+                        <Button
+                          variant="auth"
+                          onClick={logOut}
+                          className="relative group"
+                        >
+                          Cerrar sesion
+                          <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
+                        </Button>
+                      )}
                     </>
                   ) : (
                     <>
@@ -158,7 +210,7 @@ const Navbar = () => {
           >
             <div className="flex flex-row items-center justify-end">
               <Button
-              variant="ghost"
+                variant="ghost"
                 type="button"
                 onClick={() => {
                   GoToTop()
