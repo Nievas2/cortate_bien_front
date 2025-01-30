@@ -1,7 +1,53 @@
 import { Button } from "@/components/ui/button"
 import { BarberGet } from "@/interfaces/Barber"
-
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { appointmentSchema } from "@/utils/schemas/appointmentSchema"
+import { Textarea } from "@/components/ui/textarea"
+import { createAppointment } from "@/services/AppointmentService"
+import { useState } from "react"
 const Card = ({ barber }: { barber: BarberGet }) => {
+  const [error, setError] = useState("")
+  /* const { authUser } = useAuthContext() */
+  const {
+    register: registerForm,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      fecha: "",
+      hora: "",
+      nota: "",
+    },
+    resolver: zodResolver(appointmentSchema),
+  })
+
+  const appointmentFunction = async (values: any) => {
+    try {
+      if (!barber.id) return
+      const response = await createAppointment(values, barber.id)
+      console.log(values)
+      return response
+    } catch (error : any) {
+      console.log(error.response);
+      
+      setError(error.response.data.message)
+      console.error("Registration failed:", error)
+    }
+  }
+  console.log(getValues())
+
   return (
     <div className="flex gap-3 w-[300px] md:w-[400px] bg-gray-main rounded-lg border border-gray-800 p-4">
       <img className="size-40" src={barber.imagen_perfil} alt={barber.nombre} />
@@ -19,7 +65,63 @@ const Card = ({ barber }: { barber: BarberGet }) => {
           <p className="text-sm line-clamp-3">{barber.descripcion}</p>
         </div>
         <div className="flex flex-wrap h-full items-end">
-          <Button variant="secondary">Sacar turno</Button>
+          <Dialog>
+            <DialogTrigger>
+              <Button variant="secondary">Sacar turno</Button>
+            </DialogTrigger>
+            <DialogContent forceMount>
+              <DialogHeader>
+                <DialogTitle>Sacar turno</DialogTitle>
+              </DialogHeader>
+              <form
+                className="flex flex-col gap-4"
+                onSubmit={handleSubmit(appointmentFunction)}
+              >
+                <div className="flex flex-col gap-2">
+                  <Label>Fecha</Label>
+                  <Input
+                    type="date"
+                    {...registerForm("fecha")}
+                    onChange={(e) => setValue("fecha", e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
+                    placeholder="YYYY-MM-DD"
+                  />
+                  <small className="text-red-500 font-bold">
+                    {errors.fecha?.message}
+                  </small>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label>Hora</Label>
+                  <Input
+                    type="text"
+                    {...registerForm("hora")}
+                    onChange={(e) => setValue("hora", e.target.value)}
+                    placeholder="00:00"
+                  />
+                  <small className="text-red-500 font-bold">
+                    {errors.hora?.message}
+                  </small>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label>Nota</Label>
+                  <Textarea
+                    {...registerForm("nota")}
+                    onChange={(e) => setValue("nota", e.target.value)}
+                    placeholder="Ingrese informacion relevante para el barbero"
+                  />
+                  <small className="text-red-500 font-bold">
+                    {errors.nota?.message}
+                  </small>
+                </div>
+                <small className="text-red-500 font-bold">{error}</small>
+
+                <Button variant="simple" type="submit">
+                  Enviar turno
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>

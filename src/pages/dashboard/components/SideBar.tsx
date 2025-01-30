@@ -41,13 +41,12 @@ const SideBar = ({
       href: `/dashboard/barber/reviews?id=${barber?.id}`,
     },
   ]
-  console.log(barber)
 
   return (
     <aside
-      className={`bg-black-main h-full transition-all duration-300 fixed top-18 z-40 sm:sticky sm:top-0  ${
+      className={`h-full transition-all duration-300 fixed top-18 z-40 sm:sticky sm:top-0  ${
         open
-          ? "-left-0 w-[260px] sm:w-[420px] border-r border-r-gray-800"
+          ? "-left-0 w-[260px] sm:w-[420px] bg-gray-main"
           : "-left-full w-0"
       }`}
       onClick={(e) => e.stopPropagation()}
@@ -55,7 +54,7 @@ const SideBar = ({
       <div className="flex flex-col gap-2  sm:sticky sm:top-20 w-full h-full">
         {/* Header */}
         <div
-          className={`flex items-center justify-end sm:justify-start gap-2 px-6 py-4 ${
+          className={`flex items-center justify-end sm:justify-start gap-2 px-6 py-4  ${
             open ? "flex" : "hidden"
           }`}
         >

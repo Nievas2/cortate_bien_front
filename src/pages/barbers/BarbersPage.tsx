@@ -26,10 +26,9 @@ const BarbersPage = () => {
     queryFn: () => getBarbers({ page: currentPage, city: city, order: order }),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
-
   })
 
-  const { data: countries } = useQuery({
+  const { data: countries, error } = useQuery({
     queryKey: ["countries"],
     queryFn: getCountries,
   })
@@ -51,12 +50,14 @@ const BarbersPage = () => {
           <div className="flex flex-wrap justify-center md:justify-start items-end gap-4 w-full">
             <div className="flex flex-col  gap-2 min-w-60">
               <Label>Pais</Label>
-              {countries ? (
+              {countries && (
                 <CountrySelect
                   countries={countries?.data}
                   onChange={(id: number) => setCountryId(id)}
                 />
-              ) : (
+              )}
+
+              {error && (
                 <span className="text-sm text-red-600">
                   Algo salio mal en la busqueda del listado de los paises
                 </span>
@@ -82,6 +83,7 @@ const BarbersPage = () => {
                 />
               </div>
             )}
+
             <Button
               variant="ghost"
               onClick={() => {

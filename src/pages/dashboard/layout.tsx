@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { getBarberById } from "@/services/BarberService"
 import { useLocation } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [barbery, setBarbery] = useState()
@@ -11,19 +12,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { search } = useLocation()
   const id = search.split("=")[1]
 
-  async function getBarbery() {
-    try {
-      const res = await getBarberById(id)
-      setBarbery(res.data)
-      return res
-    } catch (error) {
-      throw error
-    }
-  }
+  const {data, isSuccess} = useQuery({
+    queryKey: ["barber", id],
+    queryFn: () => getBarberById(id),
+
+  })
 
   useEffect(() => {
-    getBarbery()
-  }, [])
+    setBarbery(data?.data)
+  }, [isSuccess])
 
   return (
     <div className="flex relative w-full">
