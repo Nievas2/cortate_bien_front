@@ -37,7 +37,14 @@ function App() {
               element={authUser ? <PricesPage /> : <Navigate to="/login" />}
             />
 
-            <Route path="/barbers" element={<BarbersPage />} />
+            <Route
+              path="/barbers"
+              element={
+                <ProtectedRoute>
+                  <BarbersPage />
+                </ProtectedRoute>
+              }
+            />
 
             <Route
               path="/profile"
