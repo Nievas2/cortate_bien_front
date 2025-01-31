@@ -20,6 +20,9 @@ const SubscriptionSection = () => {
   const { data } = useQuery({
     queryKey: ["plans"],
     queryFn: getAllPlans,
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 60 * 24,
+    retry: false,
   })
   return (
     <main className="flex flex-col gap-8 w-full bg-linear-to-t from-gray-main/20 to-gray-main">

@@ -167,3 +167,20 @@ layer(base);
 .rbc-off-range-bg{
   background-color: #141414 !important;
 }
+
+.rbc-row-content {
+  flex-grow: 1;
+}
+
+.rbc-row .rbc-date-cell {
+  flex-grow: 1;
+} 
+
+.rbc-date-cell {
+  padding-right: 0;
+}
+
+.rbc-button-link {
+  width: 100%;
+  height: 50px;
+}

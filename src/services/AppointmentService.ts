@@ -9,3 +9,12 @@ export async function createAppointment(data: CreateAppointment, id: string) {
     throw error
   }
 }
+
+export async function getAppointmentsByBarberId(id: string) {
+  try {
+    const res = await axiosInstance.get(`turno/find/all/${id}`)
+    return res
+  } catch (error) {
+    throw error
+  }
+}

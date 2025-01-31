@@ -94,8 +94,8 @@ const ChangeBarberShop = ({ Barbers, refetch }: ChangeBarberShopProps) => {
       <Dialog>
         <DialogTrigger>
           <div className="relative group">
-            <div className="absolute inset-0 opacity-50 size-48 bg-transparent blur-3xl rounded-xl group-hover:bg-blue-main/40" />
-            <Button variant="barberDash" size="barberDash">
+            <div className="absolute z-0 inset-0 opacity-50 size-48 bg-transparent blur-3xl rounded-xl group-hover:bg-blue-main/40 cursor-pointer" />
+            <Button variant="barberDash" size="barberDash" className=" cursor-pointer">
               <Icon icon="tabler:plus" height={24} width={24} />
               Agregar una barberia
             </Button>
@@ -272,7 +272,7 @@ export function ChangeBarberShopDialog({
             <Label>Nombre</Label>
             <Input
               type="text"
-              placeholder="Ingrese su nombre"
+              placeholder="Ingrese el nombre de la barberia"
               {...register("nombre")}
               disabled={isPending || isPendingUpdate}
             />
