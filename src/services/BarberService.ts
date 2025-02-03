@@ -100,12 +100,8 @@ export async function getBarbers({
   }
 }
 export async function getBarbersById(id: string) {
-  console.log(id)
-
   try {
     const res = await axiosInstance.get(`barberia/find/all/barbero/${id}`)
-    console.log(res)
-
     return res
   } catch (error) {
     throw error

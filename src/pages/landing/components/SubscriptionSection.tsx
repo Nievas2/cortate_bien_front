@@ -14,6 +14,7 @@ import { getAllPlans } from "@/services/PlansService"
 import { Plan } from "@/interfaces/Plan"
 import { Link } from "react-router-dom"
 import { useAuthContext } from "@/contexts/authContext"
+import CountUp from "@/utils/functions/CountUp"
 
 const SubscriptionSection = () => {
   const { authUser } = useAuthContext()
@@ -66,7 +67,15 @@ const SubscriptionSection = () => {
 
               <div className="text-center">
                 <span className="text-4xl font-bold text-white">
-                  $ {plan.precio}
+                  $
+                  <CountUp
+                    from={0}
+                    to={plan.precio}
+                    separator=","
+                    direction="up"
+                    duration={1}
+                    className="count-up-text"
+                  />
                 </span>
               </div>
               <ul className="my-4 space-y-2 text-gray-400">
