@@ -57,6 +57,8 @@ function App() {
               }
             />
 
+            <Route path="/auth" element={<AuthPage />} />
+
             <Route
               path="/auth/iniciar-sesion"
               element={authUser ? <Navigate to="/" /> : <LoginPage />}

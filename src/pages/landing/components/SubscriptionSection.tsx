@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/button"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { motion } from "framer-motion"
-import {
+/* import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table" */
 import { useQuery } from "@tanstack/react-query"
 import { getAllPlans } from "@/services/PlansService"
 import { Plan } from "@/interfaces/Plan"
@@ -27,7 +27,7 @@ const SubscriptionSection = () => {
   })
   return (
     <main className="flex flex-col gap-8 w-full bg-linear-to-t from-gray-main/20 to-gray-main">
-      <section className="flex flex-col gap-8 px-4 md:px-6">
+      <section className="flex flex-col gap-8 px-4 md:px-6 pb-4">
         <div className="flex flex-col gap-4 items-center justify-center text-center">
           <div className="flex flex-col gap-4">
             <motion.h2
@@ -232,7 +232,7 @@ const SubscriptionSection = () => {
           </motion.div> */}
         </div>
       </section>
-
+{/* 
       <section className="flex flex-col gap-8 px-4 md:px-6 pb-3 w-full">
         <div className="flex flex-col gap-4 items-center justify-center text-center">
           <div className="flex flex-col gap-4">
@@ -272,7 +272,7 @@ const SubscriptionSection = () => {
             </TableRow>
           </TableBody>
         </Table>
-      </section>
+      </section> */}
     </main>
   )
 }
