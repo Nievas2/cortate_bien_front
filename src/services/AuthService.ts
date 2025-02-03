@@ -13,6 +13,7 @@ export interface Register {
   telefono: string
   password: string
   tipoDeCuenta: string
+  ciudad_id: string
 }
 
 export function login(user: Login) {
@@ -43,6 +44,8 @@ export function loginGithub() {
 }
 
 export function register(user: Register) {
+  console.log(user);
+  
   try {
     const response = axiosInstance.post("user/register", user)
     return response

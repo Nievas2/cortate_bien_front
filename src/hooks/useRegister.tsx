@@ -15,6 +15,7 @@ export const useRegister = () => {
     telefono,
     tipoDeCuenta,
     password,
+    ciudad_id
   }: Register) => {
     setLoading(true)
 
@@ -27,6 +28,7 @@ export const useRegister = () => {
         telefono,
         tipoDeCuenta,
         password,
+        ciudad_id
       })
       return res
       console.log(res);

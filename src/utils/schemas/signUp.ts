@@ -44,6 +44,7 @@ export const signupSchema = z
       .min(8, "El telefono debe tener al menos 10 caracteres")
       .max(15, "El telefono no puede tener más de 15 caracteres")
       .regex(phoneRegExp, "Formato de telefono no valido"),
+    ciudad_id: z.string().nonempty("La ciudad es requerida"),
     tipoDeCuenta: z.enum(["BARBERO", "CLIENTE"]).default("CLIENTE"),
     confirmPassword: z
       .string()

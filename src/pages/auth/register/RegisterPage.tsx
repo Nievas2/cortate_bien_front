@@ -17,11 +17,27 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useForm } from "react-hook-form"
+import { useQuery } from "@tanstack/react-query"
+import StateSelect from "@/pages/dashboard/components/StateSelect"
+import CountrySelect from "@/pages/dashboard/components/CountrySelect"
+import { getCountries } from "@/services/CountryService"
+import CitySelect from "@/pages/dashboard/components/CitySelect"
 
 const RegisterPage = () => {
   const { loading, register } = useRegister()
+  const [error, setError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [countryId, setCountryId] = useState<undefined | number>()
+  const [stateId, setStateId] = useState<undefined | number>()
+
+  const { data, isSuccess: isSuccessCountries } = useQuery({
+    queryKey: ["countries"],
+    queryFn: getCountries,
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 60 * 24,
+  })
+
   const {
     register: registerForm,
     handleSubmit,
@@ -36,6 +52,7 @@ const RegisterPage = () => {
       telefono: "",
       password: "",
       confirmPassword: "",
+      ciudad_id: "",
       tipoDeCuenta: "",
     },
     resolver: zodResolver(signupSchema),
@@ -54,7 +71,8 @@ const RegisterPage = () => {
       const response = await register(values)
       console.log(response)
       return response
-    } catch (error) {
+    } catch (error: any) {
+      setError(error.response.data.message)
       console.error("Registration failed:", error)
     }
   }
@@ -85,7 +103,7 @@ const RegisterPage = () => {
                     disabled={loading}
                   />
 
-                  <small className="font-bold text-[#ff4444]">
+                  <small className="font-bold text-red-500">
                     {errors.nombre?.message}
                   </small>
                 </div>
@@ -101,7 +119,7 @@ const RegisterPage = () => {
                     disabled={loading}
                   />
 
-                  <small className="font-bold text-[#ff4444]">
+                  <small className="font-bold text-red-500">
                     {errors.apellido?.message}
                   </small>
                 </div>
@@ -117,7 +135,7 @@ const RegisterPage = () => {
                     placeholder="example@gmail.com"
                   />
 
-                  <small className="font-bold text-[#ff4444]">
+                  <small className="font-bold text-red-500">
                     {errors.email?.message}
                   </small>
                 </div>
@@ -133,7 +151,7 @@ const RegisterPage = () => {
                     placeholder="3544888888"
                   />
 
-                  <small className="font-bold text-[#ff4444]">
+                  <small className="font-bold text-red-500">
                     {errors.telefono?.message}
                   </small>
                 </div>
@@ -152,7 +170,7 @@ const RegisterPage = () => {
                     placeholder="YYYY-MM-DD"
                   />
 
-                  <small className="font-bold text-[#ff4444]">
+                  <small className="font-bold text-red-500">
                     {errors.fechaDeNacimiento?.message}
                   </small>
                 </div>
@@ -188,7 +206,7 @@ const RegisterPage = () => {
                     </button>
                   </div>
 
-                  <small className="font-bold text-[#ff4444]">
+                  <small className="font-bold text-red-500">
                     {errors.password?.message}
                   </small>
                 </div>
@@ -224,10 +242,51 @@ const RegisterPage = () => {
                     </button>
                   </div>
 
-                  <small className="font-bold text-[#ff4444]">
+                  <small className="font-bold text-red-500">
                     {errors.confirmPassword?.message}
                   </small>
                 </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label>Pais</Label>
+                  {isSuccessCountries && Array.isArray(data?.data) ? (
+                    <CountrySelect
+                      countries={data?.data}
+                      onChange={(id: any) => setCountryId(id)}
+                    />
+                  ) : (
+                    <span className="text-sm text-red-500">
+                      Algo salio mal en la busqueda del listado de los paises
+                    </span>
+                  )}
+                </div>
+
+                {countryId && (
+                  <div className="flex flex-col gap-2">
+                    <Label>Estado / provincia</Label>
+                    <StateSelect
+                      countryId={countryId}
+                      onChange={(state: number) => setStateId(state)}
+                    />
+                  </div>
+                )}
+
+                {stateId && (
+                  <div className="flex flex-col gap-2">
+                    <Label>Ciudad</Label>
+                    <CitySelect
+                      stateId={stateId}
+                      onChange={(city: number) =>
+                        setValue("ciudad_id", city.toString())
+                      }
+                    />
+                  </div>
+                )}
+                {errors.ciudad_id && errors.ciudad_id.message && (
+                  <span className="text-sm text-red-500">
+                    {errors.ciudad_id?.message}
+                  </span>
+                )}
 
                 <div className="flex flex-col w-full">
                   <Select onValueChange={(e) => setValue("tipoDeCuenta", e)}>
@@ -240,10 +299,12 @@ const RegisterPage = () => {
                     </SelectContent>
                   </Select>
 
-                  <small className="font-bold text-[#ff4444]">
+                  <small className="font-bold text-red-500">
                     {errors.tipoDeCuenta && "El tipo de cuenta es requerido"}
                   </small>
                 </div>
+
+                {error && <span className="text-sm text-red-500">{error}</span>}
 
                 <div className="flex flex-col gap-5">
                   <Button
