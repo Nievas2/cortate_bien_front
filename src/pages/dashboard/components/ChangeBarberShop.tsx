@@ -40,7 +40,7 @@ interface ChangeBarberShopProps {
 
 const ChangeBarberShop = ({ Barbers, refetch }: ChangeBarberShopProps) => {
   return (
-    <section className="flex flex-wrap items-center justify-center gap-8 w-full">
+    <section className="flex flex-wrap items-center justify-center gap-8 w-full py-4">
       {Barbers != undefined && (
         <>
           {Barbers?.map((barber) => (
@@ -50,7 +50,7 @@ const ChangeBarberShop = ({ Barbers, refetch }: ChangeBarberShopProps) => {
             >
               <Dialog>
                 <DialogTrigger className="absolute top-2 right-2 z-40 flex gap-2">
-                  <Button variant="simple" size="xs" className="rounded-sm">
+                  <Button variant="secondary" size="xs" className="rounded-sm">
                     <Icon
                       icon="material-symbols:delete"
                       width="16"
@@ -95,7 +95,11 @@ const ChangeBarberShop = ({ Barbers, refetch }: ChangeBarberShopProps) => {
         <DialogTrigger>
           <div className="relative group">
             <div className="absolute z-0 inset-0 opacity-50 size-48 bg-transparent blur-3xl rounded-xl group-hover:bg-blue-main/40 cursor-pointer" />
-            <Button variant="barberDash" size="barberDash" className=" cursor-pointer">
+            <Button
+              variant="barberDash"
+              size="barberDash"
+              className=" cursor-pointer"
+            >
               <Icon icon="tabler:plus" height={24} width={24} />
               Agregar una barberia
             </Button>
@@ -173,6 +177,7 @@ export function ChangeBarberShopDialog({
     formState: { errors },
     handleSubmit,
     setValue,
+    getValues,
   } = useForm({
     defaultValues: {
       nombre: barber?.nombre ? barber?.nombre : "",
@@ -231,14 +236,17 @@ export function ChangeBarberShopDialog({
       setHours(newhours)
     }
   }
-  console.log(errors)
+
   const [position, setPosition] = useState({
-    lat: 0,
-    lng: 0,
+    lat: barber?.latitud ? barber.latitud.toString() : 0,
+    lng: barber?.longitud ? barber.longitud.toString() : 0,
   })
   const [error, setError] = useState("")
 
+  console.log(getValues())
+
   useEffect(() => {
+    if (barber != undefined) return
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setValue("latitud", position.coords.latitude.toString())
@@ -294,7 +302,14 @@ export function ChangeBarberShopDialog({
             </span>
           </div>
 
-          {position.lat != 0 && <MapSelector position={position} />}
+          {position.lat != 0 && (
+            <MapSelector
+              position={{
+                lat: Number(position.lat),
+                lng: Number(position.lng),
+              }}
+            />
+          )}
 
           {error && (
             <div className="text-red-500 text-sm">
@@ -596,7 +611,7 @@ export function ChangeBarberShopDialog({
           <small className="text-red-500 font-bold">
             {hours == undefined && "Debe ingresar almenos un horario"}
           </small>
-          
+
           <div className="flex sm:flex-row sm:justify-between flex-col justify-center gap-2">
             <Button
               variant="secondary"

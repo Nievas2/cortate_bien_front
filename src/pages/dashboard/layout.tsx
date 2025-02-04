@@ -12,10 +12,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { search } = useLocation()
   const id = search.split("=")[1]
 
-  const {data, isSuccess} = useQuery({
+  const { data, isSuccess } = useQuery({
     queryKey: ["barber", id],
     queryFn: () => getBarberById(id),
-
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 60 * 24,
+    retry: false,
   })
 
   useEffect(() => {
@@ -24,12 +26,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="flex relative w-full">
- 
-        <SideBar open={open} setOpen={setOpen} barber={barbery} />
- 
+      <SideBar open={open} setOpen={setOpen} barber={barbery} />
+
       <div className="relative">
         <Button
-           className={` rounded-full border border-blue-main transition-transform duration-150 size-12 hover:bg-blue-main hover:text-white z-40 ${
+          className={` rounded-full border border-blue-main transition-transform duration-150 size-12 hover:bg-blue-main hover:text-white z-40 ${
             open
               ? "rotate-180 translate-x-2 sm:-translate-x-14 translate-y-2 fixed top-20 "
               : "rotate-0 translate-y-2 translate-x-2 sm:translate-x-2 fixed sm:sticky top-20"

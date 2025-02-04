@@ -34,6 +34,7 @@ const AppointmentsPage = () => {
   )
   const { search } = useLocation()
   const id = search.split("=")[1]
+  const day = new Date().toISOString().split("T")[0]
 
   const { data, refetch } = useQuery({
     queryKey: ["get-appointments-by-barber"],
@@ -48,24 +49,26 @@ const AppointmentsPage = () => {
   useEffect(() => {
     refetch()
   }, [date])
-  console.log(data)
 
   return (
     <Layout>
-      <div className="flex flex-col gap-4 p-0 sm:p-3 w-full h-full">
-        <h1 className="text-4xl font-bold text-center">Turnos de hoy</h1>
-        <div className="flex flex-col gap-2 max-w-40">
-          <div className="flex flex-row gap-2 items-end">
-            <Label>Fecha de nacimiento</Label>
-          </div>
+      <div className="flex flex-col gap-8 p-0 sm:p-3 w-full h-full">
+        <section className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold text-center">Turnos</h1>
+          <p className="text-xl font-light text-center">{day}</p>
+          <div className="flex flex-col gap-2 max-w-40">
+            <div className="flex flex-row gap-2 items-end">
+              <Label>Fecha de nacimiento</Label>
+            </div>
 
-          <Input
-            type="date"
-            onChange={(e) => setDate(e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
-            defaultValue={date}
-            placeholder="YYYY-MM-DD"
-          />
-        </div>
+            <Input
+              type="date"
+              onChange={(e) => setDate(e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
+              defaultValue={date}
+              placeholder="YYYY-MM-DD"
+            />
+          </div>
+        </section>
         {data?.data.map((appointment: Appointment) => (
           <CardAppointment
             appointment={appointment}

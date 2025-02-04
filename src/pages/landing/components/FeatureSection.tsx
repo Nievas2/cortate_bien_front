@@ -4,8 +4,8 @@ const FeatureSection = () => {
   return (
     <section className="flex flex-col items-center justify-center w-full bg-linear-to-b from-gray-main/40 to-gray-main py-10 relative">
       <div className="absolute inset-0 opacity-50">
-        <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-secondary/40 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-secondary/40 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-36 sm:w-64 h-36 sm:h-64 bg-blue-secondary/40 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-36 sm:w-64 h-36 sm:h-64 bg-blue-secondary/40 rounded-full blur-3xl" />
       </div>
       <div className="flex flex-col items-center justify-center gap-4 text-center">
         <div className="flex flex-col items-center justify-center gap-4">

@@ -35,31 +35,35 @@ const CardAppointment = ({
   appointment: Appointment
   refetch: Function
 }) => {
-  const [success, setSuccess] = useState(false)
+  const [successReschedule, setSuccessReschedule] = useState(false)
+  const [successStatus, setSuccessStatus] = useState(false)
   const location = useLocation()
   const id = location.search.split("=")[1]
+  /* Mutate State */
   const { mutate: mutateUpdate, error: errorUpdate } = useMutation({
     mutationKey: ["updateAppointment"],
     mutationFn: async ({ state }: { state: string }) => {
-      updateStatus(id, state)
+      updateStatus(id, state, appointment.id)
     },
     onSuccess: () => {
-      setSuccess(true)
+      setSuccessStatus(true)
       refetch()
     },
   })
 
+  /* Mutate reschedule */
   const { mutate, error } = useMutation({
     mutationKey: ["reschedule"],
     mutationFn: async (data: { fecha: string; hora: string }) => {
       reschedule({ id: appointment.id, fecha: data.fecha, hora: data.hora })
     },
     onSuccess: () => {
-      setSuccess(true)
+      setSuccessReschedule(true)
       refetch()
     },
   })
 
+  /* Form state */
   const {
     handleSubmit: handleSubmitUpdate,
     setValue: setValueState,
@@ -71,6 +75,7 @@ const CardAppointment = ({
     resolver: zodResolver(updateStateSchema),
   })
 
+  /* Form reschedule */
   const {
     formState: { errors },
     register,
@@ -111,6 +116,7 @@ const CardAppointment = ({
         >
           {appointment.estado}
         </span>
+        
       </section>
 
       <section className="flex items-center justify-start">
@@ -125,8 +131,18 @@ const CardAppointment = ({
             <DialogHeader>
               <DialogTitle>Reprogramar turno</DialogTitle>
             </DialogHeader>
-            {success ? (
-              <span>Turno reprogramado</span>
+            {successReschedule ? (
+              <div className="flex flex-col gap-4">
+                <span>Turno reprogramado</span>{" "}
+                <Button
+                  variant="simple"
+                  onClick={() => {
+                    setSuccessReschedule(false)
+                  }}
+                >
+                  Volver a actualizar
+                </Button>
+              </div>
             ) : (
               <form
                 className="flex flex-col gap-4"
@@ -181,8 +197,18 @@ const CardAppointment = ({
             <DialogHeader>
               <DialogTitle>Aceptar o cancelar turno</DialogTitle>
             </DialogHeader>
-            {success ? (
-              <span>Turno actualizado</span>
+            {successStatus ? (
+              <div className="flex flex-col gap-4">
+                <span>Turno actualizado</span>
+                <Button
+                  variant="simple"
+                  onClick={() => {
+                    setSuccessStatus(false)
+                  }}
+                >
+                  Volver a actualizar
+                </Button>
+              </div>
             ) : (
               <form
                 className="flex flex-col gap-8"

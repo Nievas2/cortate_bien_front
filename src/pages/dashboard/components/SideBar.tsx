@@ -44,14 +44,14 @@ const SideBar = ({
 
   return (
     <aside
-      className={`h-full transition-all duration-300 fixed top-18 z-40 sm:sticky sm:top-0  ${
+      className={`h-full transition-all duration-300 absolute top-0 z-40 sm:sticky sm:top-0  ${
         open
           ? "-left-0 w-[260px] sm:w-[420px] bg-gray-main"
           : "-left-full w-0"
       }`}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex flex-col gap-2  sm:sticky sm:top-20 w-full h-full">
+      <div className="flex flex-col gap-2 sm:sticky sm:top-20 w-full h-full">
         {/* Header */}
         <div
           className={`flex items-center justify-end sm:justify-start gap-2 px-6 py-4  ${
