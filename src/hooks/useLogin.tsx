@@ -32,6 +32,7 @@ const useLogin = () => {
         token: data.accesToken,
       }
       setAuthUser(userAuth)
+      window.location.href = "/"
 
       return null
     } catch (error: any) {
