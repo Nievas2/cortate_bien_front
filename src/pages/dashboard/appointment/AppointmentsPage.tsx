@@ -1,12 +1,17 @@
-import { Calendar, dayjsLocalizer } from "react-big-calendar"
+/* import { Calendar, dayjsLocalizer } from "react-big-calendar" */
 import "react-big-calendar/lib/css/react-big-calendar.css"
-import Layout from "../layout"
+import Layout from "../layout" /* 
 import dayjs from "dayjs"
-import "dayjs/locale/es"
+import "dayjs/locale/es" */
 import { useQuery } from "@tanstack/react-query"
 import { useLocation } from "react-router-dom"
 import { getAppointmentsByBarberId } from "@/services/AppointmentService"
-dayjs.locale("es")
+import CardAppointment from "./components/CardAppointment"
+import { Appointment } from "@/interfaces/Appointment"
+import { useEffect, useState } from "react"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+/* dayjs.locale("es") */ /* 
 const messages = {
   allDay: "Todo el día",
   previous: "Anterior",
@@ -22,35 +27,67 @@ const messages = {
   noEventsInRange: "Sin eventos",
 }
 
-const localizer = dayjsLocalizer(dayjs)
+const localizer = dayjsLocalizer(dayjs) */
 const AppointmentsPage = () => {
+  const [date, setDate] = useState<string | undefined>(
+    new Date().toISOString().split("T")[0]
+  )
   const { search } = useLocation()
   const id = search.split("=")[1]
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["get-appointments-by-barber"],
     queryFn: () => {
-      return getAppointmentsByBarberId(id)
+      return getAppointmentsByBarberId(id, date)
     },
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
     retry: false,
   })
 
-  console.log(data);
-  
+  useEffect(() => {
+    refetch()
+  }, [date])
+  console.log(data)
 
   return (
     <Layout>
-      <div className="flex items-end justify-end p-0 sm:p-3 w-full h-full">
-        <Calendar
+      <div className="flex flex-col gap-4 p-0 sm:p-3 w-full h-full">
+        <h1 className="text-4xl font-bold text-center">Turnos de hoy</h1>
+        <div className="flex flex-col gap-2 max-w-40">
+          <div className="flex flex-row gap-2 items-end">
+            <Label>Fecha de nacimiento</Label>
+          </div>
+
+          <Input
+            type="date"
+            onChange={(e) => setDate(e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
+            defaultValue={date}
+            placeholder="YYYY-MM-DD"
+          />
+        </div>
+        {data?.data.map((appointment: Appointment) => (
+          <CardAppointment
+            appointment={appointment}
+            refetch={refetch}
+            key={appointment.id}
+          />
+        ))}
+        {data?.data.length === 0 && (
+          <div className="flex items-center justify-center h-full">
+            <h2 className="text-xl font-bold text-center">
+              No hay turnos para hoy.
+            </h2>
+          </div>
+        )}
+        {/* <Calendar
           localizer={localizer}
           startAccessor="start"
           endAccessor="end"
           views={["month", "week", "day"]}
           className="w-full h-full"
           messages={messages}
-        />
+        /> */}
       </div>
     </Layout>
   )

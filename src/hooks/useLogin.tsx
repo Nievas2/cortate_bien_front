@@ -2,7 +2,7 @@ import { useState } from "react"
 import axiosInstance from "@/api/axiosInstance"
 import { useAuthContext } from "@/contexts/authContext"
 import { decodeJwt } from "@/utils/decodeJwt"
-import { useCookies } from "react-cookie"
+import Cookies from "js-cookie"
 
 export interface LoginParams {
   email: string
@@ -10,7 +10,6 @@ export interface LoginParams {
 }
 
 const useLogin = () => {
-  const [, setCookie] = useCookies(["token"])
   const [loading, setLoading] = useState(false)
   const { setAuthUser } = useAuthContext()
 
@@ -25,7 +24,7 @@ const useLogin = () => {
 
       const data = response.data
 
-      setCookie("token", data.accesToken, { path: "/" })
+      Cookies.set("token", data.accesToken)
 
       const user = decodeJwt(data.accesToken)
       const userAuth = {

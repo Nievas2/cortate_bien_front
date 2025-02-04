@@ -5,8 +5,8 @@ import { Navigate } from 'react-router-dom';
 export const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { authUser } = useAuthContext();
 
-  if (authUser?.user.rol === "USER") {
-    return <Navigate to="/login" replace />;
+  if (authUser?.user.rol === "USER" || authUser == null) {
+    return <Navigate to="/auth/iniciar-sesion" replace />;
   }
 
   return <>{children}</>;

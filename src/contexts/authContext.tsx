@@ -1,6 +1,6 @@
 import { decodeJwt } from "@/utils/decodeJwt"
+import Cookies from "js-cookie"
 import { createContext, useContext, useState } from "react"
-import { useCookies } from "react-cookie"
 
 interface User {
   id: string
@@ -37,8 +37,7 @@ export const AuthContextProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const [cookies] = useCookies(["token"])
-  const token = cookies.token
+  const token = Cookies.get("token")
 
   let storedUser : AuthUser | null = null
   if (token) {

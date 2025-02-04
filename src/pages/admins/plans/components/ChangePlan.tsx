@@ -15,7 +15,7 @@ interface ChangePlanProps {
 }
 
 export function ChangePlan({ plan, refetch }: ChangePlanProps) {
-  const { mutate, isSuccess, isPending } = useMutation({
+  const { mutate, isSuccess, isPending, error } = useMutation({
     mutationKey: ["create-plan"],
     mutationFn: (values: any) => {
       return createPlan(values)
@@ -29,6 +29,7 @@ export function ChangePlan({ plan, refetch }: ChangePlanProps) {
     mutate: update,
     isSuccess: isSuccessUpdate,
     isPending: isPendingUpdate,
+    error: errorUpdate,
   } = useMutation({
     mutationKey: ["update-plan"],
     mutationFn: (values: any) => {
@@ -139,6 +140,13 @@ export function ChangePlan({ plan, refetch }: ChangePlanProps) {
               {errors.cantDias?.message}
             </span>
           </div>
+
+          {error?.message ||
+            (errorUpdate?.message && (
+              <span className="text-sm text-red-600">
+                {error?.message || errorUpdate?.message}
+              </span>
+            ))}
 
           <Button
             variant="simple"
