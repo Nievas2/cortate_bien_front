@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { useState } from "react"
 import { useRegister } from "@/hooks/useRegister"
@@ -25,6 +25,7 @@ import CitySelect from "@/pages/dashboard/components/CitySelect"
 
 const RegisterPage = () => {
   const { loading, register } = useRegister()
+  const navigation = useNavigate()
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -71,6 +72,7 @@ const RegisterPage = () => {
     try {
       const response = await register(values)
       setSuccess(true)
+      navigation(`/auth?email=${response.data.email}`)
       return response
     } catch (error: any) {
       setError(error.response.data.message)
