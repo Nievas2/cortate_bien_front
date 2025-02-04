@@ -12,18 +12,29 @@ import { Icon } from "@iconify/react/dist/iconify.js"
 import CountrySelect from "../dashboard/components/CountrySelect"
 import StateSelect from "../dashboard/components/StateSelect"
 import { getCountries } from "@/services/CountryService"
+import { useAuthContext } from "@/contexts/authContext"
 
 const BarbersPage = () => {
+  const [changeCountry, setChangeCountry] = useState(true)
   const [countryId, setCountryId] = useState<undefined | number>()
   const [stateId, setStateId] = useState<undefined | number>()
   const [city, setCity] = useState<undefined | number>()
   const [order, setOrder] = useState("ASC")
+  const { authUser } = useAuthContext()
   const { currentPage, totalPages, handlePageChange, setTotalPages } =
     usePaginationBarbers()
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["barbers"],
-    queryFn: () => getBarbers({ page: currentPage, city: city, order: order }),
+    queryFn: () => {
+      if (changeCountry)
+        return getBarbers({
+          page: currentPage,
+          city: authUser?.user.city_id,
+          order: order,
+        })
+      return getBarbers({ page: currentPage, city: city, order: order })
+    },
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
   })
@@ -38,9 +49,10 @@ const BarbersPage = () => {
       setTotalPages(data.data.total_pages)
     }
   }, [])
+
   useEffect(() => {
     refetch()
-  }, [city])
+  }, [city, changeCountry])
 
   return (
     <main className="flex flex-col items-center justify-center gap-4 w-full h-full">
@@ -48,40 +60,62 @@ const BarbersPage = () => {
         <h1 className="text-3xl font-semibold text-center">Barberías</h1>
         <div className="flex flex-col gap-4 w-full ">
           <div className="flex flex-wrap justify-center md:justify-start items-end gap-4 w-full">
-            <div className="flex flex-col  gap-2 min-w-60">
-              <Label>Pais</Label>
-              {countries && (
-                <CountrySelect
-                  countries={countries?.data}
-                  onChange={(id: number) => setCountryId(id)}
-                />
-              )}
-
-              {error && (
-                <span className="text-sm text-red-600">
-                  Algo salio mal en la busqueda del listado de los paises
-                </span>
-              )}
-            </div>
-
-            {countryId && (
-              <div className="flex flex-col gap-2 min-w-60">
-                <Label>Estado / provincia</Label>
-                <StateSelect
-                  countryId={countryId}
-                  onChange={(state: number) => setStateId(state)}
-                />
+            {changeCountry ? (
+              <div className="flex justify-center md:justify-start items-center gap-2">
+                <span>Ciudad: {authUser?.user.city}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setChangeCountry(false)}
+                >
+                  <Icon
+                    icon="ic:baseline-change-circle"
+                    width="24"
+                    height="24"
+                  />
+                </Button>
               </div>
-            )}
+            ) : (
+              <>
+                <div className="flex flex-col  gap-2 min-w-60">
+                  <Label>Pais</Label>
+                  {countries && (
+                    <CountrySelect
+                      countries={countries?.data}
+                      onChange={(id: number) => setCountryId(id)}
+                    />
+                  )}
 
-            {stateId && (
-              <div className="flex flex-col gap-2 min-w-60">
-                <Label>Ciudad</Label>
-                <CitySelect
-                  stateId={stateId}
-                  onChange={(city: number) => setCity(city)}
-                />
-              </div>
+                  {error && (
+                    <span className="text-sm text-red-600">
+                      Algo salio mal en la busqueda del listado de los paises
+                    </span>
+                  )}
+                </div>
+
+                {countryId && (
+                  <div className="flex flex-col gap-2 min-w-60">
+                    <Label>Estado / provincia</Label>
+                    <StateSelect
+                      countryId={countryId}
+                      onChange={(state: number) => setStateId(state)}
+                    />
+                  </div>
+                )}
+
+                {stateId && (
+                  <div className="flex flex-col gap-2 min-w-60">
+                    <Label>Ciudad</Label>
+                    <CitySelect
+                      stateId={stateId}
+                      onChange={(city: number) => setCity(city)}
+                    />
+                  </div>
+                )}
+                <Button variant="ghost" onClick={() => setChangeCountry(true)}>
+                  <Icon icon="lets-icons:back" width="24" height="24" />
+                </Button>
+              </>
             )}
 
             <Button
@@ -117,8 +151,14 @@ const BarbersPage = () => {
           <Card key={barber.id} barber={barber} />
         ))}
       </section>
-
-      <section className="flex items-center justify-center">
+      {data?.data.results.length === 0 && (
+        <section className="flex items-center justify-center w-full h-58">
+          <span className="text-2xl text-center w-full">
+            No hay barberias disponibles
+          </span>
+        </section>
+      )}
+      <section className="flex items-center justify-center pb-4">
         <PaginationBarbers
           currentPage={currentPage!}
           totalPages={totalPages}

@@ -35,7 +35,6 @@ const Card = ({ barber }: { barber: BarberGet }) => {
     register: registerForm,
     handleSubmit,
     setValue,
-    getValues,
     formState: { errors },
     reset,
   } = useForm({
@@ -50,7 +49,6 @@ const Card = ({ barber }: { barber: BarberGet }) => {
   const appointmentFunction = async (values: any) => {
     mutate(values)
   }
-  console.log(getValues())
 
   return (
     <div className="flex gap-3 w-[300px] md:w-[400px] bg-gray-main rounded-lg border border-gray-800 p-4">

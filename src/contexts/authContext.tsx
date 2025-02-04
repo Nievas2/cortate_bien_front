@@ -10,6 +10,11 @@ interface User {
   email: string
   rol: string
   tipo_de_cuenta: "CLIENTE" | "BARBERO"
+  city_id: number
+  city: string
+  tokenRefresh: string
+  state: string
+  country: string
 }
 
 export interface AuthUser {
@@ -39,7 +44,7 @@ export const AuthContextProvider = ({
 }) => {
   const token = Cookies.get("token")
 
-  let storedUser : AuthUser | null = null
+  let storedUser: AuthUser | null = null
   if (token) {
     try {
       const user = decodeJwt(token) // Asegúrate de que esto devuelva una cadena JSON válida
