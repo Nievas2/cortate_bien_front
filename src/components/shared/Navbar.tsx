@@ -71,8 +71,8 @@ const Navbar = () => {
               onClick={GoToTop}
               aria-label="Home"
             >
-              {/* <img className="size-14 ml-6 md:size-16" src="/logo.webp" alt="Logo" /> */}
-              Logo
+              <img className="size-14  md:size-16" src="/logo.png" alt="Logo" />
+              {/* Logo */}
             </Link>
 
             <div className={`items-center flex justify-end gap-6`}>
