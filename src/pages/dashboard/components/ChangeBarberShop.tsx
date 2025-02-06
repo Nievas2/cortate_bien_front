@@ -41,7 +41,7 @@ interface ChangeBarberShopProps {
 const ChangeBarberShop = ({ Barbers, refetch }: ChangeBarberShopProps) => {
   return (
     <section className="flex flex-wrap items-center justify-center gap-8 w-full py-4">
-      {Barbers != undefined && (
+      {Barbers != undefined ? (
         <>
           {Barbers?.map((barber) => (
             <div
@@ -90,6 +90,10 @@ const ChangeBarberShop = ({ Barbers, refetch }: ChangeBarberShopProps) => {
             </div>
           ))}
         </>
+      ) : (
+        <span className="text-center">
+          Algo salio mal, intentelo de nuevo más tarde.
+        </span>
       )}
       <Dialog>
         <DialogTrigger>

@@ -66,51 +66,52 @@ const SubscriptionSection = () => {
         </div>
 
         <div className="grid max-w-5xl gap-8 gap-y-14 lg:grid-cols-3 mx-auto">
-          {data?.data.map((plan: Plan) => (
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="flex flex-col gap-2 rounded-lg border bg-[#080808] px-10 py-4"
-              key={plan.id}
-            >
-              <h3 className="text-2xl font-bold text-white">{plan.nombre}</h3>
-              <span className="text-base font-extralight text-gray-400">
-                {plan.descripcion}
-              </span>
-
-              <div className="text-center">
-                <span className="text-4xl font-bold text-white">
-                  $
-                  <CountUp
-                    from={0}
-                    to={plan.precio}
-                    separator=","
-                    direction="up"
-                    duration={1}
-                    className="count-up-text"
-                  />
+          {data != undefined ? (
+            data?.data.map((plan: Plan) => (
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: 0.2 }}
+                viewport={{ once: true }}
+                className="flex flex-col gap-2 rounded-lg border bg-[#080808] px-10 py-4"
+                key={plan.id}
+              >
+                <h3 className="text-2xl font-bold text-white">{plan.nombre}</h3>
+                <span className="text-base font-extralight text-gray-400">
+                  {plan.descripcion}
                 </span>
-              </div>
-              <ul className="my-4 space-y-2 text-gray-400">
-                <li className="flex gap-4 text-base items-center">
-                  <Icon
-                    icon="fluent-mdl2:accept-medium"
-                    width="16"
-                    height="16"
-                  />
-                  {plan.turnosMaximos} turnos mensuales
-                </li>
-                <li className="flex gap-4 text-base items-center">
-                  <Icon
-                    icon="fluent-mdl2:accept-medium"
-                    width="16"
-                    height="16"
-                  />
-                  {plan.cantDias} días de prueba
-                </li>
-                {/* <li className="flex gap-4 text-base items-center">
+
+                <div className="text-center">
+                  <span className="text-4xl font-bold text-white">
+                    $
+                    <CountUp
+                      from={0}
+                      to={plan.precio}
+                      separator=","
+                      direction="up"
+                      duration={1}
+                      className="count-up-text"
+                    />
+                  </span>
+                </div>
+                <ul className="my-4 space-y-2 text-gray-400">
+                  <li className="flex gap-4 text-base items-center">
+                    <Icon
+                      icon="fluent-mdl2:accept-medium"
+                      width="16"
+                      height="16"
+                    />
+                    {plan.turnosMaximos} turnos mensuales
+                  </li>
+                  <li className="flex gap-4 text-base items-center">
+                    <Icon
+                      icon="fluent-mdl2:accept-medium"
+                      width="16"
+                      height="16"
+                    />
+                    {plan.cantDias} días de prueba
+                  </li>
+                  {/* <li className="flex gap-4 text-base items-center">
                   <Icon
                     icon="fluent-mdl2:accept-medium"
                     width="16"
@@ -118,21 +119,24 @@ const SubscriptionSection = () => {
                   />
                   Reportes básicos {plan.}
                 </li> */}
-              </ul>
-              <Link
-                className="flex items-end w-full h-full"
-                to={
-                  authUser == null
-                    ? "/auth/iniciar-sesion"
-                    : `/prices?id=${plan.id}`
-                }
-              >
-                <Button className=" w-full bg-[#007FFF] text-white hover:bg-[#0d3868]">
-                  Comenzar ahora
-                </Button>
-              </Link>
-            </motion.div>
-          ))}
+                </ul>
+                <Link
+                  className="flex items-end w-full h-full"
+                  to={
+                    authUser == null
+                      ? "/auth/iniciar-sesion"
+                      : `/prices?id=${plan.id}`
+                  }
+                >
+                  <Button className=" w-full bg-[#007FFF] text-white hover:bg-[#0d3868]">
+                    Comenzar ahora
+                  </Button>
+                </Link>
+              </motion.div>
+            ))
+          ) : (
+            <span className="text-2xl font-bold text-white col-span-full">No se encontraron planes</span>
+          )}
 
           {/* <motion.div
             initial={{ opacity: 0, y: 50 }}
