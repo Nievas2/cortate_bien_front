@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
 const LoginPage = () => {
+  document.title = "Cortate bien | Iniciar sesión"
   const { loading, login } = useLogin()
   const [showPassword, setShowPassword] = useState(false)
   /*   const [success, setSuccess] = useState("") */

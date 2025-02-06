@@ -7,6 +7,7 @@ import usePagination from "@/hooks/dashboard/usePagination"
 import { useEffect, useState } from "react"
 
 const ReviewsPage = () => {
+  document.title = "Cortate bien | Reseñas"
   const [totalReviews, setTotalReviews] = useState(0)
   const { currentPage, totalPages, handlePageChange, setTotalPages } =
     usePagination()

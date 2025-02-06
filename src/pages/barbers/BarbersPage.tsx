@@ -15,6 +15,7 @@ import { getCountries } from "@/services/CountryService"
 import { useAuthContext } from "@/contexts/authContext"
 
 const BarbersPage = () => {
+  document.title = "Cortate bien | Barberias"
   const [changeCountry, setChangeCountry] = useState(true)
   const [countryId, setCountryId] = useState<undefined | number>()
   const [stateId, setStateId] = useState<undefined | number>()

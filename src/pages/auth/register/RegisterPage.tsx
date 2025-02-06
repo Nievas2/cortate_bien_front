@@ -24,6 +24,7 @@ import { getCountries } from "@/services/CountryService"
 import CitySelect from "@/pages/dashboard/components/CitySelect"
 
 const RegisterPage = () => {
+  document.title = "Cortate bien | Registro"
   const { loading, register } = useRegister()
   const navigation = useNavigate()
   const [error, setError] = useState("")

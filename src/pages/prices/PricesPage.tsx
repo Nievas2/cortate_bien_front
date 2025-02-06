@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query"
 import { createOrderByPlan } from "@/services/OrderService"
 
 const PricesPage = () => {
+  document.title = "Cortate bien | Precios"
   const navigate = useNavigate()
   const { search } = useLocation()
   const id = search.split("=")[1]

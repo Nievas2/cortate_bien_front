@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react/dist/iconify.js"
 import { Link } from "react-router-dom"
 
 const NotFoundPage = () => {
+  document.title = "Cortate bien | Not Found"
   return (
     <main className="flex items-center justify-center w-full min-h-screen">
       <NotFound>
