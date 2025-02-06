@@ -39,6 +39,10 @@ export async function updateBarber(
   id: string,
   barberUpdated: Barber
 ) {
+  barberUpdated.latitud = Number(barberUpdated.latitud)
+  barberUpdated.longitud = Number(barberUpdated.longitud)
+  barberUpdated.cantidadDeMinutosPorTurno = Number(barberUpdated.cantidadDeMinutosPorTurno)
+  barberUpdated.ciudad_id = Number(barberUpdated.ciudad_id)
   // Normalizar los campos del objeto actualizado
   barberUpdated.horarios.forEach((element) => {
     if (element.pausa_inicio != null && element.pausa_inicio.length === 0)
