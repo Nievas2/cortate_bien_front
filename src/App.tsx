@@ -34,7 +34,11 @@ function App() {
 
             <Route
               path="/prices"
-              element={authUser ? <PricesPage /> : <Navigate to="/login" />}
+              element={
+                <ProtectedRoute>
+                  <PricesPage />
+                </ProtectedRoute>
+              }
             />
 
             <Route

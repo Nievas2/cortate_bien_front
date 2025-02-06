@@ -9,15 +9,19 @@ import { motion } from "framer-motion"
   TableHeader,
   TableRow,
 } from "@/components/ui/table" */
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { getAllPlans } from "@/services/PlansService"
 import { Plan } from "@/interfaces/Plan"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { useAuthContext } from "@/contexts/authContext"
 import CountUp from "@/utils/functions/CountUp"
+import { createOrderByPlan } from "@/services/OrderService"
+import { useEffect } from "react"
 
 const SubscriptionSection = () => {
+  const location = useLocation()
   const { authUser } = useAuthContext()
+  const id = location.search.split("=")[1]
   const { data } = useQuery({
     queryKey: ["plans"],
     queryFn: getAllPlans,
@@ -25,6 +29,17 @@ const SubscriptionSection = () => {
     staleTime: 1000 * 60 * 60 * 24,
     retry: false,
   })
+
+  const { mutate } = useMutation({
+    mutationKey: ["create-order"],
+    mutationFn: (id: string) => {
+      return createOrderByPlan(id)
+    },
+  })
+
+  useEffect(() => {
+    if (id) return mutate(id)
+  }, [])
   return (
     <main className="flex flex-col gap-8 w-full bg-linear-to-t from-gray-main/20 to-gray-main">
       <section className="flex flex-col gap-8 px-4 md:px-6 pb-4">
@@ -232,7 +247,7 @@ const SubscriptionSection = () => {
           </motion.div> */}
         </div>
       </section>
-{/* 
+      {/* 
       <section className="flex flex-col gap-8 px-4 md:px-6 pb-3 w-full">
         <div className="flex flex-col gap-4 items-center justify-center text-center">
           <div className="flex flex-col gap-4">
