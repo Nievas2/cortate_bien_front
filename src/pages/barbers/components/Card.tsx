@@ -50,6 +50,8 @@ const Card = ({ barber }: { barber: BarberGet }) => {
     mutate(values)
   }
 
+  console.log(error)
+
   return (
     <div className="flex gap-3 w-[300px] md:w-[400px] bg-gray-main rounded-lg border border-gray-800 p-4">
       <img className="size-40" src={barber.imagen_perfil} alt={barber.nombre} />
@@ -143,7 +145,7 @@ const Card = ({ barber }: { barber: BarberGet }) => {
                       </small>
                     </div>
                     <small className="text-red-500 font-bold">
-                      {error?.message}
+                      {(error as any)?.response?.data?.message}
                     </small>
 
                     <Button variant="simple" type="submit">
