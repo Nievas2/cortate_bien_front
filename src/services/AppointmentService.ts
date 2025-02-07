@@ -19,15 +19,21 @@ export async function getAppointmentsByBarberId(id: string, date?: string) {
   }
 }
 
+/* export async function getAppointmentsByUserId(id: string, date?: string) {
+  try {
+    const res = await axiosInstance.get(`turno/find/all/user?date=${date}`)
+    return res
+  } catch (error) {
+    throw error
+  }
+} */
+
 export async function updateStatus(
   idBarber: string,
-  state: string,
-  idAppointment: string
-) {
+  data: { id: string; estado: string }[]
+) {  
   try {
-    const res = await axiosInstance.put(`turno/update/${idBarber}`, [
-      { id: idAppointment, estado: state },
-    ])
+    const res = await axiosInstance.put(`turno/update/${idBarber}`, data)
     return res
   } catch (error) {
     throw error

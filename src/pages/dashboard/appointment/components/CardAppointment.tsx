@@ -126,7 +126,6 @@ const CardAppointment = ({
         </span>
       </section>
 
-      {appointment.estado === "PENDIENTE" && (
         <section className="flex items-center justify-start">
           <Dialog>
             <DialogTrigger>
@@ -159,41 +158,50 @@ const CardAppointment = ({
                   className="flex flex-col gap-4"
                   onSubmit={handleSubmit((data) => mutate(data))}
                 >
-                  <div className="flex flex-col gap-2">
-                    <div className="flex flex-row gap-2 items-end">
-                      <Label>Fecha de nacimiento</Label>
-                    </div>
-
-                    <Input
-                      type="date"
-                      {...register("fecha")}
-                      onChange={(e) => setValue("fecha", e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
-                      placeholder="YYYY-MM-DD"
-                    />
-
-                    <small className="font-bold text-red-500">
-                      {errors.fecha?.message}
-                    </small>
-                  </div>
-
-                  <div className="flex flex-col gap-2 w-full">
-                    <Label>Horario</Label>
-                    <Input
-                      placeholder="Una hora entre 00:00 y 23:59"
-                      type="text"
-                      {...register(`hora`)}
-                    />
-                    <small className="font-bold text-red-500">
-                      {errors.hora?.message}
-                    </small>
-                  </div>
-
-                  {error && (
-                    <span className="text-red-500 text-sm">
-                      {error.message}
+                  {appointment.estado === "CANCELADO" ? (
+                    <span>
+                      El turno se encuentra cancelado y no puede ser
+                      reprogramado
                     </span>
+                  ) : (
+                    <>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex flex-row gap-2 items-end">
+                          <Label>Fecha de nacimiento</Label>
+                        </div>
+
+                        <Input
+                          type="date"
+                          {...register("fecha")}
+                          onChange={(e) => setValue("fecha", e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
+                          placeholder="YYYY-MM-DD"
+                        />
+
+                        <small className="font-bold text-red-500">
+                          {errors.fecha?.message}
+                        </small>
+                      </div>
+
+                      <div className="flex flex-col gap-2 w-full">
+                        <Label>Horario</Label>
+                        <Input
+                          placeholder="Una hora entre 00:00 y 23:59"
+                          type="text"
+                          {...register(`hora`)}
+                        />
+                        <small className="font-bold text-red-500">
+                          {errors.hora?.message}
+                        </small>
+                      </div>
+
+                      {error && (
+                        <span className="text-red-500 text-sm">
+                          {error.message}
+                        </span>
+                      )}
+                      <Button variant="simple">Reprogramar</Button>
+                    </>
                   )}
-                  <Button variant="simple">Reprogramar</Button>
                 </form>
               )}
             </DialogContent>
@@ -230,32 +238,41 @@ const CardAppointment = ({
                   className="flex flex-col gap-8"
                   onSubmit={handleSubmitUpdate((data) => mutateUpdate(data))}
                 >
-                  <Select onValueChange={(e) => setValueState("state", e)}>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Estado del turno" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-gray-main text-white w-full">
-                      <SelectItem value="CONFIRMADO">Aceptado</SelectItem>
-                      <SelectItem value="CANCELADO">Cancelado</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errorsState.root?.message && (
-                    <span className="text-red-500 text-sm">
-                      {errorsState.root.message}
+                  {appointment.estado === "CANCELADO" ? (
+                    <span>
+                      El turno se encuentra cancelado y no puede ser cambiado.
                     </span>
+                  ) : (
+                    <>
+                      <Select onValueChange={(e) => setValueState("state", e)}>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Estado del turno" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-main text-white w-full">
+                          <SelectItem value="CONFIRMADO">Aceptado</SelectItem>
+                          <SelectItem value="CANCELADO">Cancelado</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      {errorsState.root?.message && (
+                        <span className="text-red-500 text-sm">
+                          {errorsState.root.message}
+                        </span>
+                      )}
+                      {errorUpdate && (
+                        <span className="text-red-500 text-sm">
+                          {errorUpdate.message}
+                        </span>
+                      )}
+                      <Button variant="simple">Actualizar estado</Button>
+                    </>
                   )}
-                  {errorUpdate && (
-                    <span className="text-red-500 text-sm">
-                      {errorUpdate.message}
-                    </span>
-                  )}
-                  <Button variant="simple">Actualizar estado</Button>
                 </form>
               )}
             </DialogContent>
           </Dialog>
         </section>
-      )}
+  
     </main>
   )
 }
