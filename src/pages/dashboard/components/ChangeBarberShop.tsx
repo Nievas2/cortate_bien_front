@@ -530,6 +530,7 @@ export function ChangeBarberShopDialog({
                           ...updatedHours[index], // Mantener los otros valores del objeto
                           dia: e, // Actualizar solo el campo "dia"
                         }
+                        setValue(`horarios.${index}.dia`, e)
                         setHours(updatedHours) // Actualizar el estado con el nuevo array
                       }}
                       value={hour.dia}
