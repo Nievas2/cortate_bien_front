@@ -31,9 +31,13 @@ import { useState } from "react"
 const CardAppointment = ({
   appointment,
   refetch,
+  selected,
+  handleAddSelect,
 }: {
   appointment: Appointment
   refetch: Function
+  selected: boolean
+  handleAddSelect: Function
 }) => {
   const [successReschedule, setSuccessReschedule] = useState(false)
   const [successStatus, setSuccessStatus] = useState(false)
@@ -43,8 +47,9 @@ const CardAppointment = ({
   const { mutate: mutateUpdate, error: errorUpdate } = useMutation({
     mutationKey: ["updateAppointment"],
     mutationFn: async ({ state }: { state: string }) => {
-      updateStatus(id, state, appointment.id)
+      updateStatus(id, [{ id: appointment.id, estado: state }])
     },
+    onMutate: () => {},
     onSuccess: () => {
       setSuccessStatus(true)
       refetch()
@@ -88,13 +93,16 @@ const CardAppointment = ({
     },
     resolver: zodResolver(rescheduleSchema),
   })
-  console.log(errorsState)
 
   return (
-    <main className="flex flex-row sm:flex-col sm:items-center md:flex-row  gap-4 h-fit rounded-2xl shadow shadow-white p-3">
+    <main className="flex flex-col items-center md:flex-row  gap-4 h-fit rounded-2xl shadow shadow-white p-3">
       <section className="flex gap-4 w-full">
         <section className="flex items-center justify-center">
-          <Icon icon="mdi:calendar" className="text-4xl text-gray-600" />
+          <Input
+            type="checkbox"
+            onChange={() => handleAddSelect(appointment.id)}
+            checked={selected}
+          />
         </section>
 
         <section className="flex flex-col items-start justify-center w-full">
@@ -116,129 +124,138 @@ const CardAppointment = ({
         >
           {appointment.estado}
         </span>
-        
       </section>
 
-      <section className="flex items-center justify-start">
-        <Dialog>
-          <DialogTrigger>
-            <Button variant="ghost" className="flex flex-col gap-2 text-white">
-              {/* Reprogramar */}
-              <Icon icon="mdi:reschedule" width={24} height={24} />
-            </Button>
-          </DialogTrigger>
-          <DialogContent forceMount>
-            <DialogHeader>
-              <DialogTitle>Reprogramar turno</DialogTitle>
-            </DialogHeader>
-            {successReschedule ? (
-              <div className="flex flex-col gap-4">
-                <span>Turno reprogramado</span>{" "}
-                <Button
-                  variant="simple"
-                  onClick={() => {
-                    setSuccessReschedule(false)
-                  }}
-                >
-                  Volver a actualizar
-                </Button>
-              </div>
-            ) : (
-              <form
-                className="flex flex-col gap-4"
-                onSubmit={handleSubmit((data) => mutate(data))}
+      {appointment.estado === "PENDIENTE" && (
+        <section className="flex items-center justify-start">
+          <Dialog>
+            <DialogTrigger>
+              <Button
+                variant="ghost"
+                className="flex flex-col gap-2 text-white"
               >
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-row gap-2 items-end">
-                    <Label>Fecha de nacimiento</Label>
+                {/* Reprogramar */}
+                <Icon icon="mdi:reschedule" width={24} height={24} />
+              </Button>
+            </DialogTrigger>
+            <DialogContent forceMount>
+              <DialogHeader>
+                <DialogTitle>Reprogramar turno</DialogTitle>
+              </DialogHeader>
+              {successReschedule ? (
+                <div className="flex flex-col gap-4">
+                  <span>Turno reprogramado</span>{" "}
+                  <Button
+                    variant="simple"
+                    onClick={() => {
+                      setSuccessReschedule(false)
+                    }}
+                  >
+                    Volver a actualizar
+                  </Button>
+                </div>
+              ) : (
+                <form
+                  className="flex flex-col gap-4"
+                  onSubmit={handleSubmit((data) => mutate(data))}
+                >
+                  <div className="flex flex-col gap-2">
+                    <div className="flex flex-row gap-2 items-end">
+                      <Label>Fecha de nacimiento</Label>
+                    </div>
+
+                    <Input
+                      type="date"
+                      {...register("fecha")}
+                      onChange={(e) => setValue("fecha", e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
+                      placeholder="YYYY-MM-DD"
+                    />
+
+                    <small className="font-bold text-red-500">
+                      {errors.fecha?.message}
+                    </small>
                   </div>
 
-                  <Input
-                    type="date"
-                    {...register("fecha")}
-                    onChange={(e) => setValue("fecha", e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
-                    placeholder="YYYY-MM-DD"
-                  />
+                  <div className="flex flex-col gap-2 w-full">
+                    <Label>Horario</Label>
+                    <Input
+                      placeholder="Una hora entre 00:00 y 23:59"
+                      type="text"
+                      {...register(`hora`)}
+                    />
+                    <small className="font-bold text-red-500">
+                      {errors.hora?.message}
+                    </small>
+                  </div>
 
-                  <small className="font-bold text-red-500">
-                    {errors.fecha?.message}
-                  </small>
-                </div>
+                  {error && (
+                    <span className="text-red-500 text-sm">
+                      {error.message}
+                    </span>
+                  )}
+                  <Button variant="simple">Reprogramar</Button>
+                </form>
+              )}
+            </DialogContent>
+          </Dialog>
 
-                <div className="flex flex-col gap-2 w-full">
-                  <Label>Horario</Label>
-                  <Input
-                    placeholder="Una hora entre 00:00 y 23:59"
-                    type="text"
-                    {...register(`hora`)}
-                  />
-                  <small className="font-bold text-red-500">
-                    {errors.hora?.message}
-                  </small>
-                </div>
-
-                {error && (
-                  <span className="text-red-500 text-sm">{error.message}</span>
-                )}
-                <Button variant="simple">Reprogramar</Button>
-              </form>
-            )}
-          </DialogContent>
-        </Dialog>
-
-        <Dialog>
-          <DialogTrigger>
-            <Button variant="ghost" className="flex flex-col gap-2 text-white">
-              {/*   Aceptar/Cancelar */}
-              <Icon icon="material-symbols:schedule" width={24} height={24} />
-            </Button>
-          </DialogTrigger>
-          <DialogContent forceMount>
-            <DialogHeader>
-              <DialogTitle>Aceptar o cancelar turno</DialogTitle>
-            </DialogHeader>
-            {successStatus ? (
-              <div className="flex flex-col gap-4">
-                <span>Turno actualizado</span>
-                <Button
-                  variant="simple"
-                  onClick={() => {
-                    setSuccessStatus(false)
-                  }}
-                >
-                  Volver a actualizar
-                </Button>
-              </div>
-            ) : (
-              <form
-                className="flex flex-col gap-8"
-                onSubmit={handleSubmitUpdate((data) => mutateUpdate(data))}
+          <Dialog>
+            <DialogTrigger>
+              <Button
+                variant="ghost"
+                className="flex flex-col gap-2 text-white"
               >
-                <Select onValueChange={(e) => setValueState("state", e)}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Estado del turno" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-main text-white w-full">
-                    <SelectItem value="CONFIRMADO">Aceptado</SelectItem>
-                    <SelectItem value="CANCELADO">Cancelado</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errorsState.root?.message && (
-                  <span className="text-red-500 text-sm">
-                    {errorsState.root.message}
-                  </span>
-                )}
-                {errorUpdate && (
-                  <span className="text-red-500 text-sm">
-                    {errorUpdate.message}
-                  </span>
-                )}
-                <Button variant="simple">Actualizar estado</Button>
-              </form>
-            )}
-          </DialogContent>
-        </Dialog>
-      </section>
+                {/*   Aceptar/Cancelar */}
+                <Icon icon="material-symbols:schedule" width={24} height={24} />
+              </Button>
+            </DialogTrigger>
+            <DialogContent forceMount>
+              <DialogHeader>
+                <DialogTitle>Aceptar o cancelar turno</DialogTitle>
+              </DialogHeader>
+              {successStatus ? (
+                <div className="flex flex-col gap-4">
+                  <span>Turno actualizado</span>
+                  <Button
+                    variant="simple"
+                    onClick={() => {
+                      setSuccessStatus(false)
+                    }}
+                  >
+                    Volver a actualizar
+                  </Button>
+                </div>
+              ) : (
+                <form
+                  className="flex flex-col gap-8"
+                  onSubmit={handleSubmitUpdate((data) => mutateUpdate(data))}
+                >
+                  <Select onValueChange={(e) => setValueState("state", e)}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Estado del turno" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-main text-white w-full">
+                      <SelectItem value="CONFIRMADO">Aceptado</SelectItem>
+                      <SelectItem value="CANCELADO">Cancelado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errorsState.root?.message && (
+                    <span className="text-red-500 text-sm">
+                      {errorsState.root.message}
+                    </span>
+                  )}
+                  {errorUpdate && (
+                    <span className="text-red-500 text-sm">
+                      {errorUpdate.message}
+                    </span>
+                  )}
+                  <Button variant="simple">Actualizar estado</Button>
+                </form>
+              )}
+            </DialogContent>
+          </Dialog>
+        </section>
+      )}
     </main>
   )
 }

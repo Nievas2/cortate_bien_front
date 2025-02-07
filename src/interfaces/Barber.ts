@@ -8,7 +8,7 @@ export interface Barber {
   longitud: number
   direccion: string
   cantidadDeMinutosPorTurno: number
-  ciudad_id: string
+  ciudad_id: number
   imagenes: string[]
   imagen_perfil: string
   horarios: Hour[]
@@ -22,7 +22,7 @@ export interface BarberGet {
   longitud: number
   direccion: string
   cantidadDeMinutosPorTurno: number
-  ciudad_id: string
+  ciudad_id: number
   ciudad: string
   puntaje: number
   cantResenas: number

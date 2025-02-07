@@ -30,7 +30,8 @@ const buttonVariants = cva(
         xs: "h-6 rounded-full px-1",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
-        barberDash: " size-48",
+        barberDash: "size-48",
+        rounded: "size-12 rounded-full",
       },
     },
     defaultVariants: {
