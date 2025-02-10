@@ -29,6 +29,7 @@ const RegisterPage = () => {
   const navigation = useNavigate()
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
+  const [checkbox, setCheckbox] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [countryId, setCountryId] = useState<undefined | number>()
@@ -70,6 +71,9 @@ const RegisterPage = () => {
   }
 
   const registerFunction = async (values: Register) => {
+    if (checkbox === false) {
+      return setError("Debes aceptar los terminos y condiciones")
+    }
     try {
       const response = await register(values)
       setSuccess(true)
@@ -314,6 +318,31 @@ const RegisterPage = () => {
                     <small className="font-bold text-red-500">
                       {errors.tipoDeCuenta && "El tipo de cuenta es requerido"}
                     </small>
+                  </div>
+
+                  <div className="flex gap-3 items-center justify-center">
+                    <Input
+                      type="checkbox"
+                      className="size-5"
+                      onChange={(e) => setCheckbox(e.target.checked)}
+                      required
+                    />
+                    <span className="text-sm">
+                      Acepto las{" "}
+                      <Link
+                        to="/terms-and-conditions"
+                        className="font-semibold text-main hover:underline"
+                      >
+                        Condiciones del servicio
+                      </Link>{" "}
+                      y la{" "}
+                      <Link
+                        to="/privacy-policy"
+                        className="font-semibold text-main hover:underline"
+                      >
+                        Política de privacidad
+                      </Link>
+                    </span>
                   </div>
 
                   {error && (
