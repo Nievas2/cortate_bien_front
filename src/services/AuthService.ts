@@ -44,8 +44,8 @@ export function loginGithub() {
 }
 
 export function register(user: Register) {
-  console.log(user);
-  
+  console.log(user)
+
   try {
     const response = axiosInstance.post("user/register", user)
     return response
@@ -69,6 +69,29 @@ export function putPassword(password: string, token: string) {
   try {
     const response = axiosInstance.put(`user/reset?token=${token}`, {
       password: password,
+    })
+    return response
+  } catch (error) {
+    throw error
+  }
+}
+
+export function validateCode(code: string, email: string) {
+  try {
+    const response = axiosInstance.post(`auth/verify`, {
+      email: email,
+      token: code,
+    })
+    return response
+  } catch (error) {
+    throw error
+  }
+}
+
+export function resendcode(email: string) {
+  try {
+    const response = axiosInstance.post(`auth/resend`, {
+      email: email,
     })
     return response
   } catch (error) {

@@ -183,6 +183,16 @@ const LoginPage = () => {
                       Registrarse
                     </Link>
                   </p>
+
+                  <p className="text-sm font-light text-center">
+                    ¿Necesitar activar tu cuenta?{" "}
+                    <Link
+                      to="/auth"
+                      className="font-semibold text-main hover:underline"
+                    >
+                      Activar
+                    </Link>
+                  </p>
                 </div>
               </div>
             </div>
