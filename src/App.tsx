@@ -19,6 +19,8 @@ import BarbersPage from "./pages/barbers/BarbersPage"
 import DisabledBarbersPage from "./pages/admins/disabledBarbers/DisabledBarbersPage"
 import PlansPage from "./pages/admins/plans/PlansPage"
 import ProfilePage from "./pages/profile/ProfilePage"
+import TermsAndConditions from "./components/shared/footer/termsAndConditions"
+import PrivacyPolicy from "./components/shared/footer/privacyPolicy"
 function App() {
   const location = useLocation()
   const { authUser } = useAuthContext()
@@ -32,6 +34,13 @@ function App() {
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<LandingPage />} />
 
+            <Route
+              path="/terms-and-conditions"
+              element={<TermsAndConditions />}
+            />
+
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            
             <Route
               path="/prices"
               element={
