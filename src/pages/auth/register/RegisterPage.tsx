@@ -84,10 +84,14 @@ const RegisterPage = () => {
       console.error("Registration failed:", error)
     }
   }
-  /* 
+
   function loginGoogle() {
-    window.open(`${import.meta.env.VITE_API_URL}user/auth/google`, "_self")
-  } */
+    window.open(`${import.meta.env.VITE_API_URL}auth/google`, "_self")
+  }
+
+  function loginFacebook() {
+    window.open(`${import.meta.env.VITE_API_URL}auth/facebook`, "_self")
+  }
   return (
     <section className="flex items-center justify-center w-full min-h-screen py-8">
       <div className="w-full sm:w-[450px] rounded-lg shadow-sm p-6 sm:p-8 flex flex-col gap-3 bg-gray-main">
@@ -208,13 +212,13 @@ const RegisterPage = () => {
                         onClick={togglePasswordVisibility}
                       >
                         <Icon
-                          className={`h-5 w-5 text-black transition-opacity duration-200 ${
+                          className={`h-5 w-5 text-white transition-opacity duration-200 ${
                             showPassword ? "opacity-100" : "opacity-0"
                           }`}
                           icon="ph:eye-bold"
                         />
                         <Icon
-                          className={`h-5 w-5 text-black transition-opacity duration-200 absolute ${
+                          className={`h-5 w-5 text-white transition-opacity duration-200 absolute ${
                             showPassword ? "opacity-0" : "opacity-100"
                           }`}
                           icon="ph:eye-closed-bold"
@@ -244,13 +248,13 @@ const RegisterPage = () => {
                         onClick={toggleConfirmPasswordVisibility}
                       >
                         <Icon
-                          className={`h-5 w-5 text-black transition-opacity duration-200 ${
+                          className={`h-5 w-5 text-white transition-opacity duration-200 ${
                             showConfirmPassword ? "opacity-100" : "opacity-0"
                           }`}
                           icon="ph:eye-bold"
                         />
                         <Icon
-                          className={`h-5 w-5 text-black transition-opacity duration-200 absolute ${
+                          className={`h-5 w-5 text-white transition-opacity duration-200 absolute ${
                             showConfirmPassword ? "opacity-0" : "opacity-100"
                           }`}
                           icon="ph:eye-closed-bold"
@@ -362,6 +366,31 @@ const RegisterPage = () => {
                       Registrarse
                     </Button>
                   </div>
+
+                  <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-white after:mt-0.5 after:flex-1 after:border-t after:border-white">
+                    <p className="mx-4 mb-0 text-center text-white">o</p>
+                  </div>
+                  
+                  <Button
+                    variant="simple"
+                    className="flex gap-3"
+                    type="button"
+                    onClick={loginGoogle}
+                  >
+                    <Icon className="size-6" icon="logos:google-icon" />
+                    <span className="text-sm">Registrarse con Google</span>
+                  </Button>
+
+                  <Button
+                    variant="simple"
+                    className="flex gap-3"
+                    type="button"
+                    onClick={loginFacebook}
+                  >
+                    <Icon className="size-6" icon="logos:facebook" />
+                    <span className="text-sm">Registrarse con Facebook</span>
+                  </Button>
+
                   {/* 
 
                 <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-white after:mt-0.5 after:flex-1 after:border-t after:border-white">

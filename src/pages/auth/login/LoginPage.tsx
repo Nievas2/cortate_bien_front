@@ -34,11 +34,15 @@ const LoginPage = () => {
     setShowPassword((prevState) => !prevState)
   }
 
-  /*   function loginGoogle() {
-    window.open(`${import.meta.env.VITE_API_URL}user/auth/google`, "_self")
-  } */
+  function loginGoogle() {
+    window.open(`${import.meta.env.VITE_API_URL}auth/google`, "_self")
+  }
 
-  const loginFunction = handleSubmit(async (values) => {    
+  function loginFacebook() {
+    window.open(`${import.meta.env.VITE_API_URL}auth/facebook`, "_self")
+  }
+
+  const loginFunction = handleSubmit(async (values) => {
     try {
       await login(values)
     } catch (error: any) {
@@ -98,13 +102,13 @@ const LoginPage = () => {
                         onClick={togglePasswordVisibility}
                       >
                         <Icon
-                          className={`h-5 w-5 text-black transition-opacity duration-200 ${
+                          className={`h-5 w-5 text-white transition-opacity duration-200 ${
                             showPassword ? "opacity-100" : "opacity-0"
                           }`}
                           icon="ph:eye-bold"
                         />
                         <Icon
-                          className={`h-5 w-5 text-black transition-opacity duration-200 absolute ${
+                          className={`h-5 w-5 text-white transition-opacity duration-200 absolute ${
                             showPassword ? "opacity-0" : "opacity-100"
                           }`}
                           icon="ph:eye-closed-bold"
@@ -134,22 +138,31 @@ const LoginPage = () => {
                       {loading ? "Cargando..." : "Iniciar sesión"}
                       <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
                     </Button>
-
-                    {/* <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-black after:mt-0.5 after:flex-1 after:border-t after:border-black">
-                          <p className="mx-4 mb-0 text-center dark:text-white">
-                            o
-                          </p>
-                        </div>
-                        
-                        <button
-                          className="px-5 py-2.5 border flex justify-center items-center gap-2 bg-white border-blue-main hover:bg-white/80 transition-colors duration-150 rounded-lg w-full "
-                          type="button"
-                          onClick={loginGoogle}
-                        >
-                          <Icon className="h-6 w-6" icon="logos:google-icon" />
-                          <span className="text-sm">Continuar con Google</span>
-                        </button> */}
                   </div>
+                  
+                  <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-white after:mt-0.5 after:flex-1 after:border-t after:border-white">
+                    <p className="mx-4 mb-0 text-center text-white">o</p>
+                  </div>
+
+                  <Button
+                    variant="simple"
+                    className="flex gap-3"
+                    type="button"
+                    onClick={loginGoogle}
+                  >
+                    <Icon className="size-6" icon="logos:google-icon" />
+                    <span className="text-sm">Continuar con Google</span>
+                  </Button>
+
+                  <Button
+                    variant="simple"
+                    className="flex gap-3"
+                    type="button"
+                    onClick={loginFacebook}
+                  >
+                    <Icon className="size-6" icon="logos:facebook" />
+                    <span className="text-sm">Continuar con Facebook</span>
+                  </Button>
 
                   {/* <p className="text-sm font-light text-center">
                         ¿Olvidaste tu contraseña?{" "}

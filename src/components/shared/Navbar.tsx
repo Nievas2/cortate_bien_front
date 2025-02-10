@@ -66,7 +66,7 @@ const Navbar = () => {
             </div>
 
             <Link
-              className={`absolute left-1/2 md:static md:flex shrink-0 items-end justify-end gap-3 -ml-[21px] md:ml-0`}
+              className={`absolute left-1/2 sm:static sm:flex shrink-0 items-end justify-end gap-3`}
               to="/"
               onClick={GoToTop}
               aria-label="Home"
