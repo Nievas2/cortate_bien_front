@@ -42,9 +42,9 @@ const Navbar = () => {
     <nav className="sticky w-full top-0 z-50 transition-colors duration-200 bg-gray-main ">
       <div className="mx-auto max-w-8xl p-4 2xl:pl-0">
         <div className="relative flex h-10 items-center gap-10">
-          <div className="flex items-center justify-between w-full">
+          <div className="flex items-center justify-between w-full relative">
             {/* mobile buttons */}
-            <div className="items-center md:hidden">
+            <div className="absolute md:hidden">
               <Button
                 variant="ghost"
                 type="button"
@@ -66,7 +66,7 @@ const Navbar = () => {
             </div>
 
             <Link
-              className={`absolute left-1/2 sm:static sm:flex shrink-0 items-end justify-end gap-3`}
+              className={`flex shrink-0 items-center md:items-start justify-center md:justify-start gap-3 w-full md:w-fit`}
               to="/"
               onClick={GoToTop}
               aria-label="Home"
