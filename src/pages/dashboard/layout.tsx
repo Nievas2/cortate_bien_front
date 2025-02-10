@@ -32,7 +32,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <Button
           className={` z-40 ${
             open
-              ? "rotate-180 translate-x-2 sm:-translate-x-14 translate-y-2 fixed top-20 "
+              ? "rotate-180 translate-x-2 sm:-translate-x-14 translate-y-2 absolute top-2 "
               : "rotate-0 translate-y-2 translate-x-2 sm:translate-x-2 fixed sm:sticky top-20"
           }`}
           variant="secondary"

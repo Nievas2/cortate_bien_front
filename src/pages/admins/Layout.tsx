@@ -14,7 +14,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <Button
           className={` rounded-full border border-blue-main transition-transform duration-150 size-12 hover:bg-blue-main hover:text-white z-40 ${
             open
-              ? "rotate-180 translate-x-2 sm:-translate-x-14 translate-y-2 fixed top-20 "
+              ? "rotate-180 translate-x-2 sm:-translate-x-14 translate-y-2 absolute top-2"
               : "rotate-0 translate-y-2 translate-x-2 sm:translate-x-2 fixed sm:sticky top-20"
           }`}
           variant="ghost"
