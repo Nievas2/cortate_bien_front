@@ -19,8 +19,9 @@ import BarbersPage from "./pages/barbers/BarbersPage"
 import DisabledBarbersPage from "./pages/admins/disabledBarbers/DisabledBarbersPage"
 import PlansPage from "./pages/admins/plans/PlansPage"
 import ProfilePage from "./pages/profile/ProfilePage"
-import TermsAndConditions from "./components/shared/footer/termsAndConditions"
-import PrivacyPolicy from "./components/shared/footer/privacyPolicy"
+import TermsAndConditions from "./components/shared/footer/TermsAndConditions"
+import PrivacyPolicy from "./components/shared/footer/PrivacyPolicy"
+
 function App() {
   const location = useLocation()
   const { authUser } = useAuthContext()
