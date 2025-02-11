@@ -25,24 +25,6 @@ export function login(user: Login) {
   }
 }
 
-export function loginGoogle() {
-  try {
-    const response = axiosInstance.get("/login/google")
-    return response
-  } catch (error) {
-    throw error
-  }
-}
-
-export function loginGithub() {
-  try {
-    const response = axiosInstance.get("/login/github")
-    return response
-  } catch (error) {
-    throw error
-  }
-}
-
 export function register(user: Register) {
   console.log(user)
 
@@ -94,6 +76,38 @@ export function resendcode(email: string) {
       email: email,
     })
     return response
+  } catch (error) {
+    throw error
+  }
+}
+
+export function resetPassword(email: string) {
+  try {
+    const response = axiosInstance.post(`auth/reset-password`, {
+      email: email,
+    })
+    return response
+  } catch (error) {
+    throw error
+  }
+}
+
+export function resetPasswordConfirm({
+  email,
+  password,
+  token,
+}: {
+  email: string
+  password: string
+  token: string
+}) {
+  try {
+    const res = axiosInstance.post("auth/reset-password/confirm", {
+      email: email,
+      password: password,
+      token: token,
+    })
+    return res
   } catch (error) {
     throw error
   }

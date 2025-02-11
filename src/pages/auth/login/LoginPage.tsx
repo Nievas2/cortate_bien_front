@@ -125,7 +125,7 @@ const LoginPage = () => {
                     </small>
                   )}
 
-                  <div className="flex flex-col gap-5 relative group">
+                  <div className="flex flex-col gap-3 relative group">
                     <Button
                       variant="auth"
                       className="w-full rounded-lg"
@@ -139,115 +139,67 @@ const LoginPage = () => {
                       <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
                     </Button>
                   </div>
-                  
+
                   <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-white after:mt-0.5 after:flex-1 after:border-t after:border-white">
                     <p className="mx-4 mb-0 text-center text-white">o</p>
                   </div>
 
-                  <Button
-                    variant="simple"
-                    className="flex gap-3"
-                    type="button"
-                    onClick={loginGoogle}
-                  >
-                    <Icon className="size-6" icon="logos:google-icon" />
-                    <span className="text-sm">Continuar con Google</span>
-                  </Button>
-
-                  <Button
-                    variant="simple"
-                    className="flex gap-3"
-                    type="button"
-                    onClick={loginFacebook}
-                  >
-                    <Icon className="size-6" icon="logos:facebook" />
-                    <span className="text-sm">Continuar con Facebook</span>
-                  </Button>
-
-                  {/* <p className="text-sm font-light text-center">
-                        ¿Olvidaste tu contraseña?{" "}
-                        <button
-                          className="font-semibold text-main hover:underline"
-                          onClick={() => setRecoveryPassword(true)}
-                        >
-                          Recuperar
-                        </button>
-                      </p> */}
-
-                  <p className="text-sm font-light text-center">
-                    ¿No tienes una cuenta?{" "}
-                    <Link
-                      to="/auth/registrarse"
-                      className="font-semibold text-main hover:underline"
+                  <section className="flex flex-col gap-2 w-full">
+                    <Button
+                      variant="simple"
+                      className="flex gap-3"
+                      type="button"
+                      onClick={loginGoogle}
                     >
-                      Registrarse
-                    </Link>
-                  </p>
+                      <Icon className="size-6" icon="logos:google-icon" />
+                      <span className="text-sm">Continuar con Google</span>
+                    </Button>
 
-                  <p className="text-sm font-light text-center">
-                    ¿Necesitar activar tu cuenta?{" "}
-                    <Link
-                      to="/auth"
-                      className="font-semibold text-main hover:underline"
+                    <Button
+                      variant="simple"
+                      className="flex gap-3"
+                      type="button"
+                      onClick={loginFacebook}
                     >
-                      Activar
-                    </Link>
-                  </p>
+                      <Icon className="size-6" icon="logos:facebook" />
+                      <span className="text-sm">Continuar con Facebook</span>
+                    </Button>
+
+                    <p className="text-sm font-light text-center">
+                      ¿Olvidaste tu contraseña?{" "}
+                      <Link
+                        to="/auth/password-recovery"
+                        className="font-semibold text-main hover:underline"
+                      >
+                        Recuperar
+                      </Link>
+                    </p>
+
+                    <p className="text-sm font-light text-center">
+                      ¿Necesitar activar tu cuenta?{" "}
+                      <Link
+                        to="/auth"
+                        className="font-semibold text-main hover:underline"
+                      >
+                        Activar
+                      </Link>
+                    </p>
+
+                    <p className="text-sm font-light text-center">
+                      ¿No tienes una cuenta?{" "}
+                      <Link
+                        to="/auth/registrarse"
+                        className="font-semibold text-main hover:underline"
+                      >
+                        Registrarse
+                      </Link>
+                    </p>
+                  </section>
                 </div>
               </div>
             </div>
           </form>
-          {/*  ) : (
-              <form>
-                  <div className="flex flex-col gap-4 md:gap-6">
-                  <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-white md:text-2xl">
-                    Recuperar contraseña
-                  </h1>
-
-                  <div className="flex flex-col gap-4 md:gap-6">
-                    <div className="flex flex-col gap-2">
-                      <Label>Email</Label>
-
-                      <Input
-                        className="bg-white"
-                        type="email"
-                        placeholder="email"
-                        {...formik.getFieldProps("email")}
-                        disabled={loading}
-                      />
-
-                      {formik.touched.email && formik.errors.email && (
-                        <small className="font-bold text-[#ff4444]">
-                          {formik.errors.email}
-                        </small>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-5 relative group">
-                    <Button
-                      variant="auth"
-                      className="w-full rounded-lg"
-                      type="submit"
-                      id="login"
-                      aria-label="login"
-                      role="button"
-                      disabled={loading}
-                    >
-                      {loading ? "Cargando..." : "Enviar email"}
-                    </Button>
-                    <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
-                  </div>
-                  <Button
-                    className="font-semibold text-main hover:underline"
-                    onClick={() => setRecoveryPassword(false)}
-                  >
-                    Volver
-                  </Button>
-                </div> 
-              </form>
-            )} */}
         </div>
-        {/*      )} */}
       </div>
     </section>
   )

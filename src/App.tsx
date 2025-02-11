@@ -23,6 +23,7 @@ import TermsAndConditions from "./components/shared/footer/TermsAndConditions"
 import PrivacyPolicy from "./components/shared/footer/PrivacyPolicy"
 import ProfileAppointmentPage from "./pages/profile/appointment/ProfileAppointmentPage"
 import ProfileReviewsPage from "./pages/profile/reviews/ProfileReviewsPage"
+import PasswordRecoveryPage from "./pages/auth/PasswordRecovery/PasswordRecoveryPage"
 
 function App() {
   const location = useLocation()
@@ -90,13 +91,14 @@ function App() {
             />
 
             <Route path="/auth" element={<AuthPage />} />
+            
+            <Route path="/auth/password-recovery" element={<PasswordRecoveryPage />} />
 
             <Route
               path="/auth/iniciar-sesion"
               element={authUser ? <Navigate to="/" /> : <LoginPage />}
             />
 
-            <Route path="/auth/auth" element={<AuthPage />} />
 
             <Route
               path="/auth/registrarse"
