@@ -21,6 +21,8 @@ import PlansPage from "./pages/admins/plans/PlansPage"
 import ProfilePage from "./pages/profile/ProfilePage"
 import TermsAndConditions from "./components/shared/footer/TermsAndConditions"
 import PrivacyPolicy from "./components/shared/footer/PrivacyPolicy"
+import ProfileAppointmentPage from "./pages/profile/appointment/ProfileAppointmentPage"
+import ProfileReviewsPage from "./pages/profile/reviews/ProfileReviewsPage"
 
 function App() {
   const location = useLocation()
@@ -41,7 +43,7 @@ function App() {
             />
 
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            
+
             <Route
               path="/prices"
               element={
@@ -63,11 +65,27 @@ function App() {
             <Route
               path="/profile"
               element={
-                authUser?.user.rol === "USER" ? (
+                <ProtectedRoute>
                   <ProfilePage />
-                ) : (
-                  <Navigate to="/" />
-                )
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/profile/appointments"
+              element={
+                <ProtectedRoute>
+                  <ProfileAppointmentPage />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/profile/reviews"
+              element={
+                <ProtectedRoute>
+                  <ProfileReviewsPage />
+                </ProtectedRoute>
               }
             />
 

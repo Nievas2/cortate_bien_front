@@ -19,6 +19,15 @@ export async function getAppointmentsByBarberId(id: string, date?: string) {
   }
 }
 
+export async function getAppointmentsByUser() {
+  try {
+    const res = await axiosInstance.get(`turno/find-all/user`)
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
 /* export async function getAppointmentsByUserId(id: string, date?: string) {
   try {
     const res = await axiosInstance.get(`turno/find/all/user?date=${date}`)

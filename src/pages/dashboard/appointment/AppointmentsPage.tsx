@@ -119,7 +119,7 @@ const AppointmentsPage = () => {
                     Confirmar
                   </Button>
                   {error && (
-                    <small className="font-bold text-500">
+                    <small className="font-bold text-red-500">
                       {error.message}
                     </small>
                   )}
@@ -142,7 +142,7 @@ const AppointmentsPage = () => {
             </div>
           </div>
         </section>
-        {data?.data.map((appointment: Appointment) => (
+        {data?.data.turnos.map((appointment: Appointment) => (
           <CardAppointment
             appointment={appointment}
             refetch={refetch}
