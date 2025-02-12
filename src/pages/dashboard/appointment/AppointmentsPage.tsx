@@ -151,7 +151,7 @@ const AppointmentsPage = () => {
             key={appointment.id}
           />
         ))}
-        {data?.data.length === 0 && (
+        {data?.data.turnos.length === 0 && (
           <div className="flex items-center justify-center h-full">
             <h2 className="text-xl font-bold text-center">
               No hay turnos para hoy.
