@@ -43,7 +43,7 @@ const CardAppointmentUser = ({
   const { mutate: mutateUpdate, error: errorUpdate } = useMutation({
     mutationKey: ["updateAppointment"],
     mutationFn: async ({ state }: { state: string }) => {
-      updateStatus(id, state, appointment.id)
+      updateStatus(id, [{ id: appointment.id, estado: state }])
     },
     onSuccess: () => {
       setSuccessStatus(true)
@@ -116,7 +116,6 @@ const CardAppointmentUser = ({
         >
           {appointment.estado}
         </span>
-        
       </section>
 
       <section className="flex items-center justify-start">

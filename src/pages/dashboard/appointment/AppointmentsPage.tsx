@@ -129,7 +129,7 @@ const AppointmentsPage = () => {
 
             <div className="flex flex-col justify-start items-start sm:items-end gap-2 w-full">
               <div className="flex flex-row gap-2 items-end">
-                <Label>Fecha de nacimiento</Label>
+                <Label>Fecha de busqueda</Label>
               </div>
 
               <Input
