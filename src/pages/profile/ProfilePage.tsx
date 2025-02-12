@@ -10,17 +10,18 @@ import { getCountries } from "@/services/CountryService"
 import CountrySelect from "../dashboard/components/CountrySelect"
 import StateSelect from "../dashboard/components/StateSelect"
 import CitySelect from "../dashboard/components/CitySelect"
-/* import {
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select" */
+} from "@/components/ui/select"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { updateUserSchema } from "@/utils/schemas/userSchema"
 import { Button } from "@/components/ui/button"
+import { useLocation } from "react-router-dom"
 
 const ProfilePage = () => {
   document.title = "Cortate bien | Perfil"
@@ -28,6 +29,8 @@ const ProfilePage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [countryId, setCountryId] = useState<undefined | number>()
   const [stateId, setStateId] = useState<undefined | number>()
+  const location = useLocation()
+  const required = location.search.split("=")[1]
   const { authUser } = useAuthContext()
 
   const { data, isSuccess: isSuccessCountries } = useQuery({
@@ -57,8 +60,8 @@ const ProfilePage = () => {
       ciudad_id: user?.data.ciudad_id ? user?.data.ciudad_id.toString() : "",
       fechaNacimiento: user?.data.fechaNacimiento
         ? user?.data.fechaNacimiento.split("T")[0]
-        : new Date().toISOString().split("T")[0] /* 
-      tipoDeCuenta: user?.data.tipoDeCuenta, */,
+        : new Date().toISOString().split("T")[0],
+      tipoDeCuenta: user?.data.tipoDeCuenta ? user?.data.tipoDeCuenta : "",
       password: user?.data.password ? user?.data.password : "",
       confirmPassword: user?.data.password ? user?.data.password : "",
     },
@@ -108,6 +111,13 @@ const ProfilePage = () => {
           <h2 className="text-2xl text-center font-semibold">
             Actualizar informacion personal
           </h2>
+
+          {required == "true" && (
+            <p className="text-red-500">
+              Por favor, completa todos los campos para usar su cuenta
+            </p>
+          )}
+
           <form
             className="flex flex-col gap-4 max-w-96 w-full"
             onSubmit={updateUserFunction}
@@ -271,8 +281,10 @@ const ProfilePage = () => {
               </span>
             )}
 
-            {/* <div className="flex flex-col w-full">
-              <Select onValueChange={(e) => setValue("tipoDeCuenta", e)}>
+            <div className="flex flex-col w-full">
+              <Select
+                onValueChange={(e) => setValue("tipoDeCuenta", e)}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Tipo de cuenta" />
                 </SelectTrigger>
@@ -285,7 +297,7 @@ const ProfilePage = () => {
               <small className="font-bold text-red-500">
                 {errors.tipoDeCuenta && "El tipo de cuenta es requerido"}
               </small>
-            </div> */}
+            </div>
 
             <Button
               variant="auth"

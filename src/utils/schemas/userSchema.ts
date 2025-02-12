@@ -16,8 +16,8 @@ export const updateUserSchema = z
         (value) => (typeof value === "string" ? new Date(value) : value),
         z.date()
       )
-      .default(new Date()) /* 
-    tipoDeCuenta: z.enum(["BARBERO", "CLIENTE"]).default("CLIENTE"), */,
+      .default(new Date()),
+    tipoDeCuenta: z.enum(["BARBERO", "CLIENTE"]).default("CLIENTE"),
     password: z
       .string()
       .nonempty("La contraseña es requerida")
