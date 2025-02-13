@@ -24,6 +24,7 @@ import PrivacyPolicy from "./components/shared/footer/PrivacyPolicy"
 import ProfileAppointmentPage from "./pages/profile/appointment/ProfileAppointmentPage"
 import ProfileReviewsPage from "./pages/profile/reviews/ProfileReviewsPage"
 import PasswordRecoveryPage from "./pages/auth/PasswordRecovery/PasswordRecoveryPage"
+import { ProtecteBarberRoute } from "./components/shared/ProtectedBarber"
 
 function App() {
   const location = useLocation()
@@ -109,35 +110,35 @@ function App() {
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute>
+                <ProtecteBarberRoute>
                   <DashboardPage />
-                </ProtectedRoute>
+                </ProtecteBarberRoute>
               }
             />
 
             <Route
               path="/dashboard/barber"
               element={
-                <ProtectedRoute>
+                <ProtecteBarberRoute>
                   <BarberPage />
-                </ProtectedRoute>
+                </ProtecteBarberRoute>
               }
             />
 
             <Route
               path="/dashboard/barber/appointments"
               element={
-                <ProtectedRoute>
+                <ProtecteBarberRoute>
                   <AppointmentsPage />
-                </ProtectedRoute>
+                </ProtecteBarberRoute>
               }
             />
             <Route
               path="/dashboard/barber/reviews"
               element={
-                <ProtectedRoute>
+                <ProtecteBarberRoute>
                   <ReviewsPage />
-                </ProtectedRoute>
+                </ProtecteBarberRoute>
               }
             />
             {/* Dashboard Admins */}
