@@ -20,8 +20,8 @@ export async function getAppointmentsByBarberId(id: string, date?: string) {
 }
 
 export async function getAppointmentsByUser({
-  date
-}:{
+  date,
+}: {
   date: string | undefined
 }) {
   try {
@@ -44,9 +44,20 @@ export async function getAppointmentsByUser({
 export async function updateStatus(
   idBarber: string,
   data: { id: string; estado: string }[]
-) {  
+) {
   try {
     const res = await axiosInstance.put(`turno/update/${idBarber}`, data)
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function updateStatusUser(idAppointment: string, status: string) {
+  try {
+    const res = await axiosInstance.put(
+      `turno/update/${idAppointment}?status=${status}`
+    )
     return res
   } catch (error) {
     throw error

@@ -1,10 +1,36 @@
 import axiosInstance from "@/api/axiosInstance"
+import { CreateReview } from "@/interfaces/Review"
+
+export async function createReview({
+  id,
+  review,
+}: {
+  id: string
+  review: CreateReview
+}) {
+  try {
+    const res = await axiosInstance.post(`resena/create/${id}`, review)
+    return res
+  } catch (error) {
+    throw error
+  }
+}
 
 export async function getReviews(barberId: string) {
   try {
     const res = await axiosInstance(`resena/find/all/${barberId}`)
     return res
   } catch (error) {
-    console.error("Error al obtener los países:", error)
+    throw error
+  }
+}
+
+
+export async function getReviewsByUser (){
+  try {
+    const res = await axiosInstance(`resena/find-all/user`)
+    return res
+  } catch (error) {
+    throw error
   }
 }

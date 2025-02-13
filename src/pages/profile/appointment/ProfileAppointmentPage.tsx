@@ -27,30 +27,27 @@ const ProfileAppointmentPage = () => {
 
   return (
     <Layout>
-      <main className="flex items-center justify-center w-full">
-        <section className="flex flex-col gap-2">
+      <main className="flex flex-col items-center justify-center w-full gap-8 h-full p-2">
+        <section className="flex flex-col gap-2 w-full">
           <h1 className="text-4xl font-bold text-center">Turnos</h1>
           <p className="text-xl font-light text-center">{day}</p>
-          <div className="flex flex-col-reverse sm:flex-row gap-4 w-full">
-            <div className="flex flex-col w-full"></div>
 
-            <div className="flex flex-col justify-start items-start sm:items-end gap-2 w-full">
-              <div className="flex flex-row gap-2 items-end">
-                <Label>Fecha de busqueda</Label>
-              </div>
-
-              <Input
-                type="date"
-                className=" max-w-40"
-                onChange={(e) => setDate(e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
-                defaultValue={date}
-                placeholder="YYYY-MM-DD"
-              />
+          <div className="flex flex-col justify-center items-end gap-2 w-full">
+            <div className="flex flex-row gap-2 items-end">
+              <Label>Fecha de busqueda</Label>
             </div>
+
+            <Input
+              type="date"
+              className=" max-w-40"
+              onChange={(e) => setDate(e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
+              defaultValue={date}
+              placeholder="YYYY-MM-DD"
+            />
           </div>
         </section>
 
-        <section className="">
+        <section className="flex flex-col gap-4 w-full">
           {data?.data.turnos.map((appointment: Appointment) => (
             <CardAppointmentUser
               appointment={appointment}
@@ -59,6 +56,12 @@ const ProfileAppointmentPage = () => {
             />
           ))}
         </section>
+
+        {
+          data?.data.turnos.length === 0 && (
+            <h2 className="text-2xl font-bold text-center">No hay turnos en los proximos dias</h2>
+          )
+        }
       </main>
     </Layout>
   )
