@@ -49,7 +49,9 @@ const PasswordRecoveryPage = () => {
   /* Send email */
   const { mutate, isPending } = useMutation({
     mutationKey: ["reset-password"],
-    mutationFn: ({ email }: { email: string }) => resetPassword(email),
+    mutationFn: ({ email }: { email: string }) => {
+      return resetPassword(email)
+    },
     onSuccess: () => {
       setStep(2)
     },
@@ -57,8 +59,13 @@ const PasswordRecoveryPage = () => {
 
   const { mutate: mutateUpdate, isPending: isPendingUpdate } = useMutation({
     mutationKey: ["update-user"],
-    mutationFn: (values: { email: string; token: string; password: string }) =>
-      resetPasswordConfirm(values),
+    mutationFn: (values: {
+      email: string
+      token: string
+      password: string
+    }) => {
+      return resetPasswordConfirm(values)
+    },
     onSuccess: () => {
       setStep(2)
     },

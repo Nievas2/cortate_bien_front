@@ -47,9 +47,8 @@ const CardAppointment = ({
   const { mutate: mutateUpdate, error: errorUpdate } = useMutation({
     mutationKey: ["updateAppointment"],
     mutationFn: async ({ state }: { state: string }) => {
-      updateStatus(id, [{ id: appointment.id, estado: state }])
+      return updateStatus(id, [{ id: appointment.id, estado: state }])
     },
-    onMutate: () => {},
     onSuccess: () => {
       setSuccessStatus(true)
       refetch()
@@ -60,7 +59,7 @@ const CardAppointment = ({
   const { mutate, error } = useMutation({
     mutationKey: ["reschedule"],
     mutationFn: async (data: { fecha: string; hora: string }) => {
-      reschedule({ id: appointment.id, fecha: data.fecha, hora: data.hora })
+      return reschedule({ id: appointment.id, fecha: data.fecha, hora: data.hora })
     },
     onSuccess: () => {
       setSuccessReschedule(true)
