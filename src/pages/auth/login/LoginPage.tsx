@@ -51,16 +51,9 @@ const LoginPage = () => {
   })
 
   return (
-    <section className="flex items-center justify-center w-full min-h-screen">
-      <div className="w-full sm:w-96 rounded-lg shadow-sm p-6 sm:p-8 flex flex-col gap-3 bg-gray-main">
-        {/*         {success ? (
-          <h1 className="text-white">
-            Se le envio un correo de recuperacion a su correo, por favor revise
-            su bandeja de entrada o spam
-          </h1>
-        ) : ( */}
+    <section className="flex items-center justify-center w-full min-h-screen py-4">
+      <div className="w-full sm:w-[450px] rounded-lg shadow-sm p-6 sm:p-8 flex flex-col gap-3 bg-gray-main">
         <div>
-          {/*             {!recoveryPassword ? ( */}
           <form onSubmit={loginFunction} noValidate>
             <div className="flex flex-col gap-5 mx-auto">
               <div className="flex flex-col gap-4 md:gap-6">

@@ -93,7 +93,7 @@ const RegisterPage = () => {
     window.open(`${import.meta.env.VITE_API_URL}auth/facebook`, "_self")
   }
   return (
-    <section className="flex items-center justify-center w-full min-h-screen py-8">
+    <section className="flex items-center justify-center w-full min-h-screen py-4">
       <div className="w-full sm:w-[450px] rounded-lg shadow-sm p-6 sm:p-8 flex flex-col gap-3 bg-gray-main">
         <form onSubmit={handleSubmit(registerFunction)} noValidate>
           {success ? (
