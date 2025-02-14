@@ -36,12 +36,17 @@ import MapSelector from "@/hooks/dashboard/MapSelector"
 interface ChangeBarberShopProps {
   Barbers?: Barber[]
   refetch: Function
+  error: Error | null
 }
 
-const ChangeBarberShop = ({ Barbers, refetch }: ChangeBarberShopProps) => {
+const ChangeBarberShop = ({
+  Barbers,
+  refetch,
+  error,
+}: ChangeBarberShopProps) => {
   return (
     <section className="flex flex-wrap items-center justify-center gap-8 w-full py-4">
-      {Barbers != undefined ? (
+      {Barbers && (
         <>
           {Barbers?.map((barber) => (
             <div
@@ -78,23 +83,26 @@ const ChangeBarberShop = ({ Barbers, refetch }: ChangeBarberShopProps) => {
 
               <img
                 src={barber.imagen_perfil}
-                className="absolute w-full h-full rounded-xl"
+                className="absolute w-full h-full rounded-xl "
                 alt="imagen not found"
               />
               <Link
                 to={`/dashboard/barber?id=${barber.id}`}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               >
-                <Button variant="secondary">{barber.nombre}</Button>
+                <Button
+                  className="max-w-[170px] text-wrap line-clamp-1 px-1"
+                  variant="secondary"
+                >
+                  {barber.nombre}
+                </Button>
               </Link>
             </div>
           ))}
         </>
-      ) : (
-        <span className="text-center">
-          Algo salio mal, intentelo de nuevo más tarde.
-        </span>
       )}
+
+      {error && <span className="text-center">{error.message}</span>}
       <Dialog>
         <DialogTrigger>
           <div className="relative group">
