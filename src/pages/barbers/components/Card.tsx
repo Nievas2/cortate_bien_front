@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { createAppointment } from "@/services/AppointmentService"
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
+import { Icon } from "@iconify/react/dist/iconify.js"
 const Card = ({ barber }: { barber: BarberGet }) => {
   const [success, setSuccess] = useState(false)
   /* const { authUser } = useAuthContext() */
@@ -54,24 +55,35 @@ const Card = ({ barber }: { barber: BarberGet }) => {
 
   return (
     <div className="flex gap-3 w-[300px] md:w-[400px] bg-gray-main rounded-lg border border-gray-800 p-4">
-      <img className="size-40" src={barber.imagen_perfil} alt={barber.nombre} />
-      <div className="flex flex-col w-full">
-        <div className="flex w-full">
-          <h4 className="w-full">{barber.nombre}</h4>
-          <span className="py-1 px-3 text-sm border border-white rounded-full">
-            {barber.puntaje}
-          </span>
+      <div className="flex flex-col items-center w-[60%] gap-2">
+        <img
+          className="size-36 aspect-square"
+          src={barber.imagen_perfil}
+          alt={barber.nombre}
+        />
+
+        <div className="flex gap-2 items-center">
+          {Array.from({ length: barber.puntaje }).map((_, index) => (
+            <span key={index}>
+              <Icon icon="material-symbols:star" color="gold" width={20} />
+            </span>
+          ))}
         </div>
+      </div>
+      <div className="flex flex-col w-full gap-2">
+        <h4 className="w-full font-bold">{barber.nombre}</h4>
+
         <div className="flex flex-col gap-2">
-          <p className="text-sm">
+          <p className="text-sm font-extralight">
             {barber.ciudad} | {barber.direccion}
           </p>
           <p className="text-sm line-clamp-3">{barber.descripcion}</p>
         </div>
-        <div className="flex flex-wrap h-full items-end">
+
+        <div className="flex flex-wrap h-full items-end w-full">
           <Dialog>
-            <DialogTrigger>
-              <Button variant="secondary">
+            <DialogTrigger className="w-full">
+              <Button variant="secondary" className="w-full">
                 {success ? "Turno creado" : "Sacar turno"}
               </Button>
             </DialogTrigger>
