@@ -30,9 +30,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
       <div className="relative">
         <Button
-          className={` z-40 ${
+          className={`z-40 transition-transform duration-300 ${
             open
-              ? "rotate-180 translate-x-2 sm:-translate-x-14 translate-y-2 absolute top-2 "
+              ? "rotate-180 translate-x-2  translate-y-2 sticky top-20"
               : "rotate-0 translate-y-2 translate-x-2 sm:translate-x-2 fixed sm:sticky top-20"
           }`}
           variant="secondary"
@@ -43,10 +43,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </Button>
       </div>
 
-      <section className="flex items-center justify-center w-full">
+      <section className="flex items-center justify-center w-full p-2">
         {children}
       </section>
     </div>
   )
 }
+
 export default Layout

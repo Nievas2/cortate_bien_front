@@ -11,14 +11,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <SideBarAdmins open={open} />
 
       <div className="relative">
-        <Button
-          className={` rounded-full border border-blue-main transition-transform duration-150 size-12 hover:bg-blue-main hover:text-white z-40 ${
+      <Button
+          className={`z-40 transition-transform duration-300 ${
             open
-              ? "rotate-180 translate-x-2 sm:-translate-x-14 translate-y-2 absolute top-2"
+              ? "rotate-180 translate-x-2 translate-y-2 sticky top-20"
               : "rotate-0 translate-y-2 translate-x-2 sm:translate-x-2 fixed sm:sticky top-20"
           }`}
-          variant="ghost"
-          size="sm"
+          variant="secondary"
+          size="rounded"
           onClick={() => setOpen(!open)}
         >
           <Icon icon="tabler:chevron-right" height={20} width={20} />
