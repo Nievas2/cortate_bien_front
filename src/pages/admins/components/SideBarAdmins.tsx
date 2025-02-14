@@ -32,7 +32,7 @@ const SideBarAdmins = ({ open }: { open: boolean }) => {
       }`}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex flex-col gap-2 sm:sticky sm:top-20 w-full h-full">
+      <div className="flex flex-col gap-2 sticky top-20 w-full h-[88vh]">
         {/* Header */}
         <div
           className={`flex items-center justify-end sm:justify-start gap-2 px-6 py-4 ${
