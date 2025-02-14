@@ -10,3 +10,12 @@ export interface Review {
   barberia: string
   barberiaId: string
 }
+
+export interface ReviewBarber {
+  id: string
+  barberiaId: string
+  barberia: string
+  descripcion: string
+  calificacion: number
+  user: string
+}
