@@ -52,7 +52,7 @@ const CardPlan = ({ plan, refetch }: { plan: Plan; refetch?: Function }) => {
             <p>¿Estas seguro que deseas eliminar este plan?</p>
             <p>
               No podra recuperarla de ninguna manera y se perdera toda la
-              informacion que tenga
+              información que tenga
             </p>
             <div className="flex justify-between">
               <DialogClose>

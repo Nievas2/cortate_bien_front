@@ -11,7 +11,7 @@ import {
 
 const CardReviewBarber = ({ review }: { review: ReviewBarber }) => {
   return (
-    <div className="flex flex-col gap-2 rounded-xl shadow-md shadow-gray-900 w-full p-2">
+    <div className="flex flex-col gap-2 rounded-xl shadow-md shadow-gray-900 border border-gray-900 w-full p-2">
       <span className="text-center font-bold">{review.user}</span>
       <div className="flex items-center justify-center ">
         <div className="flex items-center justify-center gap-2">
