@@ -47,7 +47,7 @@ const ProfileAppointmentPage = () => {
           </div>
         </section>
 
-        <section className="flex flex-col gap-4 w-full">
+        <section className="flex flex-col gap-4 w-full min-h-96">
           {data?.data.turnos.map((appointment: Appointment) => (
             <CardAppointmentUser
               appointment={appointment}

@@ -109,7 +109,7 @@ const ProfilePage = () => {
 
         <section className="flex flex-col items-center justify-center w-full gap-8">
           <h2 className="text-2xl text-center font-semibold">
-            Actualizar informacion personal
+            Actualizar información personal
           </h2>
 
           {required == "true" && (

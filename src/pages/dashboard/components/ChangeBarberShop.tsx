@@ -70,7 +70,7 @@ const ChangeBarberShop = ({
                   <p>¿Estas seguro que deseas eliminar esta barberia?</p>
                   <p>
                     No podra recuperarla de ninguna manera y se perdera toda la
-                    informacion que tenga
+                    información que tenga
                   </p>
                   <div className="flex justify-between">
                     <DialogClose>

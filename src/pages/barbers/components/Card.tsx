@@ -150,7 +150,7 @@ const Card = ({ barber }: { barber: BarberGet }) => {
                       <Textarea
                         {...registerForm("nota")}
                         onChange={(e) => setValue("nota", e.target.value)}
-                        placeholder="Ingrese informacion relevante para el barbero"
+                        placeholder="Ingrese información relevante para el barbero"
                       />
                       <small className="text-red-500 font-bold">
                         {errors.nota?.message}
