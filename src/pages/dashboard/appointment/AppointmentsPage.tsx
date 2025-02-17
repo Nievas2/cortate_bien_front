@@ -28,7 +28,6 @@ const AppointmentsPage = () => {
   )
   const { search } = useLocation()
   const id = search.split("=")[1]
-  const day = new Date().toISOString().split("T")[0]
 
   const { data, refetch } = useQuery({
     queryKey: ["get-appointments-by-barber"],
@@ -76,25 +75,25 @@ const AppointmentsPage = () => {
       <div className="flex flex-col gap-8 p-1 sm:p-3 w-full h-full">
         <section className="flex flex-col gap-2">
           <h1 className="text-4xl font-bold text-center">Turnos</h1>
-          <p className="text-xl font-light text-center">{day}</p>
+          <p className="text-xl font-light text-center">{data?.data.fecha}</p>
           <div className="flex flex-col-reverse sm:flex-row gap-4 w-full">
             <div className="flex flex-col w-full">
               <div className="flex flex-row gap-2 items-end">
                 <Label>Cambiar los estados</Label>
               </div>
-              <div className="flex items-end gap-8 ">
+              <div className="flex items-end gap-8 h-full">
                 <div className="flex items-center gap-2">
                   <Input
                     type="checkbox"
-                    onChange={() => {
-                      if (select?.length === data?.data.length) {
+                    onChange={() => {                      
+                      if (select?.length === data?.data.turnos.length) {
                         return setSelect(undefined)
                       }
                       return setSelect(
-                        data?.data.map((item: Appointment) => item.id)
+                        data?.data.turnos.map((item: Appointment) => item.id)
                       )
                     }}
-                    checked={select?.length === data?.data.length}
+                    checked={select?.length === data?.data.turnos.length}
                   />
                   <small className="flex items-center h-full">Todos</small>
                 </div>
@@ -140,6 +139,12 @@ const AppointmentsPage = () => {
                 placeholder="YYYY-MM-DD"
               />
             </div>
+          </div>
+          <div className="flex justify-between w-full">
+            <span>
+              Turnos maximos: {data?.data.turnosMaximosDelDia}
+            </span>
+            <span>Turnos restantes: {data?.data.turnosRestantes}</span>
           </div>
         </section>
         {data?.data.turnos.map((appointment: Appointment) => (
