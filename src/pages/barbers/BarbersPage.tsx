@@ -21,6 +21,7 @@ const BarbersPage = () => {
   const [stateId, setStateId] = useState<undefined | number>()
   const [city, setCity] = useState<undefined | number>()
   const [order, setOrder] = useState("ASC")
+  const [radius, setRadius] = useState(3)
   const { authUser } = useAuthContext()
   const { currentPage, totalPages, handlePageChange, setTotalPages } =
     usePaginationBarbers()
@@ -33,6 +34,7 @@ const BarbersPage = () => {
           page: currentPage,
           city: authUser?.user.city_id,
           order: order,
+          radius: radius,
         })
       return getBarbers({ page: currentPage, city: city, order: order })
     },
@@ -53,7 +55,7 @@ const BarbersPage = () => {
 
   useEffect(() => {
     refetch()
-  }, [city, changeCountry])
+  }, [city, changeCountry, radius])
 
   return (
     <main className="flex flex-col items-center justify-center gap-4 w-full h-full">
@@ -142,6 +144,30 @@ const BarbersPage = () => {
                   />
                 </>
               )}
+            </Button>
+          </div>
+          
+          <div className="flex gap-2 w-full">
+            <Button
+              variant={radius == 3 ? "secondary" : "simple"}
+              disabled={isLoading || radius == 3}
+              onClick={() => setRadius(3)}
+            >
+              3 km
+            </Button>
+            <Button
+              variant={radius == 5 ? "secondary" : "simple"}
+              disabled={isLoading || radius == 5}
+              onClick={() => setRadius(5)}
+            >
+              5 km
+            </Button>
+            <Button
+              variant={radius == 10 ? "secondary" : "simple"}
+              disabled={isLoading || radius == 10}
+              onClick={() => setRadius(10)}
+            >
+              10 km
             </Button>
           </div>
         </div>

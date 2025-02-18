@@ -41,7 +41,9 @@ export async function updateBarber(
 ) {
   barberUpdated.latitud = Number(barberUpdated.latitud)
   barberUpdated.longitud = Number(barberUpdated.longitud)
-  barberUpdated.cantidadDeMinutosPorTurno = Number(barberUpdated.cantidadDeMinutosPorTurno)
+  barberUpdated.cantidadDeMinutosPorTurno = Number(
+    barberUpdated.cantidadDeMinutosPorTurno
+  )
   barberUpdated.ciudad_id = Number(barberUpdated.ciudad_id)
   // Normalizar los campos del objeto actualizado
   barberUpdated.horarios.forEach((element) => {
@@ -91,13 +93,21 @@ export async function getBarbers({
   page,
   order,
   city,
+  long,
+  lat,
+  radius,
 }: {
   page?: number
   order?: string
   city?: number
+  long?: number
+  lat?: number
+  radius?: number
 }) {
   try {
-    const res = await axiosInstance.get(`barberia/find/all?page=${page}?order=${order}&city=${city}`, )
+    const res = await axiosInstance.get(
+      `barberia/find/all?page=${page}?order=${order}&city=${city}&long=${long}&lat=${lat}&radius=${radius}`
+    )
     return res
   } catch (error) {
     throw error
