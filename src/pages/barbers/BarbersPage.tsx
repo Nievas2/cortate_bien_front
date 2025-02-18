@@ -22,6 +22,9 @@ const BarbersPage = () => {
   const [city, setCity] = useState<undefined | number>()
   const [order, setOrder] = useState("ASC")
   const [radius, setRadius] = useState(3)
+  const [position, setPosition] = useState<{ lat: number; lng: number } | null>(
+    { lat: 0, lng: 0 }
+  )
   const { authUser } = useAuthContext()
   const { currentPage, totalPages, handlePageChange, setTotalPages } =
     usePaginationBarbers()
@@ -29,22 +32,36 @@ const BarbersPage = () => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["barbers"],
     queryFn: () => {
-      if (changeCountry)
+      if(changeCountry) {
         return getBarbers({
           page: currentPage,
           city: authUser?.user.city_id,
           order: order,
           radius: radius,
+          lat: position?.lat ? position.lng : undefined,
+          long: position?.lng ? position.lng : undefined,
         })
-      return getBarbers({ page: currentPage, city: city, order: order })
+      }
+      return getBarbers({
+        page: currentPage,
+        city: city,
+        order: order,
+        radius: radius,
+        lat: position?.lat ? position.lat : undefined,
+        long: position?.lng ? position.lng : undefined,
+      })
     },
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
+    retry: false,
   })
 
   const { data: countries, error } = useQuery({
     queryKey: ["countries"],
     queryFn: getCountries,
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 60 * 24,
+    retry: false,
   })
 
   useEffect(() => {
@@ -55,7 +72,41 @@ const BarbersPage = () => {
 
   useEffect(() => {
     refetch()
-  }, [city, changeCountry, radius])
+  }, [city, changeCountry, radius, position, order])
+
+  function getPosition() {
+    console.log("get position")
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setPosition({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        })
+      },
+      (error) => {
+        console.error(error)
+
+        setPosition(null)
+      },
+      { enableHighAccuracy: true }
+    )
+
+    try {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setPosition({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        })
+      })
+      return
+
+      setPosition(null)
+    } catch (error) {
+      setPosition(null)
+      throw error
+    }
+  }
+  console.log(position)
 
   return (
     <main className="flex flex-col items-center justify-center gap-4 w-full h-full">
@@ -69,7 +120,10 @@ const BarbersPage = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setChangeCountry(false)}
+                  onClick={() => {
+                    getPosition()
+                    setChangeCountry(false)
+                  }}
                 >
                   <Icon
                     icon="ic:baseline-change-circle"
@@ -80,44 +134,67 @@ const BarbersPage = () => {
               </div>
             ) : (
               <>
-                <div className="flex flex-col  gap-2 min-w-60">
-                  <Label>Pais</Label>
-                  {countries && (
-                    <CountrySelect
-                      countries={countries?.data}
-                      onChange={(id: number) => setCountryId(id)}
-                    />
-                  )}
-
-                  {error && (
-                    <span className="text-sm text-red-600">
-                      Algo salio mal en la busqueda del listado de los paises
-                    </span>
-                  )}
-                </div>
-
-                {countryId && (
-                  <div className="flex flex-col gap-2 min-w-60">
-                    <Label>Estado / provincia</Label>
-                    <StateSelect
-                      countryId={countryId}
-                      onChange={(state: number) => setStateId(state)}
-                    />
+                {position?.lat && position?.lng ? (
+                  <div className="flex items-center gap-2">
+                    <span>Utilizando ubicacion actual</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setPosition(null)}
+                    >
+                      <Icon
+                        icon="ic:baseline-change-circle"
+                        width="24"
+                        height="24"
+                      />
+                    </Button>
                   </div>
-                )}
+                ) : (
+                  <>
+                    <div className="flex flex-col  gap-2 min-w-60">
+                      <Label>Pais</Label>
+                      {countries && (
+                        <CountrySelect
+                          countries={countries?.data}
+                          onChange={(id: number) => setCountryId(id)}
+                        />
+                      )}
 
-                {stateId && (
-                  <div className="flex flex-col gap-2 min-w-60">
-                    <Label>Ciudad</Label>
-                    <CitySelect
-                      stateId={stateId}
-                      onChange={(city: number) => setCity(city)}
-                    />
-                  </div>
+                      {error && (
+                        <span className="text-sm text-red-600">
+                          Algo salio mal en la busqueda del listado de los
+                          paises
+                        </span>
+                      )}
+                    </div>
+
+                    {countryId && (
+                      <div className="flex flex-col gap-2 min-w-60">
+                        <Label>Estado / provincia</Label>
+                        <StateSelect
+                          countryId={countryId}
+                          onChange={(state: number) => setStateId(state)}
+                        />
+                      </div>
+                    )}
+
+                    {stateId && (
+                      <div className="flex flex-col gap-2 min-w-60">
+                        <Label>Ciudad</Label>
+                        <CitySelect
+                          stateId={stateId}
+                          onChange={(city: number) => setCity(city)}
+                        />
+                      </div>
+                    )}
+                    <Button
+                      variant="ghost"
+                      onClick={() => setChangeCountry(true)}
+                    >
+                      <Icon icon="lets-icons:back" width="24" height="24" />
+                    </Button>
+                  </>
                 )}
-                <Button variant="ghost" onClick={() => setChangeCountry(true)}>
-                  <Icon icon="lets-icons:back" width="24" height="24" />
-                </Button>
               </>
             )}
 
@@ -146,7 +223,7 @@ const BarbersPage = () => {
               )}
             </Button>
           </div>
-          
+
           <div className="flex gap-2 w-full">
             <Button
               variant={radius == 3 ? "secondary" : "simple"}

@@ -51,8 +51,6 @@ const Card = ({ barber }: { barber: BarberGet }) => {
     mutate(values)
   }
 
-  console.log(error)
-
   return (
     <div className="flex gap-3 w-[300px] md:w-[400px] bg-gray-main rounded-lg border border-gray-800 p-4">
       <div className="flex flex-col items-center w-[60%] gap-2">

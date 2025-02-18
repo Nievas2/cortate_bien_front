@@ -105,6 +105,8 @@ export async function getBarbers({
   radius?: number
 }) {
   try {
+    console.log(long, lat);
+    
     const res = await axiosInstance.get(
       `barberia/find/all?page=${page}?order=${order}&city=${city}&long=${long}&lat=${lat}&radius=${radius}`
     )
