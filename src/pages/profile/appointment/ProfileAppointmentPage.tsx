@@ -47,7 +47,7 @@ const ProfileAppointmentPage = () => {
           </div>
         </section>
 
-        <section className="flex flex-col gap-4 w-full min-h-96">
+        <section className="flex flex-col gap-4 w-full items-center justify-center min-h-96">
           {data?.data.turnos.map((appointment: Appointment) => (
             <CardAppointmentUser
               appointment={appointment}
@@ -55,13 +55,12 @@ const ProfileAppointmentPage = () => {
               key={appointment.id}
             />
           ))}
+          {data?.data.turnos.length === 0 && (
+            <h2 className="text-2xl font-bold text-center">
+              No hay turnos en los proximos dias
+            </h2>
+          )}
         </section>
-
-        {
-          data?.data.turnos.length === 0 && (
-            <h2 className="text-2xl font-bold text-center">No hay turnos en los proximos dias</h2>
-          )
-        }
       </main>
     </Layout>
   )

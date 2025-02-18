@@ -16,6 +16,21 @@ export async function createReview({
   }
 }
 
+export async function updateReview({
+  id,
+  review,
+}: {
+  id: string
+  review: CreateReview
+}) {
+  try {
+    const res = await axiosInstance.put(`resena/update/${id}`, review)
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
 export async function getReviews(barberId: string) {
   try {
     const res = await axiosInstance(`resena/find/all/${barberId}`)

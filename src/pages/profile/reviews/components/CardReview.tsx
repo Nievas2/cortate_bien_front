@@ -10,7 +10,13 @@ import {
 } from "@/components/ui/dialog"
 import HandleChangeReviews from "./HandleChangeReviews"
 
-const CardReview = ({ review }: { review: Review }) => {
+const CardReview = ({
+  review,
+  refetch,
+}: {
+  review: Review
+  refetch?: Function
+}) => {
   return (
     <div className="flex flex-col gap-2 rounded-xl shadow-md shadow-gray-900 border border-gray-900 w-full p-2">
       <span className="text-center font-bold">{review.barberia}</span>
@@ -29,9 +35,9 @@ const CardReview = ({ review }: { review: Review }) => {
           </DialogTrigger>
           <DialogContent forceMount>
             <DialogHeader>
-              <DialogTitle>Dejar una reseña</DialogTitle>
+              <DialogTitle>Editar una reseña</DialogTitle>
             </DialogHeader>
-            <HandleChangeReviews  />
+            <HandleChangeReviews review={review} refetch={refetch} />
           </DialogContent>
         </Dialog>
       </div>

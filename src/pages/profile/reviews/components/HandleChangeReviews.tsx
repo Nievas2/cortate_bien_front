@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { createReview } from "@/services/ReviewService"
+import { Review } from "@/interfaces/Review"
+import { createReview, updateReview } from "@/services/ReviewService"
 import { createReviewSchema } from "@/utils/schemas/reviewSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -11,10 +12,18 @@ import { useForm } from "react-hook-form"
 
 interface HandleChangeReviewsProps {
   idBarber?: string
+  review?: Review
+  refetch?: Function
 }
-const HandleChangeReviews = ({ idBarber }: HandleChangeReviewsProps) => {
+const HandleChangeReviews = ({
+  idBarber,
+  review,
+  refetch
+}: HandleChangeReviewsProps) => {
   const [successStatus, setSuccessStatus] = useState(false)
-  const [qualification, setQualification] = useState<string>("")
+  const [qualification, setQualification] = useState<string>(
+    String(review?.calificacion) ? String(review?.calificacion) : "1"
+  )
 
   const { mutate: mutateCreate, error: errorCreate } = useMutation({
     mutationKey: ["create-review"],
@@ -22,6 +31,18 @@ const HandleChangeReviews = ({ idBarber }: HandleChangeReviewsProps) => {
       return createReview({ id: idBarber!, review: values })
     },
     onSuccess: () => {
+      reset()
+      setSuccessStatus(true)
+    },
+  })
+
+  const { mutate: mutateUpdate, error: errorUpdate } = useMutation({
+    mutationKey: ["update-review"],
+    mutationFn: (values: { calificacion: string; descripcion: string }) => {
+      return updateReview({ id: review?.id!, review: values })
+    },
+    onSuccess: () => {
+      if(refetch) refetch()
       reset()
       setSuccessStatus(true)
     },
@@ -35,14 +56,15 @@ const HandleChangeReviews = ({ idBarber }: HandleChangeReviewsProps) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      calificacion: "",
-      descripcion: "",
+      calificacion: review ? String(review.calificacion) : "",
+      descripcion: review ? review.descripcion : "",
     },
     resolver: zodResolver(createReviewSchema),
   })
 
   const handleSubmitReview = handleSubmit((values) => {
     if (idBarber != undefined) return mutateCreate(values)
+    return mutateUpdate(values)
   })
 
   return (
@@ -98,6 +120,11 @@ const HandleChangeReviews = ({ idBarber }: HandleChangeReviewsProps) => {
             </small>
           )}
           
+          {errorUpdate instanceof AxiosError && errorUpdate.response && (
+            <small className="text-red-500 font-bold">
+              {errorUpdate.response.data.message}
+            </small>
+          )}
 
           <Button variant="simple">Guardar</Button>
         </>
