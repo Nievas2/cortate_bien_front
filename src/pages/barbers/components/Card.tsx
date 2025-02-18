@@ -52,8 +52,8 @@ const Card = ({ barber }: { barber: BarberGet }) => {
   }
 
   return (
-    <div className="flex gap-3 w-[300px] md:w-[400px] bg-gray-main rounded-lg border border-gray-800 p-4">
-      <div className="flex flex-col items-center w-[60%] gap-2">
+    <div className="flex flex-col md:flex-row gap-3 w-[300px] md:w-[400px] bg-gray-main rounded-lg border border-gray-800 p-4">
+      <div className="flex flex-col items-center justify-center w-full md:w-[60%] gap-2">
         <img
           className="size-36 aspect-square"
           src={barber.imagen_perfil}
@@ -69,13 +69,13 @@ const Card = ({ barber }: { barber: BarberGet }) => {
         </div>
       </div>
       <div className="flex flex-col w-full gap-2">
-        <h4 className="w-full font-bold">{barber.nombre}</h4>
+        <h4 className="w-full font-extrabold">{barber.nombre}</h4>
 
         <div className="flex flex-col gap-2">
           <p className="text-sm font-extralight">
             {barber.ciudad} | {barber.direccion}
           </p>
-          <p className="text-sm line-clamp-3">{barber.descripcion}</p>
+          <p className="text-sm line-clamp-3 font-">{barber.descripcion}</p>
         </div>
 
         <div className="flex flex-wrap h-full items-end w-full">
