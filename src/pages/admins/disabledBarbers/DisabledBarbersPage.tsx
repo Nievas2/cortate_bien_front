@@ -11,7 +11,6 @@ const DisabledBarbersPage = () => {
     staleTime: 1000 * 60 * 60 * 24,
     retry: false,
   })
-  console.log(data)
 
   return (
     <Layout>

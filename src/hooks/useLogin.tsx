@@ -36,8 +36,6 @@ const useLogin = () => {
 
       return null
     } catch (error: any) {
-      console.log(error);
-      
       if (error.response && error.response.status === 401) {
         throw new Error("Credenciales incorrectas.")
       } else {

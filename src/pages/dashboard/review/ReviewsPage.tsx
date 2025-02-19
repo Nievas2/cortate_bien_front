@@ -30,7 +30,6 @@ const ReviewsPage = () => {
       setTotalReviews(data.data.total_resenas)
     }
   }, [])
-  console.log(data)
 
   return (
     <Layout>

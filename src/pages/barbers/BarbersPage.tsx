@@ -75,7 +75,6 @@ const BarbersPage = () => {
   }, [city, changeCountry, radius, position, order])
 
   function getPosition() {
-    console.log("get position")
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setPosition({
@@ -106,7 +105,6 @@ const BarbersPage = () => {
       throw error
     }
   }
-  console.log(position)
 
   return (
     <main className="flex flex-col items-center justify-center gap-4 w-full h-full">

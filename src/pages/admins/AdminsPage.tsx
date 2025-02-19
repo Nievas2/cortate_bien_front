@@ -39,7 +39,6 @@ const AdminsPage = () => {
   })
 
   const handleDelete = handleSubmitDelete(async (data) => {
-    console.log(data)
     deleteUserMutation(data.id)
   })
 
@@ -72,7 +71,6 @@ const AdminsPage = () => {
   })
 
   const handleLogOut = handleSubmitLogOut(async (data) => {
-    console.log(data)
     logOutUserMutation(data.id)
   })
 

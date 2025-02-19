@@ -9,7 +9,6 @@ const PricesPage = () => {
   const navigate = useNavigate()
   const { search } = useLocation()
   const id = search.split("=")[1]
-  console.log(search)
 
   const { mutate } = useMutation({
     mutationKey: ["create-order"],

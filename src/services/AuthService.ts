@@ -26,8 +26,6 @@ export function login(user: Login) {
 }
 
 export function register(user: Register) {
-  console.log(user)
-
   try {
     const response = axiosInstance.post("user/register", user)
     return response

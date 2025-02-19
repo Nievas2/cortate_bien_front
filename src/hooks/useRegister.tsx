@@ -31,8 +31,7 @@ export const useRegister = () => {
         ciudad_id
       })
       return res
-      console.log(res);
-      
+            
       const data = res.data
 
       if (data.error) throw new Error(data.error)

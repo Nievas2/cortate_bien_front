@@ -189,7 +189,6 @@ export function ChangeBarberShopDialog({
     formState: { errors },
     handleSubmit,
     setValue,
-    getValues,
   } = useForm({
     defaultValues: {
       nombre: barber?.nombre ? barber?.nombre : "",
@@ -254,8 +253,6 @@ export function ChangeBarberShopDialog({
     lng: barber?.longitud ? barber.longitud.toString() : 0,
   })
   const [error, setError] = useState("")
-
-  console.log(getValues())
 
   useEffect(() => {
     if (barber != undefined) return
