@@ -5,6 +5,7 @@ import { Review } from "@/interfaces/Review"
 import { createReview, updateReview } from "@/services/ReviewService"
 import { createReviewSchema } from "@/utils/schemas/reviewSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Icon } from "@iconify/react/dist/iconify.js"
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { useState } from "react"
@@ -18,7 +19,7 @@ interface HandleChangeReviewsProps {
 const HandleChangeReviews = ({
   idBarber,
   review,
-  refetch
+  refetch,
 }: HandleChangeReviewsProps) => {
   const [successStatus, setSuccessStatus] = useState(false)
   const [qualification, setQualification] = useState<string>(
@@ -42,7 +43,7 @@ const HandleChangeReviews = ({
       return updateReview({ id: review?.id!, review: values })
     },
     onSuccess: () => {
-      if(refetch) refetch()
+      if (refetch) refetch()
       reset()
       setSuccessStatus(true)
     },
@@ -93,17 +94,24 @@ const HandleChangeReviews = ({
             <div className="flex gap-4 items-center justify-center">
               {Array.from({ length: 5 }).map((_, index) => (
                 <Button
-                  variant={
-                    qualification === String(index + 1) ? "secondary" : "ghost"
-                  }
+                  variant="ghost"
                   type="button"
-                  className="border border-b-blue-main rounded-lg"
                   onClick={() => {
                     setQualification(String(index + 1))
                     setValue("calificacion", String(index + 1))
                   }}
                 >
-                  {index + 1}
+                  <Icon
+                    icon={
+                      qualification >= String(index + 1)
+                        ? "material-symbols:star"
+                        : "material-symbols:star-outline"
+                    }
+                    color={
+                      qualification >= String(index + 1) ? "yellow" : "gray"
+                    }
+                    className="w-6 h-6"
+                  />
                 </Button>
               ))}
             </div>
@@ -119,7 +127,7 @@ const HandleChangeReviews = ({
               {errorCreate.response.data.message}
             </small>
           )}
-          
+
           {errorUpdate instanceof AxiosError && errorUpdate.response && (
             <small className="text-red-500 font-bold">
               {errorUpdate.response.data.message}
