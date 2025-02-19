@@ -77,6 +77,9 @@ const AppointmentsPage = () => {
           <h1 className="text-4xl font-bold text-center">Turnos</h1>
           <p className="text-xl font-light text-center">{data?.data.fecha}</p>
           <div className="flex flex-col-reverse sm:flex-row gap-4 w-full">
+            {
+              data?.data.turnos.length > 0 && (
+
             <div className="flex flex-col w-full">
               <div className="flex flex-row gap-2 items-end">
                 <Label>Cambiar los estados</Label>
@@ -125,6 +128,8 @@ const AppointmentsPage = () => {
                 </div>
               )}
             </div>
+              )
+            }
 
             <div className="flex flex-col justify-start items-start sm:items-end gap-2 w-full">
               <div className="flex flex-row gap-2 items-end">

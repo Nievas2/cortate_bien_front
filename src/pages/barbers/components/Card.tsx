@@ -61,9 +61,29 @@ const Card = ({ barber }: { barber: BarberGet }) => {
         />
 
         <div className="flex gap-2 items-center">
-          {Array.from({ length: barber.puntaje }).map((_, index) => (
+          {barber.puntaje > 0 && (
+            <div className="flex gap-2 items-center justify-start">
+              {Array.from({ length: barber.puntaje }).map((_, index) => (
+                <span key={index}>
+                  <Icon icon="material-symbols:star" color="gold" width={20} />
+                </span>
+              ))}
+            </div>
+          )}
+          
+          {!Number.isInteger(barber.puntaje) && (
+            <Icon icon="material-symbols:star-half" color="gold" width={20} />
+          )}
+
+          {Array.from({
+            length: 5 - Math.ceil(barber.puntaje),
+          }).map((_, index) => (
             <span key={index}>
-              <Icon icon="material-symbols:star" color="gold" width={20} />
+              <Icon
+                icon="material-symbols:star-outline"
+                stroke="1"
+                width={20}
+              />
             </span>
           ))}
         </div>
