@@ -25,7 +25,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </Button>
       </div>
 
-      <section className="flex items-center justify-center w-full">
+      <section className="flex items-center justify-center w-full py-4">
         {children}
       </section>
     </div>
