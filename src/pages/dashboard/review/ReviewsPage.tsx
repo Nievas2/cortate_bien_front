@@ -37,7 +37,7 @@ const ReviewsPage = () => {
       <div className="flex flex-col gap-4 items-center justify-center w-full">
         <h1 className="text-3xl font-semibold">Reseñas</h1>
 
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center min-h-96 w-full">
+        <section className="grid grid-cols-1 gap-8 place-items-center min-h-96 w-full">
           {data?.data.results.map((review: ReviewBarber) => (
             <CardReviewBarber review={review} key={review.id} />
           ))}

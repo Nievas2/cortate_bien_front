@@ -18,29 +18,56 @@ const CardReview = ({
   refetch?: Function
 }) => {
   return (
-    <div className="flex flex-col gap-2 rounded-xl shadow-md shadow-gray-900 border border-gray-900 w-full p-2">
-      <span className="text-center font-bold">{review.barberia}</span>
-      <p className="line-clamp-4 text-sm">{review.descripcion}</p>
-      <div className="flex items-center justify-between ">
-        <div className="flex items-center justify-center gap-2">
-          {Array.from({ length: review.calificacion }).map((_, index) => (
-            <span key={index}>
-              <Icon icon="material-symbols:star" color="gold" width={20} />
-            </span>
-          ))}
+    <div className="flex gap-2 rounded-xl shadow-md shadow-gray-900 border border-gray-900 w-full p-2">
+      <div className="flex flex-col gap-2 min-w-36">
+        <span className="text-center font-bold">{review.barberia}</span>
+        <div className="flex flex-col items-center justify-between ">
+          <div className="flex items-center justify-center gap-2">
+            {review.calificacion > 0 && (
+              <div className="flex gap-2 items-center justify-start">
+                {Array.from({ length: review.calificacion }).map((_, index) => (
+                  <span key={index}>
+                    <Icon
+                      icon="material-symbols:star"
+                      color="gold"
+                      width={20}
+                    />
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {!Number.isInteger(review.calificacion) && (
+              <Icon icon="material-symbols:star-half" color="gold" width={20} />
+            )}
+
+            {Array.from({
+              length: 5 - Math.ceil(review.calificacion),
+            }).map((_, index) => (
+              <span key={index}>
+                <Icon
+                  icon="material-symbols:star-outline"
+                  stroke="1"
+                  width={20}
+                />
+              </span>
+            ))}
+          </div>
+
+          <Dialog>
+            <DialogTrigger>
+              <Button variant="ghost">Editar</Button>
+            </DialogTrigger>
+            <DialogContent forceMount>
+              <DialogHeader>
+                <DialogTitle>Editar una reseña</DialogTitle>
+              </DialogHeader>
+              <HandleChangeReviews review={review} refetch={refetch} />
+            </DialogContent>
+          </Dialog>
         </div>
-        <Dialog>
-          <DialogTrigger>
-            <Button variant="ghost">Editar</Button>
-          </DialogTrigger>
-          <DialogContent forceMount>
-            <DialogHeader>
-              <DialogTitle>Editar una reseña</DialogTitle>
-            </DialogHeader>
-            <HandleChangeReviews review={review} refetch={refetch} />
-          </DialogContent>
-        </Dialog>
       </div>
+      <p className="text-sm">{review.descripcion}</p>
     </div>
   )
 }

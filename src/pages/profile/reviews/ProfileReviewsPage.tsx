@@ -30,7 +30,7 @@ const ProfileReviewsPage = () => {
         <section className="flex items-center justify-center">
           <h1 className="text-4xl font-semibold">Reseñas</h1>
         </section>
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center min-h-96">
+        <section className="grid grid-cols-1 gap-8 place-items-center min-h-96">
           {data?.data.results.map((review: Review) => (
             <CardReview review={review} refetch={refetch} key={review.id} />
           ))}
