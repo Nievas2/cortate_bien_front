@@ -243,6 +243,24 @@ const Navbar = () => {
                   setOpen={setOpen}
                 />
 
+                {authUser?.user.rol === "USER" && (
+                  <>
+                    <NavbarItemMobile
+                      name="Barberias"
+                      location="/barbers"
+                      pathname={pathname}
+                      setOpen={setOpen}
+                    />
+
+                    <NavbarItemMobile
+                      name="Mi perfil"
+                      location="/profile"
+                      pathname={pathname}
+                      setOpen={setOpen}
+                    />
+                  </>
+                )}
+
                 {authUser?.user.tipo_de_cuenta === "BARBERO" && (
                   <NavbarItemMobile
                     name="Dashboard"
@@ -345,7 +363,7 @@ function NavbarItemMobile({
       className={`block rounded-md px-3 py-2 text-base font-medium ${
         location === pathname
           ? "bg-blue-secondary/50 text-white"
-          : "text-white border border-gray-main"
+          : "text-white"
       } transition-colors duration-300`}
       onClick={() => {
         GoToTop()
