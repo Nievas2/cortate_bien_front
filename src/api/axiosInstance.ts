@@ -6,7 +6,6 @@ const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 })
-console.log("");
 
 axiosInstance.interceptors.request.use(
   function (config: any) {
@@ -18,6 +17,21 @@ axiosInstance.interceptors.request.use(
   },
 
   function (error: any) {
+    return Promise.reject(error)
+  }
+)
+
+axiosInstance.interceptors.response.use(
+  function (response: any) {
+    return response
+  },
+
+  function (error: any) {
+    if (error.response.status === 401) {
+      Cookies.remove("token")
+      window.location.href = "/auth/iniciar-sesion"
+    }
+
     return Promise.reject(error)
   }
 )
