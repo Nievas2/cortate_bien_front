@@ -33,6 +33,7 @@ import { Link } from "react-router-dom"
 import StateSelect from "./StateSelect"
 import CitySelect from "./CitySelect"
 import MapSelector from "@/hooks/dashboard/MapSelector"
+import { motion } from "framer-motion"
 interface ChangeBarberShopProps {
   Barbers?: Barber[]
   refetch: Function
@@ -45,85 +46,110 @@ const ChangeBarberShop = ({
   error,
 }: ChangeBarberShopProps) => {
   return (
-    <section className="flex flex-wrap items-center justify-center gap-8 w-full py-4">
-      {Barbers && (
-        <>
-          {Barbers?.map((barber) => (
-            <div
-              className="flex flex-col items-center justify-center rounded-xl border border-blue-main group-hover:bg-blue-main/80 group-hover:text-white relative group size-48"
-              key={barber.id}
-            >
-              <Dialog>
-                <DialogTrigger className="absolute top-2 right-2 z-40 flex gap-2">
-                  <Button variant="secondary" size="xs" className="rounded-sm">
-                    <Icon
-                      icon="material-symbols:delete"
-                      width="16"
-                      height="16"
-                    />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent forceMount>
-                  <DialogHeader>
-                    <DialogTitle>Eliminar barberia</DialogTitle>
-                  </DialogHeader>
-                  <p>¿Estas seguro que deseas eliminar esta barberia?</p>
-                  <p>
-                    No podra recuperarla de ninguna manera y se perdera toda la
-                    información que tenga
-                  </p>
-                  <div className="flex justify-between">
-                    <DialogClose>
-                      <Button variant="simple">Cancelar</Button>
-                    </DialogClose>
-                    <Button variant="destructive">Eliminar</Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+    <section className="flex flex-col items-center justify-center gap-8 w-full p-4">
+      <motion.h2
+        initial={{ y: 100 }}
+        whileInView={{ y: 0 }}
+        viewport={{ once: true }}
+        className="text-3xl font-bold tracking-tighter text-white sm:text-5xl"
+      >
+        Tus barberias
+      </motion.h2>
 
-              <img
-                src={barber.imagen_perfil}
-                className="absolute w-full h-full rounded-xl "
-                alt="imagen not found"
-              />
-              <Link
-                to={`/dashboard/barber?id=${barber.id}`}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      <motion.p
+        initial={{ y: 50 }}
+        whileInView={{ y: 0 }}
+        viewport={{ once: true }}
+        className="text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed"
+      >
+        Aqui podras ver todas tus barberias y agregar una nueva si lo deseas.
+      </motion.p>
+
+      <div className="flex flex-wrap items-center justify-center gap-6">
+        <Dialog>
+          <DialogTrigger>
+            <div className="relative group">
+              <div className="absolute z-0 inset-0 opacity-50 size-48 bg-transparent blur-3xl rounded-xl group-hover:bg-blue-main/40 cursor-pointer" />
+              <Button
+                variant="barberDash"
+                size="barberDash"
+                className=" cursor-pointer"
               >
-                <Button
-                  className="max-w-[170px] text-wrap line-clamp-1 px-1"
-                  variant="secondary"
-                >
-                  {barber.nombre}
-                </Button>
-              </Link>
+                <Icon icon="tabler:plus" height={24} width={24} />
+                Agregar una barberia
+              </Button>
             </div>
-          ))}
-        </>
-      )}
+          </DialogTrigger>
+          <DialogContent forceMount>
+            <DialogHeader>
+              <DialogTitle>Agregar una barberia</DialogTitle>
+            </DialogHeader>
+            <ChangeBarberShopDialog refetch={refetch} />
+          </DialogContent>
+        </Dialog>
+
+        {Barbers && (
+          <>
+            {Barbers?.map((barber) => (
+              <div
+                className="flex flex-col items-center justify-center rounded-xl border border-blue-main group-hover:bg-blue-main/80 group-hover:text-white relative group size-48"
+                key={barber.id}
+              >
+                <Dialog>
+                  <DialogTrigger className="absolute top-2 right-2 z-40 flex gap-2">
+                    <Button
+                      variant="secondary"
+                      size="xs"
+                      className="rounded-sm"
+                    >
+                      <Icon
+                        icon="material-symbols:delete"
+                        width="16"
+                        height="16"
+                      />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent forceMount>
+                    <DialogHeader>
+                      <DialogTitle>Eliminar barberia</DialogTitle>
+                    </DialogHeader>
+                    <p>¿Estas seguro que deseas eliminar esta barberia?</p>
+                    <p>
+                      No podra recuperarla de ninguna manera y se perdera toda
+                      la información que tenga
+                    </p>
+                    <div className="flex justify-between">
+                      <DialogClose>
+                        <Button variant="simple">Cancelar</Button>
+                      </DialogClose>
+                      <Button variant="destructive">Eliminar</Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                <img
+                  src={barber.imagen_perfil}
+                  className="absolute w-full h-full rounded-xl "
+                  alt="imagen not found"
+                />
+                <Link
+                  to={`/dashboard/barber?id=${barber.id}`}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                >
+                  <Button
+                    className="max-w-[170px] text-wrap line-clamp-1 px-1"
+                    variant="secondary"
+                  >
+                    {barber.nombre}
+                  </Button>
+                </Link>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
 
       {error && <span className="text-center">{error.message}</span>}
-      <Dialog>
-        <DialogTrigger>
-          <div className="relative group">
-            <div className="absolute z-0 inset-0 opacity-50 size-48 bg-transparent blur-3xl rounded-xl group-hover:bg-blue-main/40 cursor-pointer" />
-            <Button
-              variant="barberDash"
-              size="barberDash"
-              className=" cursor-pointer"
-            >
-              <Icon icon="tabler:plus" height={24} width={24} />
-              Agregar una barberia
-            </Button>
-          </div>
-        </DialogTrigger>
-        <DialogContent forceMount>
-          <DialogHeader>
-            <DialogTitle>Agregar una barberia</DialogTitle>
-          </DialogHeader>
-          <ChangeBarberShopDialog refetch={refetch} />
-        </DialogContent>
-      </Dialog>
     </section>
   )
 }

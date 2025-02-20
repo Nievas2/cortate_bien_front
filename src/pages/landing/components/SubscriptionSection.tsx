@@ -60,7 +60,7 @@ const SubscriptionSection = () => {
               viewport={{ once: true }}
               className="max-w-[600px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed"
             >
-              Elige el plan que mejor se adapte a tus necesidades
+              Elige el plan que mejor se adapte a tus necesidades.
             </motion.p>
           </div>
         </div>
