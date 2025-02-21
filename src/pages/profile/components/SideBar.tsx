@@ -91,7 +91,6 @@ const SideBar = ({ open }: { open: boolean }) => {
               : "hidden"
           }`}
         >
-          <p className="mx-1 mb-0 text-center text-xs">Somo lo mejore</p>
         </div>
         {/* Footer */}
 

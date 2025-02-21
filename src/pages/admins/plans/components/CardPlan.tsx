@@ -20,16 +20,20 @@ const CardPlan = ({ plan, refetch }: { plan: Plan; refetch?: Function }) => {
     },
   })
   return (
-    <div className="flex flex-col gap-2 w-72 shadow-xl border border-gray-main shadow-gray-main p-2 rounded-2xl">
-      <span>Nombre: {plan.nombre}</span>
-      <span>Precio: {plan.precio}</span>
-      <span> Turnos maximos: {plan.turnosMaximos}</span>
-      <span> Dias: {plan.cantDias}</span>
-      <span className="line-clamp-3 text-xs">{plan.descripcion}</span>
+    <div className="flex flex-col gap-6 w-72 shadow-xl border bg-gray-main border-gray-900 shadow-gray-main p-6 rounded-md">
+      <div className="flex flex-col gap-2">
+        <span className="font-extrabold">Nombre: {plan.nombre}</span>
+        <span className="font-bold">Precio: {plan.precio}</span>
+        <span className="font-medium"> Turnos maximos: {plan.turnosMaximos}</span>
+        <span className="font-medium"> Dias: {plan.cantDias}</span>
+        <span className="line-clamp-3 text-xs font-extralight">{plan.descripcion}</span>
+      </div>
       <div className="flex w-full gap-4">
         <Dialog>
           <DialogTrigger className="w-full">
-            <Button className="w-full" variant="secondary">Editar</Button>
+            <Button className="w-full" variant="secondary">
+              Editar
+            </Button>
           </DialogTrigger>
           <DialogContent forceMount>
             <DialogHeader>

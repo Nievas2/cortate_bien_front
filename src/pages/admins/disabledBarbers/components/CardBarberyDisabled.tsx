@@ -8,26 +8,38 @@ const CardBarberyDisabled = ({ barbery }: { barbery: Barber }) => {
     mutationKey: ["activeBarbery"],
     mutationFn: () => activeBarbery(barbery.id!),
   })
+
   function handleActive() {
     mutate()
   }
+
   return (
-    <div className="flex flex-col justify-center items-center gap-2 w-full min-w-48 max-w-96 rounded-lg border border-white p-4 ">
+    <div className="flex flex-col justify-center items-center gap-4 w-full min-w-48 max-w-96 rounded-lg border border-gray-900 p-6 shadow-lg bg-gray-main text-white">
       <img
-        className="size-24"
+        className="w-24 h-24 rounded-full object-cover"
         src={barbery.imagen_perfil}
         alt={barbery.nombre}
       />
-      <span className="font-extrabold">{barbery.nombre}</span>
-      <span className="text-sm font-medium">{barbery.direccion}</span>
-      <span className="text-xs font-light">{barbery.descripcion}</span>
-      {!isSuccess && (
+      <span className="text-lg font-extrabold">
+        {barbery.nombre}
+      </span>
+      <span className="text-sm font-medium">
+        {barbery.direccion}
+      </span>
+      <span className="text-xs font-light text-center">
+        {barbery.descripcion}
+      </span>
+      {!isSuccess ? (
         <Button variant="simple" onClick={handleActive}>
           Habilitar
         </Button>
+      ) : (
+        <span className="text-green-500 font-semibold">
+          Barbería habilitada
+        </span>
       )}
-      {isSuccess && <span>Barberia habilitada</span>}
     </div>
   )
 }
+
 export default CardBarberyDisabled
