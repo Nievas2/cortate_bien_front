@@ -174,9 +174,9 @@ const AppointmentsPage = () => {
           </Button>
 
           <Button
-            variant={filter === "CONFIRMADOO" ? "secondary" : "simple"}
-            disabled={filter === "CONFIRMADOO"}
-            onClick={() => setFilter("CONFIRMADOO")}
+            variant={filter === "CONFIRMADO" ? "secondary" : "simple"}
+            disabled={filter === "CONFIRMADO"}
+            onClick={() => setFilter("CONFIRMADO")}
           >
             Aceptados
           </Button>
