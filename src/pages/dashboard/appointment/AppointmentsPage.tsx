@@ -28,6 +28,8 @@ const AppointmentsPage = () => {
   )
   const { search } = useLocation()
   const id = search.split("=")[1]
+  let to = new Date()
+  to.setDate(to.getDate() + 5)
 
   const { data, refetch } = useQuery({
     queryKey: ["get-appointments-by-barber"],
@@ -75,61 +77,60 @@ const AppointmentsPage = () => {
       <div className="flex flex-col gap-8 p-1 sm:p-3 w-full h-full">
         <section className="flex flex-col gap-2">
           <h1 className="text-4xl font-bold text-center">Turnos</h1>
-          <p className="text-xl font-light text-center">{data?.data.fecha}</p>
+          <p className="text-xl font-light text-center">
+            Desde el {data?.data.fecha} hasta {to.toISOString().split("T")[0]}
+          </p>
           <div className="flex flex-col-reverse sm:flex-row gap-4 w-full">
-            {
-              data?.data.turnos.length > 0 && (
-
-            <div className="flex flex-col w-full">
-              <div className="flex flex-row gap-2 items-end">
-                <Label>Cambiar los estados</Label>
-              </div>
-              <div className="flex items-end gap-8 h-full">
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="checkbox"
-                    onChange={() => {                      
-                      if (select?.length === data?.data.turnos.length) {
-                        return setSelect(undefined)
-                      }
-                      return setSelect(
-                        data?.data.turnos.map((item: Appointment) => item.id)
-                      )
-                    }}
-                    checked={select?.length === data?.data.turnos.length}
-                  />
-                  <small className="flex items-center h-full">Todos</small>
+            {data?.data.turnos.length > 0 && (
+              <div className="flex flex-col w-full">
+                <div className="flex flex-row gap-2 items-end">
+                  <Label>Cambiar los estados</Label>
                 </div>
-              </div>
-              {select != undefined && select?.length > 0 && (
-                <div className="flex flex-col gap-3">
-                  <Select onValueChange={(e) => setState(e)}>
-                    <SelectTrigger className="w-[200px]">
-                      <SelectValue placeholder="Estados de los turnos" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-gray-main text-white w-full">
-                      <SelectItem value="CONFIRMADO">Aceptados</SelectItem>
-                      <SelectItem value="CANCELADO">Cancelados</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button
-                    className="max-w-[200px]"
-                    variant="simple"
-                    disabled={state === ""}
-                    onClick={() => mutate()}
-                  >
-                    Confirmar
-                  </Button>
-                  {error && (
-                    <small className="font-bold text-red-500">
-                      {error.message}
-                    </small>
-                  )}
+                <div className="flex items-end gap-8 h-full">
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="checkbox"
+                      onChange={() => {
+                        if (select?.length === data?.data.turnos.length) {
+                          return setSelect(undefined)
+                        }
+                        return setSelect(
+                          data?.data.turnos.map((item: Appointment) => item.id)
+                        )
+                      }}
+                      checked={select?.length === data?.data.turnos.length}
+                    />
+                    <small className="flex items-center h-full">Todos</small>
+                  </div>
                 </div>
-              )}
-            </div>
-              )
-            }
+                {select != undefined && select?.length > 0 && (
+                  <div className="flex flex-col gap-3">
+                    <Select onValueChange={(e) => setState(e)}>
+                      <SelectTrigger className="w-[200px]">
+                        <SelectValue placeholder="Estados de los turnos" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-main text-white w-full">
+                        <SelectItem value="CONFIRMADO">Aceptados</SelectItem>
+                        <SelectItem value="CANCELADO">Cancelados</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      className="max-w-[200px]"
+                      variant="simple"
+                      disabled={state === ""}
+                      onClick={() => mutate()}
+                    >
+                      Confirmar
+                    </Button>
+                    {error && (
+                      <small className="font-bold text-red-500">
+                        {error.message}
+                      </small>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="flex flex-col justify-start items-start sm:items-end gap-2 w-full">
               <div className="flex flex-row gap-2 items-end">
@@ -146,9 +147,7 @@ const AppointmentsPage = () => {
             </div>
           </div>
           <div className="flex justify-between w-full">
-            <span>
-              Turnos maximos: {data?.data.turnosMaximosDelDia}
-            </span>
+            <span>Turnos maximos: {data?.data.turnosMaximosDelDia}</span>
             <span>Turnos restantes: {data?.data.turnosRestantes}</span>
           </div>
         </section>
