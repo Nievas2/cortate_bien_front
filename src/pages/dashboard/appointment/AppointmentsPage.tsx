@@ -23,6 +23,7 @@ const AppointmentsPage = () => {
   document.title = "Cortate bien | Turnos"
   const [select, setSelect] = useState<Array<string> | undefined>()
   const [state, setState] = useState("")
+  const [filter, setFilter] = useState<string>()
   const [date, setDate] = useState<string | undefined>(
     new Date().toISOString().split("T")[0]
   )
@@ -34,7 +35,7 @@ const AppointmentsPage = () => {
   const { data, refetch } = useQuery({
     queryKey: ["get-appointments-by-barber"],
     queryFn: () => {
-      return getAppointmentsByBarberId(id, date)
+      return getAppointmentsByBarberId(id, date, filter)
     },
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
@@ -58,7 +59,7 @@ const AppointmentsPage = () => {
 
   useEffect(() => {
     refetch()
-  }, [date])
+  }, [date, filter])
 
   function handleSelect(idSelected: string) {
     let seleteds
@@ -77,9 +78,11 @@ const AppointmentsPage = () => {
       <div className="flex flex-col gap-8 p-1 sm:p-3 w-full h-full">
         <section className="flex flex-col gap-2">
           <h1 className="text-4xl font-bold text-center">Turnos</h1>
+
           <p className="text-xl font-light text-center">
             Desde el {data?.data.fecha} hasta {to.toISOString().split("T")[0]}
           </p>
+
           <div className="flex flex-col-reverse sm:flex-row gap-4 w-full">
             {data?.data.turnos.length > 0 && (
               <div className="flex flex-col w-full">
@@ -146,11 +149,55 @@ const AppointmentsPage = () => {
               />
             </div>
           </div>
+
           <div className="flex justify-between w-full">
             <span>Turnos maximos: {data?.data.turnosMaximosDelDia}</span>
             <span>Turnos restantes: {data?.data.turnosRestantes}</span>
           </div>
         </section>
+
+        <section className="flex gap-2 justify-center">
+          <Button
+            variant={filter === "" ? "secondary" : "simple"}
+            disabled={filter === ""}
+            onClick={() => setFilter("")}
+          >
+            Sin filtros
+          </Button>
+
+          <Button
+            variant={filter === "PENDIENTE" ? "secondary" : "simple"}
+            disabled={filter === "PENDIENTE"}
+            onClick={() => setFilter("PENDIENTE")}
+          >
+            Pendientes
+          </Button>
+
+          <Button
+            variant={filter === "CONFIRMADOO" ? "secondary" : "simple"}
+            disabled={filter === "CONFIRMADOO"}
+            onClick={() => setFilter("CONFIRMADOO")}
+          >
+            Aceptados
+          </Button>
+
+          <Button
+            variant={filter === "CANCELADO" ? "secondary" : "simple"}
+            disabled={filter === "CANCELADO"}
+            onClick={() => setFilter("CANCELADO")}
+          >
+            Cancelados
+          </Button>
+
+          <Button
+            variant={filter === "REPROGRAMADO" ? "secondary" : "simple"}
+            disabled={filter === "REPROGRAMADO"}
+            onClick={() => setFilter("REPROGRAMADO")}
+          >
+            Reprogramados
+          </Button>
+        </section>
+
         {data?.data.turnos.map((appointment: Appointment) => (
           <CardAppointment
             appointment={appointment}

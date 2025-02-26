@@ -10,9 +10,15 @@ export async function createAppointment(data: CreateAppointment, id: string) {
   }
 }
 
-export async function getAppointmentsByBarberId(id: string, date?: string) {
+export async function getAppointmentsByBarberId(
+  id: string,
+  date?: string,
+  filter?: string
+) {
   try {
-    const res = await axiosInstance.get(`turno/find/all/${id}?date=${date}`)
+    const res = await axiosInstance.get(
+      `turno/find/all/${id}?date=${date}&status=${filter}`
+    )
     return res
   } catch (error) {
     throw error
