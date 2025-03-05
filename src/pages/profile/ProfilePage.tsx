@@ -1,8 +1,8 @@
 import { useAuthContext } from "@/contexts/authContext"
-import { getUserById, updateUser } from "@/services/UserService"
+import { getUserById } from "@/services/UserService"
 import { useQuery } from "@tanstack/react-query"
 import Layout from "./Layout"
-import { Label } from "@/components/ui/label"
+/* import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
@@ -21,24 +21,24 @@ import { Icon } from "@iconify/react/dist/iconify.js"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { updateUserSchema } from "@/utils/schemas/userSchema"
 import { Button } from "@/components/ui/button"
-import { useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom" */
 
 const ProfilePage = () => {
   document.title = "Cortate bien | Perfil"
-  const [showPassword, setShowPassword] = useState(false)
+/*   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [countryId, setCountryId] = useState<undefined | number>()
   const [stateId, setStateId] = useState<undefined | number>()
-  const location = useLocation()
-  const required = location.search.split("=")[1]
+  const required = location.search.split("=")[1] */
+ /*  const location = useLocation() */
   const { authUser } = useAuthContext()
 
-  const { data, isSuccess: isSuccessCountries } = useQuery({
+/*   const { data, isSuccess: isSuccessCountries } = useQuery({
     queryKey: ["countries"],
     queryFn: getCountries,
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
-  })
+  }) */
 
   const { data: user } = useQuery({
     queryKey: ["get-user-by-id"],
@@ -49,7 +49,7 @@ const ProfilePage = () => {
     staleTime: 1000 * 60 * 60 * 24,
   })
 
-  const {
+/*   const {
     register,
     formState: { errors },
     handleSubmit,
@@ -66,9 +66,9 @@ const ProfilePage = () => {
       confirmPassword: user?.data.password ? user?.data.password : "",
     },
     resolver: zodResolver(updateUserSchema),
-  })
+  }) */
 
-  const togglePasswordVisibility = () => {
+/*   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState)
   }
 
@@ -89,7 +89,7 @@ const ProfilePage = () => {
     } catch (error) {
       throw error
     }
-  })
+  }) */
 
   return (
     <Layout>
@@ -107,7 +107,7 @@ const ProfilePage = () => {
           </div>
         </section>
 
-        <section className="flex flex-col items-center justify-center w-full gap-8">
+    {/*     <section className="flex flex-col items-center justify-center w-full gap-8">
           <h2 className="text-2xl text-center font-semibold">
             Actualizar información personal
           </h2>
@@ -307,10 +307,10 @@ const ProfilePage = () => {
               aria-label="Register"
               role="button"
             >
-              Registrarse
+              Actualizar informacion 
             </Button>
           </form>
-        </section>
+        </section> */}
       </main>
     </Layout>
   )
