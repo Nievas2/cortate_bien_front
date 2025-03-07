@@ -45,8 +45,8 @@ const LoginPage = () => {
   const loginFunction = handleSubmit(async (values) => {
     try {
       await login(values)
-    } catch (error: any) {
-      setLoginError(error.message)
+    } catch (error: any) {      
+      setLoginError(error.response.data.message)
     }
   })
 

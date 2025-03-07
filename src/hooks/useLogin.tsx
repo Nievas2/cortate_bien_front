@@ -39,7 +39,7 @@ const useLogin = () => {
       if (error.response && error.response.status === 401) {
         throw new Error("Credenciales incorrectas.")
       } else {
-        throw new Error("Un error inesperado ha ocurrido.")
+        throw error
       }
     } finally {
       setLoading(false)
