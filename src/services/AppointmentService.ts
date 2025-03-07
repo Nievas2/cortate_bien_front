@@ -62,7 +62,7 @@ export async function updateStatus(
 export async function updateStatusUser(idAppointment: string, status: string) {
   try {
     const res = await axiosInstance.put(
-      `turno/update/${idAppointment}?status=${status}`
+      `turno/update/usuario/${idAppointment}?status=${status}`
     )
     return res
   } catch (error) {
