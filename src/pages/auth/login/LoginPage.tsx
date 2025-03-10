@@ -48,8 +48,7 @@ const LoginPage = () => {
 
   const loginFunction = handleSubmit(async (values) => {
     try {
-      const token = await executeRecaptcha("login")
-      console.log("reCAPTCHA token:", token)
+      await executeRecaptcha("login")
       await login(values)
     } catch (error: any) {
       console.log(error)
