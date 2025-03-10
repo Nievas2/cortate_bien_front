@@ -198,7 +198,7 @@ const Navbar = () => {
 
         {/* Mobile menu, show/hide based on menu state. */}
         <div
-          className={`fixed inset-0 bg-black bg-opacity-50 flex justify-start z-50 md:hidden transition-all duration-300 ${
+          className={`fixed inset-0 bg-black/40 flex justify-start z-50 transition-all duration-300 ${
             open ? "opacity-100 visible" : "opacity-0 invisible"
           }`}
           onClick={() => setOpen(!open)}
