@@ -19,7 +19,7 @@ const LoginPage = () => {
   /*   const [success, setSuccess] = useState("") */
   /*   const [recoveryPassword, setRecoveryPassword] = useState(false) */
   const [loginError, setLoginError] = useState("")
-  const { executeRecaptcha, recaptchaLoaded } = useReCaptcha({
+  const { executeRecaptcha } = useReCaptcha({
     siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
   })
   const {
@@ -133,7 +133,7 @@ const LoginPage = () => {
                       id="login"
                       aria-label="login"
                       role="button"
-                      disabled={loading || recaptchaLoaded}
+                      disabled={loading}
                     >
                       {loading ? "Cargando..." : "Iniciar sesión"}
                       <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
