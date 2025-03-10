@@ -10,6 +10,7 @@ import { recoveryPasswordFunction } from "@/services/AuthService" */
 import { loginSchema } from "@/utils/schemas/loginSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import useReCaptcha from "@/hooks/useReCaptcha"
 
 const LoginPage = () => {
   document.title = "Cortate bien | Iniciar sesión"
@@ -18,6 +19,9 @@ const LoginPage = () => {
   /*   const [success, setSuccess] = useState("") */
   /*   const [recoveryPassword, setRecoveryPassword] = useState(false) */
   const [loginError, setLoginError] = useState("")
+  const { executeRecaptcha, recaptchaLoaded } = useReCaptcha({
+    siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+  })
   const {
     register,
     handleSubmit,
@@ -44,8 +48,11 @@ const LoginPage = () => {
 
   const loginFunction = handleSubmit(async (values) => {
     try {
+      const token = await executeRecaptcha("login")
+      console.log("reCAPTCHA token:", token)
       await login(values)
-    } catch (error: any) {      
+    } catch (error: any) {
+      console.log(error)
       setLoginError(error.response.data.message)
     }
   })
@@ -126,7 +133,7 @@ const LoginPage = () => {
                       id="login"
                       aria-label="login"
                       role="button"
-                      disabled={loading}
+                      disabled={loading || recaptchaLoaded}
                     >
                       {loading ? "Cargando..." : "Iniciar sesión"}
                       <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
