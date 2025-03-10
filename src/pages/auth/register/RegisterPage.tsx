@@ -22,6 +22,7 @@ import StateSelect from "@/pages/dashboard/components/StateSelect"
 import CountrySelect from "@/pages/dashboard/components/CountrySelect"
 import { getCountries } from "@/services/CountryService"
 import CitySelect from "@/pages/dashboard/components/CitySelect"
+import useReCaptcha from "@/hooks/useReCaptcha"
 
 const RegisterPage = () => {
   document.title = "Cortate bien | Registro"
@@ -34,6 +35,12 @@ const RegisterPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [countryId, setCountryId] = useState<undefined | number>()
   const [stateId, setStateId] = useState<undefined | number>()
+  const { executeRecaptcha } = useReCaptcha({
+    siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+    onError() {
+      setError("Creemos que eres un robot 🤖, prueba de nuevo más tarde.")
+    },
+  })
 
   const { data, isSuccess: isSuccessCountries } = useQuery({
     queryKey: ["countries"],
@@ -75,12 +82,15 @@ const RegisterPage = () => {
       return setError("Debes aceptar los terminos y condiciones")
     }
     try {
+      await executeRecaptcha("register")
       const response = await register(values)
       setSuccess(true)
       navigation(`/auth?email=${response.data.email}`)
       return response
     } catch (error: any) {
-      setError(error.response.data.message)
+      if (error.response.data.message)
+        return setError(error.response.data.message)
+
       console.error("Registration failed:", error)
     }
   }
@@ -370,7 +380,7 @@ const RegisterPage = () => {
                   <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-white after:mt-0.5 after:flex-1 after:border-t after:border-white">
                     <p className="mx-4 mb-0 text-center text-white">o</p>
                   </div>
-                  
+
                   <Button
                     variant="simple"
                     className="flex gap-3"

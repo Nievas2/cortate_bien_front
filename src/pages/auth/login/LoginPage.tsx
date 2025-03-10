@@ -19,7 +19,7 @@ const LoginPage = () => {
   /*   const [success, setSuccess] = useState("") */
   /*   const [recoveryPassword, setRecoveryPassword] = useState(false) */
   const [loginError, setLoginError] = useState("")
-  const { executeRecaptcha } = useReCaptcha({
+  const { executeRecaptcha, error } = useReCaptcha({
     siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
   })
   const {
@@ -75,7 +75,7 @@ const LoginPage = () => {
                     <Input
                       className="bg-white"
                       type="email"
-                      placeholder="email"
+                      placeholder="example@gmail.com"
                       {...register("email")}
                       disabled={loading}
                     />
@@ -122,6 +122,12 @@ const LoginPage = () => {
                   {loginError && (
                     <small className="font-bold text-center text-[#ff4444]">
                       {loginError}
+                    </small>
+                  )}
+
+                  {error && (
+                    <small className="font-bold text-center text-[#ff4444]">
+                      Creemos que eres un robot 🤖, prueba de nuevo más tarde.
                     </small>
                   )}
 

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import useReCaptcha from "@/hooks/useReCaptcha"
 import { resetPassword, resetPasswordConfirm } from "@/services/AuthService"
 import { recoveryPasswordSchema } from "@/utils/schemas/userSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -14,6 +15,9 @@ const PasswordRecoveryPage = () => {
   const [step, setStep] = useState(1)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const { executeRecaptcha, error } = useReCaptcha({
+    siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+  })
 
   /* Update user */
   const {
@@ -80,11 +84,21 @@ const PasswordRecoveryPage = () => {
   }
 
   const submitEmailFunction = handleSubmitEmail(async (value) => {
-    mutate(value)
+    try {
+      await executeRecaptcha("login")
+      mutate(value)
+    } catch (error) {
+      throw error
+    }
   })
 
-  const passwordRecoveryFunction = handleSubmit((values) => {
-    mutateUpdate(values)
+  const passwordRecoveryFunction = handleSubmit(async (values) => {
+    try {
+      await executeRecaptcha("recover-password")
+      mutateUpdate(values)
+    } catch (error) {
+      throw error
+    }
   })
 
   return (
@@ -251,6 +265,12 @@ const PasswordRecoveryPage = () => {
                 {errors.confirmPassword?.message}
               </small>
             </div>
+
+            {error && (
+              <small className="font-bold text-red-500">
+                Creemos que eres un robot 🤖, prueba de nuevo más tarde.
+              </small>
+            )}
 
             <Button
               variant="auth"
