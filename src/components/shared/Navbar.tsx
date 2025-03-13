@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { NavbarItemDestock, NavbarItemMobile } from "./navbar/NavbarItems"
+import Notifications from "./navbar/Notifications"
 
 const Navbar = () => {
   const { logOut } = useLogout()
@@ -79,6 +80,12 @@ const Navbar = () => {
               {/* Logo */}
             </Link>
 
+            {authUser?.user != null && (
+              <div className="absolute right-1.5 md:hidden">
+                <Notifications />
+              </div>
+            )}
+
             <div className={`items-center flex justify-end gap-6`}>
               {/* Navlinks */}
               <div className="hidden md:ml-6 md:flex md:flex-1">
@@ -116,6 +123,13 @@ const Navbar = () => {
                       pathname={pathname}
                       name="Admins"
                     />
+                  )}
+
+                  {authUser?.user.tipo_de_cuenta == "BARBERO" &&
+                    pathname.slice(0, 10) === "/dashboard" && <Notifications />}
+
+                  {authUser?.user.tipo_de_cuenta == "CLIENTE" && (
+                    <Notifications />
                   )}
 
                   {/* User session */}

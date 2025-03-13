@@ -9,9 +9,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 rounded-full",
-        destructive:
-          "bg-red-500 text-white hover:bg-red-500/90 rounded-full",
+        default:
+          "bg-primary text-primary-foreground hover:bg-primary/90 rounded-full",
+        destructive: "bg-red-500 text-white hover:bg-red-500/90 rounded-full",
         outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
@@ -32,6 +32,7 @@ const buttonVariants = cva(
         icon: "h-10 w-10",
         barberDash: "size-48",
         rounded: "size-12 rounded-full",
+        smallRounded: "px-2 py-1 rounded-full text-xs",
       },
     },
     defaultVariants: {
