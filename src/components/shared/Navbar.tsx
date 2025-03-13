@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js"
-import { Link, NavLink, useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { Button } from "../ui/button"
 import { useEffect, useState } from "react"
 import { useAuthContext } from "@/contexts/authContext"
@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { NavbarItemDestock, NavbarItemMobile } from "./navbar/NavbarItems"
 
 const Navbar = () => {
   const { logOut } = useLogout()
@@ -316,61 +317,3 @@ const Navbar = () => {
 }
 
 export default Navbar
-
-function NavbarItemDestock({
-  location,
-  pathname,
-  name,
-}: {
-  location: string
-  pathname: string
-  name: string
-}) {
-  return (
-    <NavLink
-      onClick={GoToTop}
-      to={location}
-      className={`rounded-md px-3 py-[6px] text-sm font-medium relative group hover:text-blue-main transition-all duration-300 text-white
-  
-      `}
-    >
-      {name}
-      <span
-        className={`h-[2.5px] inline-block bg-blue-secondary absolute left-1/2 -translate-x-1/2 bottom-[1px] transition-[width] ease duration-300 ${
-          pathname === location ? "w-[80%]" : "w-0"
-        }`}
-      >
-        &nbsp;
-      </span>
-    </NavLink>
-  )
-}
-
-function NavbarItemMobile({
-  location,
-  pathname,
-  name,
-  setOpen,
-}: {
-  location: string
-  pathname: string
-  name: string
-  setOpen: Function
-}) {
-  return (
-    <NavLink
-      to={location}
-      className={`block rounded-md px-3 py-2 text-base font-medium ${
-        location === pathname
-          ? "bg-blue-secondary/50 text-white"
-          : "text-white"
-      } transition-colors duration-300`}
-      onClick={() => {
-        GoToTop()
-        setOpen(false)
-      }}
-    >
-      {name}
-    </NavLink>
-  )
-}
