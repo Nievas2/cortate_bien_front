@@ -212,8 +212,7 @@ const CardAppointment = ({
                         </small>
                       </div>
 
-                      {error instanceof AxiosError &&
-                      error.response && (
+                      {error instanceof AxiosError && error.response && (
                         <span className="text-red-500 text-sm">
                           {error.response.data.message}
                         </span>
@@ -254,13 +253,27 @@ const CardAppointment = ({
           </Button>
         )}
 
+        {appointment.estado == "CONFIRMADO" && (
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setOpen(true)
+              setState("COMPLETADO")
+            }}
+          >
+            Completar
+          </Button>
+        )}
+
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent forceMount>
             <DialogHeader>
               <DialogTitle>
                 {state == "CONFIRMADO"
                   ? "Confirmación de turno"
-                  : "Cancelación de turno"}
+                  : state == "COMPLETADO"
+                    ? "Finalizar el turno"
+                    : "Cancelación de turno"}
               </DialogTitle>
             </DialogHeader>
             {successStatus ? (
@@ -288,13 +301,19 @@ const CardAppointment = ({
                         <p>
                           {state === "CONFIRMADO"
                             ? "¿Estás seguro de confirmar el turno?"
-                            : "¿Estás seguro de cancelar el turno?"}
+                            : state === "COMPLETADO"
+                              ? "¿Estás seguro de completar el turno?"
+                              : "¿Estás seguro de cancelar el turno?"}
                         </p>
                         <p>
                           Esta accion no se puede deshacer, por favor confirma
                           que quieres{" "}
-                          {state === "CONFIRMADO" ? "confirmar" : "cancelar"} el
-                          turno.
+                          {state === "CONFIRMADO"
+                            ? "confirmar"
+                            : state === "COMPLETADO"
+                              ? "completar"
+                              : "cancelar"}{" "}
+                          el turno.
                         </p>
                       </div>
                       <div className="flex justify-between gap-2 w-full">
@@ -304,16 +323,24 @@ const CardAppointment = ({
                             if (state === "CONFIRMADO") {
                               setValueState("state", "CONFIRMADO")
                             }
+                            if (state === "COMPLETADO") {
+                              setValueState("state", "COMPLETADO")
+                            }
                             if (state === "CANCELADO") {
                               setValueState("state", "CANCELADO")
                             }
                             mutateUpdate({ state })
-                          }} type="button"
+                          }}
+                          type="button"
                         >
                           Confirmar
                         </Button>
 
-                        <Button variant="ghost" type="button" onClick={() => setOpen(false)}>
+                        <Button
+                          variant="ghost"
+                          type="button"
+                          onClick={() => setOpen(false)}
+                        >
                           Cancelar
                         </Button>
                       </div>

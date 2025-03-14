@@ -115,6 +115,7 @@ const AppointmentsPage = () => {
                       <SelectContent className="bg-gray-main text-white w-full">
                         <SelectItem value="CONFIRMADO">Aceptados</SelectItem>
                         <SelectItem value="CANCELADO">Cancelados</SelectItem>
+                        <SelectItem value="COMPLETADO">Completados</SelectItem>
                       </SelectContent>
                     </Select>
                     <Button
@@ -193,6 +194,14 @@ const AppointmentsPage = () => {
             variant={filter === "REPROGRAMADO" ? "secondary" : "simple"}
             disabled={filter === "REPROGRAMADO"}
             onClick={() => setFilter("REPROGRAMADO")}
+          >
+            Reprogramados
+          </Button>
+
+          <Button
+            variant={filter === "COMPLETADO" ? "secondary" : "simple"}
+            disabled={filter === "COMPLETADO"}
+            onClick={() => setFilter("COMPLETADO")}
           >
             Reprogramados
           </Button>

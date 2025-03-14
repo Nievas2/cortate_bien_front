@@ -85,27 +85,29 @@ const CardAppointmentUser = ({
           </span>
         </section>
 
-        <section className="flex items-center justify-start">
-          <Dialog>
-            <DialogTrigger>
-              <Button
-                variant="ghost"
-                className="flex flex-col gap-2 text-white"
-              >
-                {/*   Aceptar/Cancelar */}
-                <Icon icon="material-symbols:star" width={24} height={24} />
-              </Button>
-            </DialogTrigger>
-            <DialogContent forceMount>
-              <DialogHeader>
-                <DialogTitle>Dejar una reseña</DialogTitle>
-              </DialogHeader>
-              <HandleChangeReviews idBarber={appointment.barberia.id!} />
-            </DialogContent>
-          </Dialog>
-        </section>
+        {appointment.estado === "COMPLETADO" && (
+          <section className="flex items-center justify-start">
+            <Dialog>
+              <DialogTrigger>
+                <Button
+                  variant="ghost"
+                  className="flex flex-col gap-2 text-white"
+                >
+                  {/*   Aceptar/Cancelar */}
+                  <Icon icon="material-symbols:star" width={24} height={24} />
+                </Button>
+              </DialogTrigger>
+              <DialogContent forceMount>
+                <DialogHeader>
+                  <DialogTitle>Dejar una reseña</DialogTitle>
+                </DialogHeader>
+                <HandleChangeReviews idBarber={appointment.barberia.id!} />
+              </DialogContent>
+            </Dialog>
+          </section>
+        )}
       </div>
-      
+
       <div className="flex gap-4 w-full justify-end">
         {appointment.estado === "REPROGRAMADO" && (
           <Button

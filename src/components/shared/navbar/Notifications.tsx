@@ -129,6 +129,15 @@ const Notifications = () => {
                 >
                   Reprogramados
                 </Button>
+
+                <Button
+                  size="smallRounded"
+                  variant={filter === "COMPLETADO" ? "secondary" : "simple"}
+                  disabled={filter === "COMPLETADO"}
+                  onClick={() => setFilter("COMPLETADO")}
+                >
+                  Reprogramados
+                </Button>
               </section>
 
               <section className="flex gap-2 px-2">
