@@ -2,12 +2,13 @@ import axiosInstance from "@/api/axiosInstance"
 
 export async function getNotificationsBarber(
   id: string,
+  page:string,
   status: string,
   viewed: string
 ) {
   try {
     const res = await axiosInstance.get(
-      `notificaciones/find/all/barbero/${id}?page=1&status=${status}&viewed=${viewed}`
+      `notificaciones/find/all/barbero/${id}?page=${page}&status=${status}&viewed=${viewed}`
     )
     return res
   } catch (error) {
@@ -15,10 +16,10 @@ export async function getNotificationsBarber(
   }
 }
 
-export async function getNotificationsUser(status: string, viewed: string) {
+export async function getNotificationsUser(page: string, status: string, viewed: string) {
   try {
     const res = await axiosInstance.get(
-      `notificaciones/find/all/cliente?page=1&status=${status}&viewed=${viewed}`
+      `notificaciones/find/all/cliente?page=${page}&status=${status}&viewed=${viewed}`
     )
     return res
   } catch (error) {

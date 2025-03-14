@@ -22,6 +22,8 @@ import { useCallback, useEffect, useState } from "react"
 const Notifications = () => {
   const [filter, setFilter] = useState<string>("")
   const [filterViewed, setFilterViewed] = useState<string>("")
+  const [currentPage, setCurrentPage] = useState<string>("1")
+  const [notifications, setNotifications] = useState<Notification[]>([])
   const queryClient = useQueryClient()
   const { authUser } = useAuthContext()
   const { search } = useLocation()
@@ -32,16 +34,19 @@ const Notifications = () => {
     queryFn: () => {
       if (authUser == null) return Promise.reject("No hay notificaciones")
       if (authUser?.user.tipo_de_cuenta == "BARBERO" && id.length > 0) {
-        return getNotificationsBarber(id, filter, filterViewed)
+        return getNotificationsBarber(id, currentPage, filter, filterViewed)
       }
-      return getNotificationsUser(filter, filterViewed)
+      return getNotificationsUser(currentPage, filter, filterViewed)
     },
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     staleTime: 1000 * 60 * 60 * 24,
   })
 
-  useEffect(() => {}, [queryClient.getQueryData(["notifications"])])
+  useEffect(() => {
+    if (data)
+      setNotifications((prevNotis) => prevNotis.concat(data.data.results))
+  }, [queryClient.getQueryData(["notifications"])])
 
   useEffect(() => {
     if (
@@ -54,15 +59,15 @@ const Notifications = () => {
 
   const listNotificationNotRead = useCallback(
     () =>
-      data?.data.results.filter(
+      notifications.filter(
         (notification: Notification) => notification.leido == false
       ),
-    [queryClient.getQueryData(["notifications"])]
+    [notifications]
   )
 
   useEffect(() => {
     refetch()
-  }, [filter, filterViewed])
+  }, [filter, filterViewed, currentPage])
 
   return (
     <NavigationMenu>
@@ -75,9 +80,10 @@ const Notifications = () => {
             )}
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <main className="flex flex-col gap-2 overflow-y-auto">
+            <main className="flex flex-col gap-2 overflow-y-auto bg-gray-main">
               <h3 className="text-md font-bold p-2">Notificaciones</h3>
               <hr className="text-gray-main" />
+
               <section className="flex flex-wrap gap-2 px-2">
                 <Button
                   size="smallRounded"
@@ -155,13 +161,13 @@ const Notifications = () => {
               </section>
 
               <div className="flex flex-col gap-2">
-                {data?.data.results.length == 0 ? (
+                {notifications.length == 0 ? (
                   <span className="py-4 text-center">
                     No hay notificaciones
                   </span>
                 ) : (
                   <div className="flex flex-col px-2 gap-1 py-1">
-                    {data?.data.results.map((notification: Notification) => (
+                    {notifications.map((notification: Notification) => (
                       <NotificationCard
                         notification={notification}
                         barberId={id ? id : undefined}
@@ -171,6 +177,18 @@ const Notifications = () => {
                   </div>
                 )}
               </div>
+
+              {data?.data.total_pages > data?.data.current_page + 1 && (
+                <div className="flex justify-center w-full pb-4">
+                  <Button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    variant={"simple"}
+                    size={"smallRounded"}
+                  >
+                    Más notificaciones
+                  </Button>
+                </div>
+              )}
             </main>
           </NavigationMenuContent>
         </NavigationMenuItem>
