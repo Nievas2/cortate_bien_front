@@ -16,7 +16,7 @@ const useLogin = () => {
   const login = async ({ email, password }: LoginParams) => {
     setLoading(true)
 
-    try {      
+    try {
       const response = await axiosInstance.post("auth/login", {
         email,
         password,
@@ -32,7 +32,11 @@ const useLogin = () => {
         token: data.accesToken,
       }
       setAuthUser(userAuth)
-      window.location.href = "/"
+      if (userAuth.user.tipo_de_cuenta == "BARBERO") {
+        window.location.href = "/dashboard"
+      } else {
+        window.location.href = "/"
+      }
 
       return null
     } catch (error: any) {

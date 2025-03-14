@@ -3,9 +3,10 @@ import { Notification } from "@/interfaces/Notification"
 import {
   getNotificationsBarber,
   getNotificationsUser,
+  readNotificationBarber,
   readNotificationClient,
 } from "@/services/NotificationService"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useLocation } from "react-router-dom"
 import {
   NavigationMenu,
@@ -20,6 +21,7 @@ import { useEffect, useState } from "react"
 
 const Notifications = () => {
   const [filter, setFilter] = useState<string>("")
+  const queryClient = useQueryClient()
   const { authUser } = useAuthContext()
   const { search } = useLocation()
   const id = search.split("=")[1]
@@ -37,6 +39,7 @@ const Notifications = () => {
     refetchOnMount: false,
     staleTime: 1000 * 60 * 60 * 24,
   })
+  useEffect(() => {}, [queryClient.getQueryData(["notifications"])])
 
   useEffect(() => {
     console.log(id)
@@ -120,6 +123,7 @@ const Notifications = () => {
                     {data?.data.results.map((notification: Notification) => (
                       <NotificationCard
                         notification={notification}
+                        barberId={id ? id : undefined}
                         key={crypto.randomUUID()}
                       />
                     ))}
@@ -137,26 +141,46 @@ export default Notifications
 
 export function NotificationCard({
   notification,
+  barberId,
 }: {
   notification: Notification
+  barberId?: string
 }) {
+  const queryClient = useQueryClient()
   const { mutate, isSuccess } = useMutation({
     mutationKey: ["readNotification"],
     mutationFn: () => {
+      if (barberId) return readNotificationBarber(barberId, notification.id)
       return readNotificationClient(notification.id)
     },
+    onSuccess: async () => {
+      await queryClient.setQueryData(["notifications"], (old: any) => {
+        return {
+          ...old,
+          data: {
+            ...old.data,
+            results: old.data.results.map((n: Notification) => {
+              if (n.id == notification.id) return { ...n, leido: true }
+              return n
+            }),
+          },
+        }
+      })
+    },
   })
+
+  useEffect(() => {}, [isSuccess])
   return (
     <button
-      className="flex flex-col gap-3 px-2 py-1 rounded-md border-l-4 border-amber-300 text-sm relative bg-gray-main cursor-pointer"
+      className={`flex flex-col gap-3 px-2 py-1 rounded-md border-l-4 text-sm relative bg-gray-main cursor-pointer ${notification.estado == "PENDIENTE" ? "border-amber-500" : notification.estado == "CONFIRMADO" ? "border-green-500" : notification.estado == "REPROGRAMADO" ? "border-purple-500" : "border-red-500"}`}
       onClick={() => {
         if (isSuccess || notification.leido) return console.log("ya leido")
 
         return mutate()
       }}
     >
-      <span className="font-bold">{notification.nombre}</span>
-      <p className="text-gray-400">{notification.mensaje}</p>
+      <span className="font-bold text-start">{notification.nombre}</span>
+      <p className="text-gray-400 text-start">{notification.mensaje}</p>
       <div className="flex justify-between ">
         <span
           className={`${notification.estado == "PENDIENTE" ? "bg-amber-500" : notification.estado == "CONFIRMADO" ? "bg-green-500" : notification.estado == "REPROGRAMADO" ? "bg-purple-500" : "bg-red-500"} px-2 py-1 rounded-full w-fit`}
@@ -165,7 +189,7 @@ export function NotificationCard({
         </span>
         <p className="text-gray-400">{notification.fecha}</p>
       </div>
-      {notification.leido == false && (
+      {notification.leido == false && isSuccess === false && (
         <div className="absolute top-2 right-2 w-2 h-2 bg-blue-main rounded-full" />
       )}
     </button>
