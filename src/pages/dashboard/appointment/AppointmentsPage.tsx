@@ -151,7 +151,7 @@ const AppointmentsPage = () => {
             </div>
           </div>
 
-          <div className="flex justify-between w-full">
+          <div className="flex flex-col sm:flex-row gap-2 sm:justify-between w-full">
             <span>Turnos maximos: {data?.data.turnosMaximosDelDia}</span>
             <span>Turnos restantes: {data?.data.turnosRestantes}</span>
           </div>
