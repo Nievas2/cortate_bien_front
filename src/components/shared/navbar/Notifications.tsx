@@ -17,10 +17,11 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { Button } from "@/components/ui/button"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 const Notifications = () => {
   const [filter, setFilter] = useState<string>("")
+  const [filterViewed, setFilterViewed] = useState<string>("")
   const queryClient = useQueryClient()
   const { authUser } = useAuthContext()
   const { search } = useLocation()
@@ -31,19 +32,18 @@ const Notifications = () => {
     queryFn: () => {
       if (authUser == null) return Promise.reject("No hay notificaciones")
       if (authUser?.user.tipo_de_cuenta == "BARBERO" && id.length > 0) {
-        return getNotificationsBarber(id)
+        return getNotificationsBarber(id, filter, filterViewed)
       }
-      return getNotificationsUser()
+      return getNotificationsUser(filter, filterViewed)
     },
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     staleTime: 1000 * 60 * 60 * 24,
   })
+
   useEffect(() => {}, [queryClient.getQueryData(["notifications"])])
 
   useEffect(() => {
-    console.log(id)
-
     if (
       authUser?.user.tipo_de_cuenta == "BARBERO" &&
       id != undefined &&
@@ -51,15 +51,26 @@ const Notifications = () => {
     )
       refetch()
   }, [id])
+
+  const listNotificationNotRead = useCallback(
+    () =>
+      data?.data.results.filter(
+        (notification: Notification) => notification.leido == false
+      ),
+    [queryClient.getQueryData(["notifications"])]
+  )
+
+  useEffect(() => {
+    refetch()
+  }, [filter, filterViewed])
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger className="relative">
             <Icon icon="material-symbols:notifications" className="size-6" />
-            {data?.data.results.filter(
-              (notification: Notification) => notification.leido == false
-            ).length > 0 && (
+            {data && listNotificationNotRead().length > 0 && (
               <span className="absolute top-1 right-3 w-2 h-2 bg-blue-main rounded-full" />
             )}
           </NavigationMenuTrigger>
@@ -74,7 +85,7 @@ const Notifications = () => {
                   disabled={filter === ""}
                   onClick={() => setFilter("")}
                 >
-                  Sin filtros
+                  Todos
                 </Button>
 
                 <Button
@@ -113,6 +124,36 @@ const Notifications = () => {
                   Reprogramados
                 </Button>
               </section>
+
+              <section className="flex gap-2 px-2">
+                <Button
+                  size="smallRounded"
+                  variant={filterViewed === "" ? "secondary" : "simple"}
+                  disabled={filterViewed === ""}
+                  onClick={() => setFilterViewed("")}
+                >
+                  Todos
+                </Button>
+
+                <Button
+                  size="smallRounded"
+                  variant={filterViewed === "true" ? "secondary" : "simple"}
+                  disabled={filterViewed === "true"}
+                  onClick={() => setFilterViewed("true")}
+                >
+                  Vistos
+                </Button>
+
+                <Button
+                  size="smallRounded"
+                  variant={filterViewed === "false" ? "secondary" : "simple"}
+                  disabled={filterViewed === "false"}
+                  onClick={() => setFilterViewed("false")}
+                >
+                  No vistos
+                </Button>
+              </section>
+
               <div className="flex flex-col gap-2">
                 {data?.data.results.length == 0 ? (
                   <span className="py-4 text-center">
