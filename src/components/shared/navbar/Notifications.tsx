@@ -24,7 +24,6 @@ const Notifications = () => {
   const [filterViewed, setFilterViewed] = useState<string>("")
   const [currentPage, setCurrentPage] = useState<string>("1")
   const [notifications, setNotifications] = useState<Notification[]>([])
-  const queryClient = useQueryClient()
   const { authUser } = useAuthContext()
   const { search } = useLocation()
   const id = search.split("=")[1]
@@ -44,9 +43,21 @@ const Notifications = () => {
   })
 
   useEffect(() => {
+    refetch()
+  }, [currentPage])
+
+  useEffect(() => {
+    setCurrentPage("1")
+    refetch()
+  }, [filter, filterViewed])
+
+  useEffect(() => {
+    console.log(data)
+
+    if (currentPage == "1") return setNotifications(data?.data.results)
     if (data)
       setNotifications((prevNotis) => prevNotis.concat(data.data.results))
-  }, [queryClient.getQueryData(["notifications"])])
+  }, [data])
 
   useEffect(() => {
     if (
@@ -57,17 +68,12 @@ const Notifications = () => {
       refetch()
   }, [id])
 
-  const listNotificationNotRead = useCallback(
-    () =>
-      notifications.filter(
-        (notification: Notification) => notification.leido == false
-      ),
-    [notifications]
-  )
-
-  useEffect(() => {
-    refetch()
-  }, [filter, filterViewed, currentPage])
+  const listNotificationNotRead = useCallback(() => {
+    if (notifications == undefined) return []
+    return notifications.filter(
+      (notification: Notification) => notification.leido == false
+    )
+  }, [notifications])
 
   return (
     <NavigationMenu>
@@ -136,7 +142,7 @@ const Notifications = () => {
                   disabled={filter === "COMPLETADO"}
                   onClick={() => setFilter("COMPLETADO")}
                 >
-                  Reprogramados
+                  Completados
                 </Button>
               </section>
 
@@ -170,13 +176,13 @@ const Notifications = () => {
               </section>
 
               <div className="flex flex-col gap-2">
-                {notifications.length == 0 ? (
+                {notifications?.length == 0 ? (
                   <span className="py-4 text-center">
                     No hay notificaciones
                   </span>
                 ) : (
                   <div className="flex flex-col px-2 gap-1 py-1">
-                    {notifications.map((notification: Notification) => (
+                    {notifications?.map((notification: Notification) => (
                       <NotificationCard
                         notification={notification}
                         barberId={id ? id : undefined}
@@ -187,10 +193,13 @@ const Notifications = () => {
                 )}
               </div>
 
-              {data?.data.total_pages > data?.data.current_page + 1 && (
+              {data?.data.total_pages >= data?.data.current_page + 1 && (
                 <div className="flex justify-center w-full pb-4">
                   <Button
-                    onClick={() => setCurrentPage(currentPage + 1)}
+                    onClick={() => {
+                      const page = Number(currentPage) + 1
+                      setCurrentPage(page.toString())
+                    }}
                     variant={"simple"}
                     size={"smallRounded"}
                   >
@@ -240,7 +249,9 @@ export function NotificationCard({
   useEffect(() => {}, [isSuccess])
   return (
     <button
-      className={`flex flex-col gap-3 px-2 py-1 rounded-md border-l-4 text-sm relative bg-gray-main cursor-pointer ${notification.estado == "PENDIENTE" ? "border-amber-500" : notification.estado == "CONFIRMADO" ? "border-green-500" : notification.estado == "REPROGRAMADO" ? "border-purple-500" : "border-red-500"}`}
+      className={`flex flex-col gap-3 px-2 py-1 rounded-md border-l-4 text-sm relative bg-gray-main ${notification.estado == "PENDIENTE" ? "border-amber-500" : notification.estado == "CONFIRMADO" ? "border-green-500" : notification.estado == "REPROGRAMADO" ? "border-purple-500" : "border-red-500"}
+      ${notification.leido ? "cursor-default" : "cursor-pointer"}
+      `}
       onClick={() => {
         if (isSuccess || notification.leido) return console.log("ya leido")
 
