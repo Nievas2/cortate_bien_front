@@ -75,7 +75,7 @@ const AppointmentsPage = () => {
 
   return (
     <Layout>
-      <div className="flex flex-col gap-8 p-1 sm:p-3 w-full h-full">
+      <div className="flex flex-col gap-8 p-1 sm:p-3 w-full h-full min-h-screen">
         <section className="flex flex-col gap-2">
           <h1 className="text-4xl font-bold text-center">Turnos</h1>
 
@@ -156,7 +156,7 @@ const AppointmentsPage = () => {
           </div>
         </section>
 
-        <section className="flex gap-2 justify-center">
+        <section className="flex flex-wrap gap-2 justify-center">
           <Button
             variant={filter === "" ? "secondary" : "simple"}
             disabled={filter === ""}
