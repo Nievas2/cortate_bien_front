@@ -34,6 +34,8 @@ import StateSelect from "./StateSelect"
 import CitySelect from "./CitySelect"
 import MapSelector from "@/hooks/dashboard/MapSelector"
 import { motion } from "framer-motion"
+import { useDropzone } from "react-dropzone"
+import { postImage } from "@/services/ImagesService"
 interface ChangeBarberShopProps {
   Barbers?: Barber[]
   refetch: Function
@@ -166,9 +168,8 @@ export function ChangeBarberShopDialog({
 }: ChangeBarberShopDialogProps) {
   const [countryId, setCountryId] = useState<undefined | number>()
   const [stateId, setStateId] = useState<undefined | number>()
-  const [images, setImages] = useState(
-    barber?.imagenes ? barber?.imagenes : [""]
-  )
+  const [images, setImages] = useState([])
+  const [profilePicture, setProfilePicture] = useState([])
   if (barber != undefined) {
     barber.horarios.forEach((element) => {
       if (element.pausa_inicio == null) element.pausa_inicio = ""
@@ -215,6 +216,7 @@ export function ChangeBarberShopDialog({
     formState: { errors },
     handleSubmit,
     setValue,
+    getValues,
   } = useForm({
     defaultValues: {
       nombre: barber?.nombre ? barber?.nombre : "",
@@ -228,16 +230,17 @@ export function ChangeBarberShopDialog({
       ciudad_id: barber?.ciudad_id ? barber?.ciudad_id.toString() : "",
       horarios: hours,
       imagen_perfil: barber?.imagen_perfil ? barber?.imagen_perfil : "",
-      imagenes: images,
+      imagenes: barber?.imagenes ? barber?.imagenes : [],
     },
     resolver: zodResolver(barberSchema),
   })
 
   const handleSubmitForm = (data: any) => {
+    handleSubmitImages()
     if (barber != undefined) return update(data)
     mutate(data)
   }
-
+  /* 
   const handleAddImages = () => {
     setImages([...images, ""])
   }
@@ -245,7 +248,7 @@ export function ChangeBarberShopDialog({
   const handleRemoveImages = (index: number) => {
     const newImages = images.filter((_: any, i: number) => i !== index)
     setImages(newImages)
-  }
+  } */
 
   function handleSelectCountry(country: number) {
     setCountryId(country)
@@ -297,6 +300,82 @@ export function ChangeBarberShopDialog({
       { enableHighAccuracy: true }
     )
   }, [])
+
+  const onDrop = (acceptedFiles: any) => {
+    // Aquí puedes manejar los archivos aceptados
+    setImages(acceptedFiles)
+  }
+
+  const onDropProfile = (acceptedFiles: any) => {
+    // Aquí puedes manejar los archivos aceptados
+    setProfilePicture(acceptedFiles)
+  }
+
+  const {
+    getRootProps: getRootPropsProfile,
+    getInputProps: getInputPropsProfile,
+    isDragActive: isDragActiveProfile,
+    isDragReject: isDragRejectProfile,
+  } = useDropzone({
+    onDrop: onDropProfile,
+    maxFiles: 3,
+    maxSize: 5 * 1024 * 1024,
+    accept: {
+      "image/*": [], // Aceptar solo imágenes
+    },
+  })
+
+  const { getRootProps, getInputProps, isDragActive, isDragReject } =
+    useDropzone({
+      onDrop,
+      maxFiles: 3,
+      maxSize: 5 * 1024 * 1024,
+      accept: {
+        "image/*": [], // Aceptar solo imágenes
+      },
+    })
+
+  function handleSubmitImages() {
+    if (typeof profilePicture != "string") {
+      const imagesUpload = [...profilePicture]
+      imagesUpload.forEach(async (imageUp) => {
+        if (imageUp != undefined) {
+          let formData = new FormData()
+          formData.append("image", imageUp)
+          try {
+            const response = await postImage(formData)
+            console.log(response)
+            setValue("imagen_perfil", response.data.directLink)
+          } catch (error) {
+            throw error
+          }
+        }
+      })
+    }
+
+    if (images.length == 0) return
+    const imagesUpload = [...images]
+    const last = getValues(`imagenes`).length
+    imagesUpload.forEach(async (imageUp, index) => {
+      if (imageUp != undefined) {
+        let formData = new FormData()
+        formData.append("image", imageUp)
+        try {
+          const response = await postImage(formData)
+          console.log(response)
+          setValue(`imagenes.${last + index}`, response.data.directLink)
+        } catch (error) {
+          throw error
+        }
+      }
+    })
+  }
+
+  function handleRemoveImage(index: any) {
+    const newImages = [...images]
+    newImages.splice(index, 1)
+    setImages(newImages)
+  }
 
   return (
     <form
@@ -487,33 +566,118 @@ export function ChangeBarberShopDialog({
 
           <div className="flex flex-col gap-2">
             <Label>Imagen de perfil</Label>
-            <Input
-              type="text"
-              placeholder="Imagen de foto de perfil"
-              {...register("imagen_perfil")}
-              disabled={isPending || isPendingUpdate}
-            />
+            {profilePicture.length != 1 && (
+              <div
+                {...getRootPropsProfile()}
+                className="hover:bg-gray-main/80 hover:text-white bg-gray-main text-white transition-colors duration-300 px-4 py-2 rounded-md h-24 cursor-pointer"
+              >
+                <input {...getInputPropsProfile()} disabled={isPending} />
+                {isDragActive ? (
+                  <p>Suelta las imágenes aquí ...</p>
+                ) : isDragReject ? (
+                  <p>¡Solo se permiten imágenes!</p>
+                ) : (
+                  <p>
+                    Arrastra y suelta tu imagen de perfil aquí, o haz clic para
+                    seleccionarla.
+                  </p>
+                )}
+              </div>
+            )}
+
+            <div className="flex flex-wrap justify-around items-center">
+              {barber && (
+                <img
+                  src={barber?.imagen_perfil}
+                  width={100}
+                  height={100}
+                  key={crypto.randomUUID()}
+                  alt={"profile picture"}
+                />
+              )}
+
+              {typeof profilePicture != "string" &&
+                profilePicture.map((image: any) => (
+                  <img
+                    src={URL.createObjectURL(image)}
+                    className="cursor-pointer"
+                    alt="uploaded"
+                    width={100}
+                    height={100}
+                    key={crypto.randomUUID()}
+                    onClick={() => setProfilePicture([])}
+                  />
+                ))}
+            </div>
             <span className="text-sm text-red-600">
               {errors.imagen_perfil?.message}
             </span>
           </div>
 
           <Label>Agregar imagenes</Label>
-          {images.map((image, index: number) => (
-            <div key={index}>
-              <Input
-                placeholder="Ingrese una imagen"
-                defaultValue={image}
-                type="url"
-                {...register(`imagenes.${index}`)} // Registrar dinámicamente cada input
-              />
-              <small className="font-bold text-red-500">
-                {errors.imagenes?.[index]?.message}
-              </small>
+          <div className="flex flex-col gap-6">
+            <div
+              {...getRootProps()}
+              className="hover:bg-gray-main/80 hover:text-white bg-gray-main text-white transition-colors duration-300 px-4 py-2 rounded-md h-32 cursor-pointer"
+            >
+              <input {...getInputProps()} disabled={isPending} />
+              {isDragActiveProfile ? (
+                <p>Suelta las imágenes aquí ...</p>
+              ) : isDragRejectProfile ? (
+                <p>¡Solo se permiten imágenes!</p>
+              ) : (
+                <p>
+                  Arrastra y suelta algunas imágenes aquí, o haz clic para
+                  seleccionarlas.
+                </p>
+              )}
             </div>
-          ))}
 
-          <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-between w-full gap-4">
+            <button type="button" onClick={()=> {
+              if (typeof profilePicture != "string") {
+                const imagesUpload = [...profilePicture]
+                imagesUpload.forEach(async (imageUp) => {
+                  if (imageUp != undefined) {
+                    let formData = new FormData()
+                    formData.append("image", imageUp)
+                    try {
+                      const response = await postImage(formData)
+                      console.log(response)
+                      setValue("imagen_perfil", response.data.url)
+                    } catch (error) {
+                      throw error
+                    }
+                  }
+                })
+              }
+            }}>vers icaiscjia</button>
+
+            <div className="flex flex-wrap justify-around items-center">
+              {barber?.imagenes.map((image) => (
+                <img
+                  src={image}
+                  width={100}
+                  height={100}
+                  key={crypto.randomUUID()}
+                  alt={image}
+                />
+              ))}
+              {images.length > 0 &&
+                images.map((image: any, index: number) => (
+                  <img
+                    src={URL.createObjectURL(image)}
+                    className="cursor-pointer"
+                    alt="uploaded"
+                    width={100}
+                    height={100}
+                    key={image.name}
+                    onClick={() => handleRemoveImage(index)}
+                  />
+                ))}
+            </div>
+          </div>
+
+          {/*  <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-between w-full gap-4">
             <Button
               type="button"
               variant="secondary"
@@ -535,7 +699,7 @@ export function ChangeBarberShopDialog({
               <Icon icon="mdi:trash-outline" width="18" height="18" />
               Quitar la ultima imagen
             </Button>
-          </div>
+          </div> */}
 
           <hr />
 
