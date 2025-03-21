@@ -11,6 +11,8 @@ export async function getBarberById(id: string) {
 }
 
 export async function createbarber(barber: any) {
+  console.log(barber)
+
   barber.horarios.forEach((element: any) => {
     if (element.pausa_inicio.length === 0) element.pausa_inicio = null
     if (element.pausa_fin.length === 0) element.pausa_fin = null
@@ -104,7 +106,7 @@ export async function getBarbers({
   lat?: number
   radius?: number
 }) {
-  try {    
+  try {
     const res = await axiosInstance.get(
       `barberia/find/all?page=${page}?order=${order}&city=${city}&long=${long}&lat=${lat}&radius=${radius}`
     )
@@ -134,6 +136,15 @@ export async function getBarbersDisabled() {
 export async function activeBarbery(id: string) {
   try {
     const res = await axiosInstance.patch(`barberia/active/${id}`)
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function deleteBarbery(id: string) {
+  try {
+    const res = await axiosInstance.delete(`barberia/delete/${id}`)
     return res
   } catch (error) {
     throw error

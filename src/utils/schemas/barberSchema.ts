@@ -89,7 +89,7 @@ export const barberSchema = z.object({
     .max(30, "La direccion no debe tener mas de 30 caracteres"),
 
   ciudad_id: z.string().nonempty("La ciudad es requerida"),
-  imagenes: z
+/*   imagenes: z
     .array(
       z
         .string()
@@ -99,11 +99,11 @@ export const barberSchema = z.object({
         })
     )
     .nonempty("Las imagenes son requeridas")
-    .max(5, "No puedes subir mas de 5 imagenes"),
-  imagen_perfil: z
+    .max(5, "No puedes subir mas de 5 imagenes"), */
+/*   imagen_perfil: z
     .string()
     .nonempty("La imagen de perfil es requerida")
     .url("La imagen de perfil debe ser una url")
-    .startsWith("https://", { message: "Debe utilizar el protocolo https://" }),
+    .startsWith("https://", { message: "Debe utilizar el protocolo https://" }), */
   horarios: z.array(horarioSchema),
 })

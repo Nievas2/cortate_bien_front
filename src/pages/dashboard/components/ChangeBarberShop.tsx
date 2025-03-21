@@ -27,7 +27,11 @@ import {
 
 import CountrySelect from "./CountrySelect"
 import { Hour } from "@/interfaces/Hour"
-import { createbarber, updateBarber } from "@/services/BarberService"
+import {
+  createbarber,
+  deleteBarbery,
+  updateBarber,
+} from "@/services/BarberService"
 import { Barber } from "@/interfaces/Barber"
 import { Link } from "react-router-dom"
 import StateSelect from "./StateSelect"
@@ -47,6 +51,15 @@ const ChangeBarberShop = ({
   refetch,
   error,
 }: ChangeBarberShopProps) => {
+  const { mutate: deleteFunction, isSuccess } = useMutation({
+    mutationKey: ["delete-barber"],
+    mutationFn: (id: string) => {
+      return deleteBarbery(id)
+    },
+    onSuccess: () => {
+      if (refetch) return refetch()
+    },
+  })
   return (
     <section className="flex flex-col items-center justify-center gap-8 w-full p-4">
       <motion.h2
@@ -92,7 +105,7 @@ const ChangeBarberShop = ({
 
         {Barbers && (
           <>
-            {Barbers?.map((barber) => (
+            {Barbers?.map((barber: Barber) => (
               <div
                 className="flex flex-col items-center justify-center rounded-xl border border-blue-main group-hover:bg-blue-main/80 group-hover:text-white relative group size-48"
                 key={barber.id}
@@ -115,17 +128,31 @@ const ChangeBarberShop = ({
                     <DialogHeader>
                       <DialogTitle>Eliminar barberia</DialogTitle>
                     </DialogHeader>
-                    <p>¿Estas seguro que deseas eliminar esta barberia?</p>
-                    <p>
-                      No podra recuperarla de ninguna manera y se perdera toda
-                      la información que tenga
-                    </p>
-                    <div className="flex justify-between">
-                      <DialogClose>
-                        <Button variant="simple">Cancelar</Button>
-                      </DialogClose>
-                      <Button variant="destructive">Eliminar</Button>
-                    </div>
+                    {isSuccess ? (
+                      <p>Barberia eliminada con exito</p>
+                    ) : (
+                      <>
+                        <p>¿Estas seguro que deseas eliminar esta barberia?</p>
+                        <p>
+                          No podra recuperarla de ninguna manera y se perdera
+                          toda la información que tenga
+                        </p>
+                        <div className="flex justify-between">
+                          <DialogClose>
+                            <Button variant="simple">Cancelar</Button>
+                          </DialogClose>
+                          <Button
+                            variant="destructive"
+                            onClick={() => {
+                              if (barber.id == undefined) return
+                              deleteFunction(barber.id)
+                            }}
+                          >
+                            Eliminar
+                          </Button>
+                        </div>
+                      </>
+                    )}
                   </DialogContent>
                 </Dialog>
 
@@ -170,6 +197,7 @@ export function ChangeBarberShopDialog({
   const [stateId, setStateId] = useState<undefined | number>()
   const [images, setImages] = useState([])
   const [profilePicture, setProfilePicture] = useState([])
+  const [loading, setLoading] = useState(false)
   if (barber != undefined) {
     barber.horarios.forEach((element) => {
       if (element.pausa_inicio == null) element.pausa_inicio = ""
@@ -193,6 +221,7 @@ export function ChangeBarberShopDialog({
       return createbarber(values)
     },
     onSuccess: () => {
+      setLoading(false)
       if (refetch) return refetch()
     },
   })
@@ -209,6 +238,9 @@ export function ChangeBarberShopDialog({
       }
       throw new Error("Barberia no encontrada")
     },
+    onSuccess: () => {
+      setLoading(false)
+    },
   })
 
   const {
@@ -216,7 +248,6 @@ export function ChangeBarberShopDialog({
     formState: { errors },
     handleSubmit,
     setValue,
-    getValues,
   } = useForm({
     defaultValues: {
       nombre: barber?.nombre ? barber?.nombre : "",
@@ -235,10 +266,27 @@ export function ChangeBarberShopDialog({
     resolver: zodResolver(barberSchema),
   })
 
-  const handleSubmitForm = (data: any) => {
-    handleSubmitImages()
-    if (barber != undefined) return update(data)
-    mutate(data)
+  const handleSubmitForm = async (data: any) => {
+    console.log("test")
+
+    setLoading(true)
+    const { imagenes, imagen_perfil } = await handleSubmitImages()
+    if (imagenes.length === 0 && !imagen_perfil) return setLoading(false)
+
+    if (barber !== undefined) {
+      const formData = {
+        ...data,
+        imagenes,
+        imagen_perfil: barber.imagen_perfil,
+      }
+      return update(formData)
+    }
+    const formData = {
+      ...data,
+      imagenes,
+      imagen_perfil,
+    }
+    mutate(formData)
   }
   /* 
   const handleAddImages = () => {
@@ -335,38 +383,56 @@ export function ChangeBarberShopDialog({
       },
     })
 
-  function handleSubmitImages() {
-    if (typeof profilePicture != "string") {
-      const imagesUpload = [...profilePicture]
-      imagesUpload.forEach(async (imageUp) => {
-        if (imageUp != undefined) {
-          let formData = new FormData()
-          formData.append("image", imageUp)
-          try {
-            const response = await postImage(formData)
-            console.log(response)
-            setValue("imagen_perfil", response.data.directLink)
-          } catch (error) {
-            throw error
+  const handleSubmitImages = (): Promise<{
+    imagenes: string[]
+    imagen_perfil: string
+  }> => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let imagesUploadUrl: string[] = []
+        let profilePictureUrl = ""
+
+        if (typeof profilePicture !== "string") {
+          const imagesUpload = [...profilePicture]
+          for (const imageUp of imagesUpload) {
+            if (imageUp !== undefined) {
+              const formData = new FormData()
+              formData.append("image", imageUp)
+              try {
+                const response = await postImage(formData)
+                console.log(response)
+                profilePictureUrl = response.data.directLink
+              } catch (error) {
+                reject({ imagenes: [], imagen_perfil: "" })
+                return
+              }
+            }
           }
         }
-      })
-    }
 
-    if (images.length == 0) return
-    const imagesUpload = [...images]
-    const last = getValues(`imagenes`).length
-    imagesUpload.forEach(async (imageUp, index) => {
-      if (imageUp != undefined) {
-        let formData = new FormData()
-        formData.append("image", imageUp)
-        try {
-          const response = await postImage(formData)
-          console.log(response)
-          setValue(`imagenes.${last + index}`, response.data.directLink)
-        } catch (error) {
-          throw error
+        const imagesUpload = [...images]
+        for (const imageUp of imagesUpload) {
+          if (imageUp !== undefined) {
+            const formData = new FormData()
+            formData.append("image", imageUp)
+            try {
+              const response = await postImage(formData)
+              console.log(response)
+              imagesUploadUrl.push(response.data.directLink)
+            } catch (error) {
+              reject({ imagenes: [], imagen_perfil: "" })
+              return
+            }
+          }
         }
+
+        console.log({
+          imagenes: imagesUploadUrl,
+          imagen_perfil: profilePictureUrl,
+        })
+        resolve({ imagenes: imagesUploadUrl, imagen_perfil: profilePictureUrl })
+      } catch (error) {
+        reject({ imagenes: [], imagen_perfil: "" })
       }
     })
   }
@@ -566,7 +632,7 @@ export function ChangeBarberShopDialog({
 
           <div className="flex flex-col gap-2">
             <Label>Imagen de perfil</Label>
-            {profilePicture.length != 1 && (
+            {!barber?.imagen_perfil && (
               <div
                 {...getRootPropsProfile()}
                 className="hover:bg-gray-main/80 hover:text-white bg-gray-main text-white transition-colors duration-300 px-4 py-2 rounded-md h-24 cursor-pointer"
@@ -632,25 +698,6 @@ export function ChangeBarberShopDialog({
                 </p>
               )}
             </div>
-
-            <button type="button" onClick={()=> {
-              if (typeof profilePicture != "string") {
-                const imagesUpload = [...profilePicture]
-                imagesUpload.forEach(async (imageUp) => {
-                  if (imageUp != undefined) {
-                    let formData = new FormData()
-                    formData.append("image", imageUp)
-                    try {
-                      const response = await postImage(formData)
-                      console.log(response)
-                      setValue("imagen_perfil", response.data.url)
-                    } catch (error) {
-                      throw error
-                    }
-                  }
-                })
-              }
-            }}>vers icaiscjia</button>
 
             <div className="flex flex-wrap justify-around items-center">
               {barber?.imagenes.map((image) => (
@@ -841,7 +888,7 @@ export function ChangeBarberShopDialog({
           <Button
             variant="simple"
             type="submit"
-            disabled={isPending || isPendingUpdate}
+            disabled={isPending || isPendingUpdate || loading}
           >
             Agregar barberia
           </Button>
