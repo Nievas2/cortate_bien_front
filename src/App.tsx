@@ -25,6 +25,7 @@ import ProfileAppointmentPage from "./pages/profile/appointment/ProfileAppointme
 import ProfileReviewsPage from "./pages/profile/reviews/ProfileReviewsPage"
 import PasswordRecoveryPage from "./pages/auth/PasswordRecovery/PasswordRecoveryPage"
 import { ProtecteBarberRoute } from "./components/shared/ProtectedBarber"
+import BarberByIdPage from "./pages/barbers/barberById/BarberByIdPage"
 
 function App() {
   const location = useLocation()
@@ -60,6 +61,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <BarbersPage />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/barbers/:id"
+              element={
+                <ProtectedRoute>
+                  <BarberByIdPage />
                 </ProtectedRoute>
               }
             />

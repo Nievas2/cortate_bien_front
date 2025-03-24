@@ -1,0 +1,9 @@
+import { useParams } from "react-router-dom"
+
+const BarberByIdPage = () => {
+    const params = useParams()
+  return (
+    <div>{params.id}</div>
+  )
+}
+export default BarberByIdPage
