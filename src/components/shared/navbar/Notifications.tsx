@@ -266,7 +266,13 @@ export function NotificationCard({
         >
           {notification.estado}
         </span>
-        <p className="text-gray-400">{notification.fecha}</p>
+        <p className="text-gray-400">
+          {new Date(notification.fecha).toLocaleDateString("es-ES", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+          })}
+        </p>
       </div>
       {notification.leido == false && isSuccess === false && (
         <div className="absolute top-2 right-2 w-2 h-2 bg-blue-main rounded-full" />
