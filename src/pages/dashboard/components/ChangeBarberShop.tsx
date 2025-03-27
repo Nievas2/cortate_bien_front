@@ -366,7 +366,7 @@ export function ChangeBarberShopDialog({
     isDragReject: isDragRejectProfile,
   } = useDropzone({
     onDrop: onDropProfile,
-    maxFiles: 3,
+    maxFiles: 1,
     maxSize: 5 * 1024 * 1024,
     accept: {
       "image/*": [], // Aceptar solo imágenes
