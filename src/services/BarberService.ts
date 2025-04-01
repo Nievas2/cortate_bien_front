@@ -126,7 +126,7 @@ export async function getBarbersById(id: string) {
 
 export async function getBarbersDisabled() {
   try {
-    const res = await axiosInstance.get("barberia/find/all/disabled")
+    const res = await axiosInstance.get("barberia/find/all/pending")
     return res
   } catch (error) {
     throw error
@@ -135,7 +135,10 @@ export async function getBarbersDisabled() {
 
 export async function activeBarbery(id: string) {
   try {
-    const res = await axiosInstance.patch(`barberia/active/${id}`)
+    const res = await axiosInstance.patch(`barberia/active`, {
+      id: id,
+      estado: "ACTIVE",
+    })
     return res
   } catch (error) {
     throw error
