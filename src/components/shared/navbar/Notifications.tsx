@@ -79,12 +79,14 @@ const Notifications = () => {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="relative">
-            <Icon icon="material-symbols:notifications" className="size-6" />
-            {data && listNotificationNotRead().length > 0 && (
-              <span className="absolute top-1 right-3 w-2 h-2 bg-blue-main rounded-full" />
-            )}
-          </NavigationMenuTrigger>
+          {id !== undefined && (
+            <NavigationMenuTrigger className="relative">
+              <Icon icon="material-symbols:notifications" className="size-6" />
+              {data && listNotificationNotRead().length > 0 && (
+                <span className="absolute top-1 right-3 w-2 h-2 bg-blue-main rounded-full" />
+              )}
+            </NavigationMenuTrigger>
+          )}
           <NavigationMenuContent>
             <main className="flex flex-col gap-2 overflow-y-auto bg-gray-main">
               <h3 className="text-md font-bold p-2">Notificaciones</h3>
