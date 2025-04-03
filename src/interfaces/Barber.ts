@@ -31,3 +31,18 @@ export interface BarberGet {
   horarios: Hour[]
 }
 
+export interface BarberProfile {
+  nombre: string
+  descripcion: string
+  imagenes: string[]
+  imagen_perfil: string
+}
+
+export interface BarberBasic {
+  latitud: number
+  longitud: number
+  direccion: string
+  cantidadDeMinutosPorTurno: number
+  ciudad_id: number
+  horarios: Hour[]
+}
