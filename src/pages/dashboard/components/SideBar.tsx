@@ -3,14 +3,6 @@ import { useLogout } from "@/hooks/useLogout"
 import { Barber } from "@/interfaces/Barber"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { Link, useLocation } from "react-router-dom"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { ChangeBarberShopDialog } from "./ChangeBarberShop"
 
 const SideBar = ({
   open,
