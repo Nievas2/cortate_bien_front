@@ -42,7 +42,7 @@ const Navbar = () => {
   }, [open])
   return (
     <nav
-      className="sticky w-full top-0 z-50 transition-colors duration-200 bg-gray-main"
+      className="sticky w-full top-0 z-[200] transition-colors duration-200 bg-gray-main"
       style={{ boxShadow: "0 1px 10px #141414" }}
     >
       <div className="mx-auto max-w-8xl p-4 2xl:pl-0">
