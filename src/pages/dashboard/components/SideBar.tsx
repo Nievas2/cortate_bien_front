@@ -45,9 +45,7 @@ const SideBar = ({
   return (
     <aside
       className={`h-full transition-all duration-300 absolute top-0 z-40 sm:sticky sm:top-0  ${
-        open
-          ? "-left-0 w-[260px] sm:w-[420px] bg-gray-main"
-          : "-left-full w-0"
+        open ? "-left-0 w-[260px] sm:w-[420px] bg-gray-main" : "-left-full w-0"
       }`}
       onClick={(e) => e.stopPropagation()}
     >
@@ -120,7 +118,7 @@ const SideBar = ({
               open ? "flex flex-col w-full gap-2" : "hidden"
             } p-2  px-3`}
           >
-            <Dialog>
+            {/* <Dialog>
               <DialogTrigger>
                 <Button
                   className="flex justify-start px-0"
@@ -137,7 +135,18 @@ const SideBar = ({
                 </DialogHeader>
                 <ChangeBarberShopDialog barber={barber} />
               </DialogContent>
-            </Dialog>
+            </Dialog> */}
+
+            <Link to={`/dashboard/barber/update?id=${barber?.id}`}>
+              <Button
+                className="flex justify-start px-0"
+                variant="ghost"
+                size="sm"
+              >
+                <Icon icon="tabler:edit" width={20} height={20} /> Editar
+                barberia
+              </Button>
+            </Link>
 
             <Button
               className="flex justify-start px-0 text-red-500"
@@ -149,9 +158,11 @@ const SideBar = ({
             </Button>
           </div>
         ) : (
-          <small className={`font-bold text-xs text-red-500 p-1 ${
-            open ? "flex flex-col w-full gap-2" : "hidden"
-          }`}>
+          <small
+            className={`font-bold text-xs text-red-500 p-1 ${
+              open ? "flex flex-col w-full gap-2" : "hidden"
+            }`}
+          >
             Su barberia no ha sido aceptada aun por un administrador
           </small>
         )}

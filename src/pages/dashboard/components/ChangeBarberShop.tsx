@@ -826,7 +826,7 @@ export function ChangeBarberShopDialog({
 
                   <div className="flex gap-2">
                     <div className="flex flex-col gap-2 w-full">
-                      <Label>Inicio del descanso</Label>
+                      <Label>Inicio del descanso {"(opcional)"}</Label>
                       <Input
                         placeholder="Una hora entre 00:00 y 23:59"
                         type="text"
@@ -839,7 +839,7 @@ export function ChangeBarberShopDialog({
                     </div>
 
                     <div className="flex flex-col gap-2 w-full">
-                      <Label>Inicio del descanso</Label>
+                      <Label>Inicio del descanso {"(opcional)"}</Label>
                       <Input
                         placeholder="Una hora entre 00:00 y 23:59"
                         type="text"
@@ -897,143 +897,3 @@ export function ChangeBarberShopDialog({
     </form>
   )
 }
-/* import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
-import Toast from "react-native-toast-message";
-import * as FileSystem from "expo-file-system";
-
-// Tipado para la respuesta del servidor
-interface UploadResponse {
-  directLink: string;
-  url?: string; // URL opcional si el servidor la devuelve
-}
-
-// Tipado para los errores
-interface UploadError {
-  message: string;
-  status?: number;
-}
-
-// Tipado para los parámetros de la mutación
-interface UploadParams {
-  uri: string;
-  token: string | null;
-}
-
-const getFileInfo = async (uri: string): Promise<{ type: string; name: string }> => {
-  try {
-    const fileInfo = await FileSystem.getInfoAsync(uri);
-    if (!fileInfo.exists) {
-      throw new Error("Archivo no encontrado");
-    }
-
-    // Extraer el nombre del archivo desde la URI
-    const uriParts = uri.split("/");
-    const name = uriParts[uriParts.length - 1] || `image_${Date.now()}.jpg`;
-
-    // Determinar el tipo MIME basado en la extensión
-    const extension = name.split(".").pop()?.toLowerCase();
-    const mimeTypes: { [key: string]: string } = {
-      jpg: "image/jpeg",
-      jpeg: "image/jpeg",
-      png: "image/png",
-      gif: "image/gif",
-      webp: "image/webp",
-    };
-    const type = extension && mimeTypes[extension] ? mimeTypes[extension] : "image/jpeg";
-
-    return { type, name };
-  } catch (error) {
-    console.error("Error al obtener información del archivo:", error);
-    return { type: "image/jpeg", name: `image_${Date.now()}.jpg` };
-  }
-};
-
-const uploadImageToServer = async ({
-  uri,
-  token,
-}: UploadParams): Promise<UploadResponse> => {
-
-  const { type, name } = await getFileInfo(uri);
-
-  const formData = new FormData();
-  formData.append("image", {
-    uri,
-    type,
-    name,
-  } as any);
-
-  const response = await axios.post<UploadResponse>(
-    `${process.env.EXPO_PUBLIC_UPLOAD_IMAGE_URL}`,
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  return response.data;
-};
-
-export const useImageUpload = (token: string | null) => {
-  const mutation = useMutation({
-    mutationFn: uploadImageToServer,
-    onMutate: () => {
-      // Opcional: Mostrar un Toast de "Subiendo..." antes de la solicitud
-      Toast.show({
-        type: "info",
-        text1: "Subiendo imagen",
-        text2: "Por favor espera...",
-      });
-    },
-    onError: (error: AxiosError<ApiErrorResponse>) => {
-      const errorMessage =
-        axios.isAxiosError(error) && error.response?.data?.error
-          ? error.response.data.error
-          : "Error al subir la imagen";
-      const errorStatus = axios.isAxiosError(error)
-        ? error.response?.status
-        : undefined;
-
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: errorMessage,
-      });
-
-      return { message: errorMessage, status: errorStatus };
-    },
-  });
-
-  const uploadImage = async (uri: string): Promise<string | null> => {
-    try {
-      const result = await mutation.mutateAsync({ uri, token });
-      return result.directLink;
-    } catch {
-      return null;
-    }
-  };
-
-  const uploadMultipleImages = async (uris: string[]): Promise<string[]> => {
-    const uploadedFilenames: string[] = [];
-    for (const uri of uris) {
-      const filename = await uploadImage(uri);
-      if (filename) {
-        uploadedFilenames.push(filename);
-      }
-    }
-    return uploadedFilenames;
-  };
-
-  return {
-    uploadImage,
-    uploadMultipleImages,
-    isLoading: mutation.isPending,
-    isError: mutation.isError,
-    error: mutation.error as UploadError | null,
-    progress: mutation.isPending ? 50 : mutation.isSuccess ? 100 : 0,
-    reset: mutation.reset,
-  };
-}; */

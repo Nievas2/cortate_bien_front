@@ -43,7 +43,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </Button>
       </div>
 
-      <section className="flex items-center justify-center min-h-screen w-full p-2">
+      <section className="flex flex-col gap-2 items-center justify-center min-h-screen w-full p-2">
         {children}
       </section>
     </div>

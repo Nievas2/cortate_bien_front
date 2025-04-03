@@ -26,6 +26,7 @@ import ProfileReviewsPage from "./pages/profile/reviews/ProfileReviewsPage"
 import PasswordRecoveryPage from "./pages/auth/PasswordRecovery/PasswordRecoveryPage"
 import { ProtecteBarberRoute } from "./components/shared/ProtectedBarber"
 import BarberByIdPage from "./pages/barbers/barberById/BarberByIdPage"
+import UpdateBarberPage from "./pages/dashboard/updateBarber/UpdateBarberPage"
 
 function App() {
   const location = useLocation()
@@ -64,7 +65,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/barbers/:id"
               element={
@@ -73,6 +74,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
 
             <Route
               path="/profile"
@@ -91,7 +93,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/profile/reviews"
               element={
@@ -102,14 +104,16 @@ function App() {
             />
 
             <Route path="/auth" element={<AuthPage />} />
-            
-            <Route path="/auth/password-recovery" element={<PasswordRecoveryPage />} />
+
+            <Route
+              path="/auth/password-recovery"
+              element={<PasswordRecoveryPage />}
+            />
 
             <Route
               path="/auth/iniciar-sesion"
               element={authUser ? <Navigate to="/" /> : <LoginPage />}
             />
-
 
             <Route
               path="/auth/registrarse"
@@ -131,6 +135,15 @@ function App() {
               element={
                 <ProtecteBarberRoute>
                   <BarberPage />
+                </ProtecteBarberRoute>
+              }
+            />
+            
+            <Route
+              path="/dashboard/barber/update"
+              element={
+                <ProtecteBarberRoute>
+                  <UpdateBarberPage />
                 </ProtecteBarberRoute>
               }
             />

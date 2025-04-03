@@ -1,5 +1,5 @@
 import axiosInstance from "@/api/axiosInstance"
-import { Barber } from "@/interfaces/Barber"
+import { Barber, BarberBasic, BarberProfile } from "@/interfaces/Barber"
 
 export async function getBarberById(id: string) {
   try {
@@ -90,6 +90,109 @@ function getUpdatedFields(original: Barber, updated: Barber): Partial<Barber> {
   return updatedFields
 }
 
+function getUpdatedProfileFields(
+  original: BarberProfile,
+  updated: BarberProfile
+): Partial<BarberProfile> {
+  const updatedFields: Partial<BarberProfile> = {}
+
+  for (const key in updated) {
+    if (Object.prototype.hasOwnProperty.call(updated, key)) {
+      const originalValue = (original as any)[key]
+      const updatedValue = (updated as any)[key]
+
+      // Comparar valores (considera arrays, objetos, y valores simples)
+      if (Array.isArray(originalValue) && Array.isArray(updatedValue)) {
+        if (JSON.stringify(originalValue) !== JSON.stringify(updatedValue)) {
+          ;(updatedFields as any)[key] = updatedValue
+        }
+      } else if (originalValue !== updatedValue) {
+        updatedFields[key as keyof BarberProfile] = updatedValue
+      }
+    }
+  }
+
+  return updatedFields
+}
+
+function getUpdatedBasicFields(
+  original: BarberBasic,
+  updated: BarberBasic
+): Partial<BarberBasic> {
+  const updatedFields: Partial<BarberBasic> = {}
+
+  for (const key in updated) {
+    if (Object.prototype.hasOwnProperty.call(updated, key)) {
+      const originalValue = (original as any)[key]
+      const updatedValue = (updated as any)[key]
+
+      // Comparar valores (considera arrays, objetos, y valores simples)
+      if (Array.isArray(originalValue) && Array.isArray(updatedValue)) {
+        if (JSON.stringify(originalValue) !== JSON.stringify(updatedValue)) {
+          ;(updatedFields as any)[key] = updatedValue
+        }
+      } else if (originalValue !== updatedValue) {
+        updatedFields[key as keyof BarberBasic] = updatedValue
+      }
+    }
+  }
+
+  return updatedFields
+}
+
+export async function updateBarberProfile(
+  barber: BarberProfile,
+  id: string,
+  barberUpdated: BarberProfile
+) {
+  const updatedFields = getUpdatedProfileFields(barber, barberUpdated)
+
+  // If the updatedFields object contains an "imagenes" key, extract its value directly
+  if (updatedFields.imagenes) {
+    updatedFields.imagenes = updatedFields.imagenes as string[]
+  }
+
+  try {
+    const res = axiosInstance.put(
+      `barberia/update/profile/${id}`,
+      updatedFields
+    )
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function updateBarberBasic(
+  barber: BarberBasic,
+  id: string,
+  barberUpdated: BarberBasic
+) {
+  barberUpdated.latitud = Number(barberUpdated.latitud)
+  barberUpdated.longitud = Number(barberUpdated.longitud)
+  barberUpdated.cantidadDeMinutosPorTurno = Number(
+    barberUpdated.cantidadDeMinutosPorTurno
+  )
+  barberUpdated.ciudad_id = Number(barberUpdated.ciudad_id)
+  // Normalizar los campos del objeto actualizado
+  barberUpdated.horarios.forEach((element) => {
+    if (element.pausa_inicio != null && element.pausa_inicio.length === 0)
+      element.pausa_inicio = null
+    if (element.pausa_fin != null && element.pausa_fin.length === 0)
+      element.pausa_fin = null
+  })
+  console.log(barberUpdated)
+
+  const updatedFields = getUpdatedBasicFields(barber, barberUpdated)
+
+  try {
+    const res = axiosInstance.put(`barberia/update/basic/${id}`, updatedFields)
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
 /* Gets */
 export async function getBarbers({
   page,
@@ -115,6 +218,7 @@ export async function getBarbers({
     throw error
   }
 }
+
 export async function getBarbersById(id: string) {
   try {
     const res = await axiosInstance.get(`barberia/find/all/barbero/${id}`)
@@ -137,7 +241,7 @@ export async function activeBarbery(id: string) {
   try {
     const res = await axiosInstance.patch(`barberia/active`, {
       id: id,
-      estado: "ACTIVE",
+      estado: "ACTIVO",
     })
     return res
   } catch (error) {
