@@ -40,10 +40,18 @@ export async function getReviews(barberId: string) {
   }
 }
 
-
-export async function getReviewsByUser (){
+export async function getReviewsByUser() {
   try {
     const res = await axiosInstance(`resena/find-all/user`)
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function getCheckReview(barberId: string) {
+  try {
+    const res = await axiosInstance.get(`resena/check/${barberId}`)
     return res
   } catch (error) {
     throw error

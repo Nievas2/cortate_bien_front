@@ -21,7 +21,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { createAppointment } from "@/services/AppointmentService"
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
-import { getReviews } from "@/services/ReviewService"
+import { getCheckReview, getReviews } from "@/services/ReviewService"
 
 const BarberByIdPage = () => {
   const [success, setSuccess] = useState(false)
@@ -68,6 +68,17 @@ const BarberByIdPage = () => {
   const { data: reviews } = useQuery({
     queryKey: ["review-barber"],
     queryFn: () => getReviews(params.id as string),
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 60 * 24,
+    retry: false,
+  })
+
+  const { data: checkReview } = useQuery({
+    queryKey: ["check-review"],
+    queryFn: () => getCheckReview(params.id as string),
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 60 * 24,
+    retry: false,
   })
   return (
     <main className="flex flex-col min-h-screen w-full relative">
@@ -221,33 +232,30 @@ const BarberByIdPage = () => {
           ))}
         </div>
 
-        <div className="flex flex-col gap-2 m-0.5 p-2 bg-black-main rounded-xl">
-          <span className="font-extrabold">Reseñas</span>
-          {reviews?.data.results.map((resena: any) => (
-            <div
-              className="flex flex-col gap-3 bg-gray-main p-3 rounded-xl"
-              key={resena.id}
-            >
+        {checkReview?.data.resena && (
+          <div className="flex flex-col gap-2 m-0.5 p-2 bg-black-main rounded-xl">
+            <span className="font-extrabold">Mi reseña</span>
+            <div className="flex flex-col gap-3 bg-gray-main p-3 rounded-xl">
               <div className="flex justify-between gap-2">
-                <span>{resena.user}</span>
+                <span>{checkReview.data.resena.user}</span>
                 <div className="flex gap-2 items-center justify-start">
-                  {resena.calificacion > 0 && (
+                  {checkReview.data.resena.calificacion > 0 && (
                     <div className="flex gap-2 items-center justify-start">
-                      {Array.from({ length: resena.calificacion }).map(
-                        (_, index) => (
-                          <span key={index}>
-                            <Icon
-                              icon="material-symbols:star"
-                              color="gold"
-                              width={20}
-                            />
-                          </span>
-                        )
-                      )}
+                      {Array.from({
+                        length: checkReview.data.resena.calificacion,
+                      }).map((_, index) => (
+                        <span key={index}>
+                          <Icon
+                            icon="material-symbols:star"
+                            color="gold"
+                            width={20}
+                          />
+                        </span>
+                      ))}
                     </div>
                   )}
 
-                  {!Number.isInteger(resena.calificacion) && (
+                  {!Number.isInteger(checkReview.data.resena.calificacion) && (
                     <Icon
                       icon="material-symbols:star-half"
                       color="gold"
@@ -256,7 +264,7 @@ const BarberByIdPage = () => {
                   )}
 
                   {Array.from({
-                    length: 5 - Math.ceil(resena.calificacion),
+                    length: 5 - Math.ceil(checkReview.data.resena.calificacion),
                   }).map((_, index) => (
                     <span key={index}>
                       <Icon
@@ -269,9 +277,72 @@ const BarberByIdPage = () => {
                 </div>
               </div>
 
-              <p>{resena.descripcion}</p>
+              <p>{checkReview.data.resena.descripcion}</p>
             </div>
-          ))}
+          </div>
+        )}
+        <div className="flex flex-col gap-2 m-0.5 p-2 bg-black-main rounded-xl">
+          <span className="font-extrabold">Reseñas</span>
+          {reviews?.data.results.map((resena: any) => {
+            if (
+              resena.id === checkReview?.data?.resena?.id &&
+              reviews.data.results.length == 1
+            ) {
+              return <span>No se encontraron más reseñas</span>
+            }
+            if (resena.id === checkReview?.data?.resena?.id) {
+              return null
+            }
+            return (
+              <div
+                className="flex flex-col gap-3 bg-gray-main p-3 rounded-xl"
+                key={resena.id}
+              >
+                <div className="flex justify-between gap-2">
+                  <span>{resena.user}</span>
+                  <div className="flex gap-2 items-center justify-start">
+                    {resena.calificacion > 0 && (
+                      <div className="flex gap-2 items-center justify-start">
+                        {Array.from({ length: resena.calificacion }).map(
+                          (_, index) => (
+                            <span key={index}>
+                              <Icon
+                                icon="material-symbols:star"
+                                color="gold"
+                                width={20}
+                              />
+                            </span>
+                          )
+                        )}
+                      </div>
+                    )}
+
+                    {!Number.isInteger(resena.calificacion) && (
+                      <Icon
+                        icon="material-symbols:star-half"
+                        color="gold"
+                        width={20}
+                      />
+                    )}
+
+                    {Array.from({
+                      length: 5 - Math.ceil(resena.calificacion),
+                    }).map((_, index) => (
+                      <span key={index}>
+                        <Icon
+                          icon="material-symbols:star-outline"
+                          stroke="1"
+                          width={20}
+                        />
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <p>{resena.descripcion}</p>
+              </div>
+            )
+          })}
         </div>
 
         <div className="flex flex-wrap h-full items-end w-full">
