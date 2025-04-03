@@ -5,11 +5,11 @@ const Card = ({ barber }: { barber: BarberGet }) => {
   return (
     <Link
       to={`/barbers/${barber.id}`}
-      className="flex flex-col md:flex-row gap-3 w-[300px] md:w-[400px] bg-gray-main rounded-lg border border-gray-800 p-4"
+      className="flex flex-col md:flex-row gap-3 w-[300px] md:w-[400px] bg-gray-800 rounded-lg border border-gray-700  p-4"
     >
-      <div className="flex flex-col items-center justify-center w-full md:w-[60%] gap-2">
+      <div className="flex flex-col items-center justify-center w-full md:w-[69%] gap-4">
         <img
-          className="size-36 aspect-square"
+          className="size-36 aspect-square rounded-full border-2 border-blue-main"
           src={barber.imagen_perfil}
           alt={barber.nombre}
         />
@@ -46,10 +46,23 @@ const Card = ({ barber }: { barber: BarberGet }) => {
         <h4 className="w-full font-extrabold">{barber.nombre}</h4>
 
         <div className="flex flex-col gap-2">
-          <p className="text-sm font-extralight">
-            {barber.ciudad} | {barber.direccion}
-          </p>
+          <div className="flex gap-0.5">
+            <Icon icon="mdi:location" width={20} />
+            <p className="text-sm font-extralight">
+              {barber.ciudad} | {barber.direccion}
+            </p>
+          </div>
           <p className="text-sm line-clamp-3 font-">{barber.descripcion}</p>
+        </div>
+
+        <div className="flex justify-end items-end h-full">
+          <Link
+            className="flex items-center hover:gap-2 duration-200 transition-transform text-blue-main"
+            to={`/barbers/${barber.id}`}
+          >
+            Ver detalles{" "}
+            <Icon icon="material-symbols:arrow-right-alt-rounded" width={20} />
+          </Link>
         </div>
       </div>
     </Link>
