@@ -24,7 +24,9 @@ const useLogin = () => {
 
       const data = response.data
 
-      Cookies.set("token", data.accesToken)
+      Cookies.set("token", data.accesToken, {
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
+      })
 
       const user = decodeJwt(data.accesToken)
       const userAuth = {

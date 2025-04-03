@@ -7,8 +7,8 @@ layer(base);
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-black-main: #000000;
-  --color-gray-main: #080808;
+  --color-black-main: #111828;
+  --color-gray-main: #202938;
   --color-blue-main: #007fff;
   --color-blue-secondary: #0d3868;
 
