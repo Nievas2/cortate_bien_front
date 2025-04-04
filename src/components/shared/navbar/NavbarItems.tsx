@@ -41,10 +41,6 @@ export function NavbarItemMobile({
   name: string
   setOpen: Function
 }) {
-  console.log("location", location);
-  console.log("pathname", pathname);
-  console.log(pathname.startsWith(location));
-
   return (
     <NavLink
       to={location}
