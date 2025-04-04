@@ -22,6 +22,7 @@ import { createAppointment } from "@/services/AppointmentService"
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import { getCheckReview, getReviews } from "@/services/ReviewService"
+import HandleChangeReviews from "@/pages/profile/reviews/components/HandleChangeReviews"
 
 const BarberByIdPage = () => {
   const [success, setSuccess] = useState(false)
@@ -63,6 +64,9 @@ const BarberByIdPage = () => {
         return Promise.reject("Barberia no encontrada")
       return getBarberById(params.id)
     },
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 60 * 24,
+    retry: false,
   })
 
   const { data: reviews } = useQuery({
@@ -73,7 +77,7 @@ const BarberByIdPage = () => {
     retry: false,
   })
 
-  const { data: checkReview } = useQuery({
+  const { data: checkReview, refetch: refetchCheck } = useQuery({
     queryKey: ["check-review", params.id],
     queryFn: () => getCheckReview(params.id as string),
     refetchOnWindowFocus: false,
@@ -82,6 +86,23 @@ const BarberByIdPage = () => {
   })
   return (
     <main className="flex flex-col min-h-screen w-full relative">
+      {checkReview?.data && (
+        <a href="#reviews">
+          <Button
+            variant="simple"
+            className="fixed bottom-16 right-3"
+            onClick={() => window.scrollTo(0, 10000)}
+          >
+            {/* Star */}
+            <Icon
+              icon="material-symbols:star"
+              color={checkReview.data.canCreate === true ? "white" : "gold"}
+              width={24}
+            />
+          </Button>
+        </a>
+      )}
+
       <Button
         variant="secondary"
         className="fixed bottom-3 right-3"
@@ -91,30 +112,23 @@ const BarberByIdPage = () => {
       </Button>
 
       <section>
-        {isLoading ? (
-          <p>Cargando...</p>
-        ) : (
-          <>
-            <div className="static sm:hidden w-full h-full">
-              <CarouselMobile
-                images={[
-                  data?.data.imagen_perfil,
-                  ...(data?.data.imagenes || []),
-                ]}
-              />
-            </div>
-          </>
-        )}
+        <div className="static sm:hidden w-full h-full">
+          <CarouselMobile
+            images={[data?.data.imagen_perfil, ...(data?.data.imagenes || [])]}
+            isLoading={isLoading}
+          />
+        </div>
       </section>
 
       <section className="flex flex-col gap-4 bg-gray-main rounded-t-2xl w-full h-full p-2 pt-4">
         <div className="flex flex-row sm:flex-col justify-between items-center gap-2">
-          <div className="hidden sm:flex max-w-[400px]">
+          <div className="hidden sm:flex max-w-[400px] -ml-20">
             <CarouselDesktop
               images={[
                 data?.data.imagen_perfil,
                 ...(data?.data.imagenes || []),
               ]}
+              isLoading={isLoading}
             />
           </div>
 
@@ -232,55 +246,114 @@ const BarberByIdPage = () => {
           ))}
         </div>
 
-        {checkReview?.data.resena && (
-          <div className="flex flex-col gap-2 m-0.5 p-2 bg-black-main rounded-xl">
-            <span className="font-extrabold">Mi reseña</span>
-            <div className="flex flex-col gap-3 bg-gray-main p-3 rounded-xl">
-              <div className="flex justify-between gap-2">
-                <span>{checkReview.data.resena.user}</span>
-                <div className="flex gap-2 items-center justify-start">
-                  {checkReview.data.resena.calificacion > 0 && (
+        {checkReview?.data && (
+          <div
+            className="flex flex-col gap-2 m-0.5 p-2 bg-black-main rounded-xl"
+            id="reseñas"
+          >
+            {checkReview?.data.resena && (
+              <>
+                <span className="font-extrabold">Mi reseña</span>
+                <div className="flex flex-col gap-3 bg-gray-main p-3 rounded-xl">
+                  <div className="flex justify-between gap-2">
+                    <span>{checkReview.data.resena?.user}</span>
                     <div className="flex gap-2 items-center justify-start">
+                      {checkReview.data.resena?.calificacion > 0 && (
+                        <div className="flex gap-2 items-center justify-start">
+                          {Array.from({
+                            length: checkReview.data.resena?.calificacion,
+                          }).map((_, index) => (
+                            <span key={index}>
+                              <Icon
+                                icon="material-symbols:star"
+                                color="gold"
+                                width={20}
+                              />
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {!Number.isInteger(
+                        checkReview.data.resena?.calificacion
+                      ) && (
+                        <Icon
+                          icon="material-symbols:star-half"
+                          color="gold"
+                          width={20}
+                        />
+                      )}
+
                       {Array.from({
-                        length: checkReview.data.resena.calificacion,
+                        length:
+                          5 - Math.ceil(checkReview.data.resena?.calificacion),
                       }).map((_, index) => (
                         <span key={index}>
                           <Icon
-                            icon="material-symbols:star"
-                            color="gold"
+                            icon="material-symbols:star-outline"
+                            stroke="1"
                             width={20}
                           />
                         </span>
                       ))}
                     </div>
-                  )}
+                  </div>
 
-                  {!Number.isInteger(checkReview.data.resena.calificacion) && (
-                    <Icon
-                      icon="material-symbols:star-half"
-                      color="gold"
-                      width={20}
-                    />
-                  )}
-
-                  {Array.from({
-                    length: 5 - Math.ceil(checkReview.data.resena.calificacion),
-                  }).map((_, index) => (
-                    <span key={index}>
-                      <Icon
-                        icon="material-symbols:star-outline"
-                        stroke="1"
-                        width={20}
+                  <p>{checkReview.data.resena?.descripcion}</p>
+                  <Dialog>
+                    <DialogTrigger>
+                      <Button variant="secondary">Editar</Button>
+                    </DialogTrigger>
+                    <DialogContent forceMount>
+                      <DialogHeader>
+                        <DialogTitle>Editar una reseña</DialogTitle>
+                      </DialogHeader>
+                      <HandleChangeReviews
+                        review={checkReview.data.resena}
+                        refetch={refetchCheck}
                       />
-                    </span>
-                  ))}
+                    </DialogContent>
+                  </Dialog>
                 </div>
-              </div>
+              </>
+            )}
 
-              <p>{checkReview.data.resena.descripcion}</p>
-            </div>
+            {checkReview?.data.canCreate == true && (
+              <>
+                <span className="font-extrabold text-xl">Dejar una reseña</span>
+                <p>Queremos saber tu opinión sobre nuestra barbería</p>
+                <section className="flex items-center justify-start">
+                  <Dialog>
+                    <DialogTrigger>
+                      <Button
+                        variant="secondary"
+                        className="flex gap-2 text-white"
+                      >
+                        <Icon
+                          icon="material-symbols:star"
+                          width={24}
+                          height={24}
+                          color="gold"
+                        />
+                        <span>Dejar una reseña</span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent forceMount>
+                      <DialogHeader>
+                        <DialogTitle>Dejar una reseña</DialogTitle>
+                      </DialogHeader>
+                      <HandleChangeReviews
+                        idBarber={data?.data.id}
+                        refetch={refetchCheck}
+                      />
+                    </DialogContent>
+                  </Dialog>
+                </section>
+              </>
+            )}
           </div>
         )}
+
         <div className="flex flex-col gap-2 m-0.5 p-2 bg-black-main rounded-xl">
           <span className="font-extrabold">Reseñas</span>
           {reviews?.data.results.map((resena: any) => {
@@ -343,6 +416,9 @@ const BarberByIdPage = () => {
               </div>
             )
           })}
+          {reviews?.data.results.length == 0 && (
+            <span>No se encontraron reseñas</span>
+          )}
         </div>
 
         <div className="flex flex-wrap h-full items-end w-full">
@@ -363,9 +439,9 @@ const BarberByIdPage = () => {
                 {success ? (
                   <div className="flex flex-col gap-2">
                     <span>Turno creado con exito</span>
-                    <div className="flex gap-8 w-full">
-                      <DialogClose className="w-full">
-                        <Button variant="secondary" className="w-full">
+                    <div className="flex justify-between gap-8 w-full">
+                      <DialogClose>
+                        <Button variant="secondary" className="w-60">
                           Cerrar
                         </Button>
                       </DialogClose>
@@ -376,7 +452,6 @@ const BarberByIdPage = () => {
                           reset()
                           setSuccess(false)
                         }}
-                        className=" w-full"
                       >
                         Solicitar otro turno
                       </Button>
