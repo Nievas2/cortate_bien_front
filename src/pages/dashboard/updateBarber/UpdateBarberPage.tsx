@@ -33,12 +33,13 @@ import {
 } from "@/components/ui/select"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { getCountries } from "@/services/CountryService"
+import { ProfileFormSkeleton, BasicFormSkeleton } from "./components/SkeletonForms";
 
 const UpdateBarberPage = () => {
   const { search } = useLocation()
   const id = search.split("=")[1]
 
-  const { data, isPending } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["barber-by-id", id],
     queryFn: () => getBarberById(id),
     refetchOnWindowFocus: false,
@@ -49,14 +50,20 @@ const UpdateBarberPage = () => {
       <main className="flex flex-col gap-8 items-center justify-center w-full h-full">
         <h1 className="text-3xl font-semibold">Actualizar Barberia</h1>
         <section className="flex flex-col gap-4 items-center justify-center w-full bg-gray-main rounded-lg p-4">
-          {isPending === false && (
+          {isLoading ? (
+            <ProfileFormSkeleton />
+          ) : (
             <ProfileForm barber={data?.data} ciudad={data?.data.ciudad} />
           )}
         </section>
 
         <section className="flex flex-col gap-4 items-center justify-center w-full bg-gray-main rounded-lg p-4">
           <h1 className="text-3xl font-semibold">Actualizar Servicios</h1>
-          {isPending === false && <BasicForm barber={data?.data} />}
+          {isLoading ? (
+            <BasicFormSkeleton />
+          ) : (
+            <BasicForm barber={data?.data} />
+          )}
         </section>
       </main>
     </Layout>
