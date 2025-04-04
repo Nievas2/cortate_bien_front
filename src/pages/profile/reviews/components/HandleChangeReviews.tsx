@@ -72,7 +72,7 @@ const HandleChangeReviews = ({
     <form onSubmit={handleSubmitReview} className="flex flex-col gap-8">
       {successStatus ? (
         <div className="flex flex-col gap-4">
-          <span className="w-full text-center text-xl">Turno actualizado</span>
+          <span className="w-full text-center text-xl">{idBarber ? "Reseña creada" : "Reseña actualizada"}</span>
         </div>
       ) : (
         <>
