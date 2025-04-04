@@ -41,11 +41,15 @@ export function NavbarItemMobile({
   name: string
   setOpen: Function
 }) {
+  console.log("location", location);
+  console.log("pathname", pathname);
+  console.log(pathname.startsWith(location));
+
   return (
     <NavLink
       to={location}
       className={`block rounded-md px-3 py-2 text-base font-medium ${
-        location === pathname
+        (location !== "/" && pathname.startsWith(location)) || location === pathname
           ? "bg-blue-secondary/50 text-white"
           : "text-white"
       } transition-colors duration-300`}
