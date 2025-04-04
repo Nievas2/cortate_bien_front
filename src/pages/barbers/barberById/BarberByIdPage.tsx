@@ -66,7 +66,7 @@ const BarberByIdPage = () => {
   })
 
   const { data: reviews } = useQuery({
-    queryKey: ["review-barber"],
+    queryKey: ["review-barber", params.id],
     queryFn: () => getReviews(params.id as string),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
@@ -74,7 +74,7 @@ const BarberByIdPage = () => {
   })
 
   const { data: checkReview } = useQuery({
-    queryKey: ["check-review"],
+    queryKey: ["check-review", params.id],
     queryFn: () => getCheckReview(params.id as string),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,

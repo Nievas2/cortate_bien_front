@@ -33,7 +33,7 @@ const AppointmentsPage = () => {
   to.setDate(to.getDate() + 5)
 
   const { data, refetch } = useQuery({
-    queryKey: ["get-appointments-by-barber"],
+    queryKey: ["get-appointments-by-barber", id, date, filter],
     queryFn: () => {
       return getAppointmentsByBarberId(id, date, filter)
     },

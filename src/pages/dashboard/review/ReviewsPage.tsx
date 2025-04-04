@@ -18,7 +18,7 @@ const ReviewsPage = () => {
   const id = search.split("=")[1]
 
   const { data, isLoading } = useQuery({
-    queryKey: ["getreviews"],
+    queryKey: ["getreviews", id],
     queryFn: () => getReviews(id),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,

@@ -39,7 +39,7 @@ const UpdateBarberPage = () => {
   const id = search.split("=")[1]
 
   const { data, isPending } = useQuery({
-    queryKey: ["barber-by-id"],
+    queryKey: ["barber-by-id", id],
     queryFn: () => getBarberById(id),
     refetchOnWindowFocus: false,
     enabled: !!id,
