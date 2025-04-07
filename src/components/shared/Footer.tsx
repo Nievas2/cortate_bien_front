@@ -7,7 +7,7 @@ const Footer = () => {
       <section className="flex items-center justify-center gap-8 w-full">
         <Link
           to="https://www.linkedin.com/in/gabriel-nievas/"
-          className="flex flex-row gap-1 justify-center items-center hover:scale-110 transition-transform"
+          className="flex flex-row gap-1 justify-center items-center hover:scale-105 transition-transform"
           target="_blank"
         >
           <LinkedinIcon />
@@ -16,7 +16,7 @@ const Footer = () => {
 
         <Link
           to="https://www.linkedin.com/in/emiigonzalez33/"
-          className="flex flex-row gap-1 justify-center items-center hover:scale-110 transition-transform"
+          className="flex flex-row gap-1 justify-center items-center hover:scale-105 transition-transform"
           target="_blank"
         >
           <LinkedinIcon />
@@ -26,14 +26,14 @@ const Footer = () => {
       <section className="flex items-center justify-center flex-col sm:flex-row gap-2">
         <Link
           to="/privacy-policy"
-          className="flex flex-row gap-1 justify-center items-center hover:scale-110 transition-transform"
+          className="flex flex-row gap-1 justify-center items-center hover:text-blue-main duration-150 transition-colors"
         >
           Política de Privacidad
         </Link>
         |
         <Link
           to="/Terms-and-Conditions"
-          className="flex flex-row gap-1 justify-center items-center hover:scale-110 transition-transform"
+          className="flex flex-row gap-1 justify-center items-center hover:text-blue-main duration-150 transition-colors"
         >
           Términos y Condiciones
         </Link>
