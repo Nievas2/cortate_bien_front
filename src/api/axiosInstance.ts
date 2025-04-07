@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import Cookies from "js-cookie"
 
 const token = Cookies.get("token")
@@ -23,10 +23,16 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   function (response: any) {
+    console.log("test response", response)
+
     return response
   },
 
-  function (error: any) {
+  function (error: AxiosError) {
+    if (error.response == undefined) {
+      window.location.href = "/mantenimiento"
+      return Promise.reject(error)
+    }
     if (error.response.status === 401) {
       Cookies.remove("token")
       window.location.href = "/auth/iniciar-sesion"

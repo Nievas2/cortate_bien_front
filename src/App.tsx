@@ -27,6 +27,7 @@ import PasswordRecoveryPage from "./pages/auth/PasswordRecovery/PasswordRecovery
 import { ProtecteBarberRoute } from "./components/shared/ProtectedBarber"
 import BarberByIdPage from "./pages/barbers/barberById/BarberByIdPage"
 import UpdateBarberPage from "./pages/dashboard/updateBarber/UpdateBarberPage"
+import MaintenancePage from "./pages/maintenance/MaintenancePage"
 
 function App() {
   const location = useLocation()
@@ -74,7 +75,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
 
             <Route
               path="/profile"
@@ -138,7 +138,7 @@ function App() {
                 </ProtecteBarberRoute>
               }
             />
-            
+
             <Route
               path="/dashboard/barber/update"
               element={
@@ -194,6 +194,7 @@ function App() {
 
             <Route path="/404" element={<NotFoundPage />} />
             <Route path="/*" element={<Navigate to="/404" replace />} />
+            <Route path="/mantenimiento" element={<MaintenancePage />} />
           </Routes>
         </div>
 
