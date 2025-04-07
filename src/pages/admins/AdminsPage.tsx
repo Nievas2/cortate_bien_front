@@ -77,9 +77,6 @@ const AdminsPage = () => {
   return (
     <Layout>
       <main className="flex flex-col gap-8 h-full w-full items-start p-2">
-        <h1 className="text-4xl font-semibold text-center w-full">
-          Administradores
-        </h1>
         <div className="flex flex-col gap-8 items-start w-full">
           <form
             onSubmit={handleDelete}

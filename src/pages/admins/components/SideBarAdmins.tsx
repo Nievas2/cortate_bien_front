@@ -15,7 +15,7 @@ const SideBarAdmins = ({ open }: { open: boolean }) => {
     },
     {
       name: "Barberias disabled",
-      icon: "tabler:home",
+      icon: "fe:disabled",
       href: `/admins/dashboard/barbers/disabled`,
     },
     {
@@ -41,11 +41,11 @@ const SideBarAdmins = ({ open }: { open: boolean }) => {
         >
           <Icon
             className="text-white"
-            icon="mdi:emoji-cool-outline"
+            icon="wpf:administrator"
             width="30"
             height="30"
           />
-          <span className="font-semibold">Los admins</span>
+          <span className="font-semibold">Administración</span>
         </div>
 
         <div
