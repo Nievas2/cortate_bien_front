@@ -46,6 +46,7 @@ const ProfilePage = () => {
       if (authUser != null) return await getUserById(authUser.user.sub)
     },
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
     staleTime: 1000 * 60 * 60 * 24,
   })
 

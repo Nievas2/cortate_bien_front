@@ -43,6 +43,8 @@ const UpdateBarberPage = () => {
     queryKey: ["barber-by-id", id],
     queryFn: () => getBarberById(id),
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 1000 * 60 * 60 * 24,
     enabled: !!id,
   })
   return (
@@ -102,6 +104,7 @@ const ProfileForm = ({
     queryKey: ["countries"],
     queryFn: getCountries,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
     staleTime: 1000 * 60 * 60 * 24,
   })
 

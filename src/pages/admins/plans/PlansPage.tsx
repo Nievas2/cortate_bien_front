@@ -16,6 +16,9 @@ const PlansPage = () => {
   const { data, refetch } = useQuery({
     queryKey: ["plans"],
     queryFn: getPlansAdmin,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 1000 * 60 * 60 * 24,
   })
   return (
     <Layout>

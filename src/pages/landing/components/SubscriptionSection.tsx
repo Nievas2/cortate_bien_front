@@ -26,8 +26,8 @@ const SubscriptionSection = () => {
     queryKey: ["plans"],
     queryFn: getAllPlans,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
     staleTime: 1000 * 60 * 60 * 24,
-    retry: false,
   })
 
   const { mutate } = useMutation({
