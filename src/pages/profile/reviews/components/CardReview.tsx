@@ -18,10 +18,12 @@ const CardReview = ({
   refetch?: Function
 }) => {
   return (
-    <div className="flex gap-2 rounded-xl shadow-md shadow-gray-900 border border-gray-900 w-full p-2">
-      <div className="flex flex-col gap-2 min-w-36">
-        <span className="text-center font-bold">{review.barberia}</span>
-        <div className="flex flex-col items-center justify-between ">
+    <div className="flex gap-2 rounded-xl shadow-md bg-gray-main shadow-gray-900 border border-gray-900 w-full p-2">
+      <div className="flex flex-col gap-2 w-full">
+        <div className="flex flex-col items-center justify-between">
+          <span className="text-center font-bold w-full">
+            {review.barberia}
+          </span>
           <div className="flex items-center justify-center gap-2">
             {review.calificacion > 0 && (
               <div className="flex gap-2 items-center justify-start">
@@ -53,10 +55,14 @@ const CardReview = ({
               </span>
             ))}
           </div>
-
+        </div>
+        <p className="text-sm">{review.descripcion}</p>
+        <div className="flex items-center justify-end w-full">
           <Dialog>
             <DialogTrigger>
-              <Button variant="ghost">Editar</Button>
+              <Button variant="secondary">
+                <Icon icon="material-symbols:edit" width={20} /> Editar
+              </Button>
             </DialogTrigger>
             <DialogContent forceMount>
               <DialogHeader>
@@ -67,7 +73,6 @@ const CardReview = ({
           </Dialog>
         </div>
       </div>
-      <p className="text-sm">{review.descripcion}</p>
     </div>
   )
 }

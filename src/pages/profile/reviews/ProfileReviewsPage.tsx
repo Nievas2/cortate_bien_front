@@ -26,11 +26,12 @@ const ProfileReviewsPage = () => {
   }, [])
   return (
     <Layout>
-      <main className="flex flex-col gap-8 h-full w-full p-2">
-        <section className="flex items-center justify-center">
+      <main className="flex flex-col gap-6 h-full w-full p-2">
+        <section className="flex flex-col items-center justify-center">
           <h1 className="text-4xl font-semibold">Reseñas</h1>
+          <p>Aquí podrás encontrar todas tus reseñas.</p>
         </section>
-        <section className="grid grid-cols-1 gap-8 place-items-center min-h-96">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center min-h-96">
           {data?.data.results.map((review: Review) => (
             <CardReview review={review} refetch={refetch} key={review.id} />
           ))}
