@@ -5,7 +5,7 @@ const Card = ({ barber }: { barber: BarberGet }) => {
   return (
     <Link
       to={`/barbers/${barber.id}`}
-      className="flex flex-col lg:flex-row gap-3 w-[300px] lg:w-[400px] bg-gray-800 rounded-lg border border-gray-700 p-4 min-h-[364px] h-full"
+      className="flex flex-col lg:flex-row gap-3 w-[300px] lg:w-[400px] bg-gray-800 rounded-lg border border-gray-700 p-4 min-h-[364px] lg:min-h-[100px] h-full"
     >
       <div className="flex flex-col items-center justify-center w-full lg:w-[69%] gap-4">
         <img
