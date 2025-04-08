@@ -22,7 +22,7 @@ const SubscriptionSection = () => {
   const location = useLocation()
   const { authUser } = useAuthContext()
   const id = location.search.split("=")[1]
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["plans"],
     queryFn: getAllPlans,
     refetchOnWindowFocus: false,
@@ -65,9 +65,20 @@ const SubscriptionSection = () => {
           </div>
         </div>
 
-        <div className="grid max-w-5xl gap-8 gap-y-14 lg:grid-cols-3 mx-auto">
-          {data != undefined ? (
-            data?.data.map((plan: Plan) => (
+        {isLoading && (
+          <div className="flex items-center justify-center w-full h-full py-10">
+            <Icon
+              icon="eos-icons:loading"
+              width="40"
+              height="40"
+              className="text-gray-400 animate-spin"
+            />
+          </div>
+        )}
+
+        {data != undefined && (
+          <div className="grid max-w-5xl gap-8 gap-y-14 lg:grid-cols-3 mx-auto">
+            {data?.data.map((plan: Plan) => (
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -133,12 +144,9 @@ const SubscriptionSection = () => {
                   </Button>
                 </Link>
               </motion.div>
-            ))
-          ) : (
-            <span className="text-2xl font-bold text-white col-span-full">No se encontraron planes</span>
-          )}
+            ))}
 
-          {/* <motion.div
+            {/* <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2, delay: 0.2 }}
@@ -249,7 +257,8 @@ const SubscriptionSection = () => {
               Comenzar ahora
             </Button>
           </motion.div> */}
-        </div>
+          </div>
+        )}
       </section>
       {/* 
       <section className="flex flex-col gap-8 px-4 md:px-6 pb-3 w-full">
