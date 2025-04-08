@@ -120,7 +120,7 @@ const BarberByIdPage = () => {
         </div>
       </section>
 
-      <section className="flex flex-col gap-4 bg-gray-main rounded-t-2xl w-full h-full p-2 pt-4">
+      <section className="flex flex-col gap-4 bg-gray-main w-full h-full p-2 pt-4">
         <div className="flex flex-row sm:flex-col justify-between items-center gap-2">
           <div className="hidden sm:flex max-w-[400px] -ml-20">
             <CarouselDesktop
@@ -132,7 +132,7 @@ const BarberByIdPage = () => {
             />
           </div>
 
-          <h2 className="text-xl font-bold">{data?.data.nombre}</h2>
+          <h2 className="text-xl font-extrabold">{data?.data.nombre}</h2>
 
           <div className="flex gap-2 items-center">
             {data?.data.puntaje > 0 && (
