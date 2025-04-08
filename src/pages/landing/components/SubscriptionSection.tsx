@@ -73,7 +73,7 @@ const SubscriptionSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: 0.2 }}
                 viewport={{ once: true }}
-                className="flex flex-col gap-2 rounded-lg border bg-[#080808] px-10 py-4"
+                className="flex flex-col gap-2 rounded-lg border bg-black-main px-10 py-4"
                 key={plan.id}
               >
                 <h3 className="text-2xl font-bold text-white">{plan.nombre}</h3>

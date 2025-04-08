@@ -28,13 +28,14 @@ const FeatureSection = () => {
           </motion.p>
         </div>
       </div>
+
       <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3 px-4">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           viewport={{ once: true }}
-          className="flex flex-col items-center justify-center gap-4 rounded-lg border border-[#007FFF] p-6 min-h-[200px]"
+          className="flex flex-col items-center justify-center gap-4 rounded-lg border border-[#007FFF] p-6 min-h-[200px] bg-black-main"
         >
           <Icon icon="ri:calendar-line" width="24" height="24" />
           <h3 className="text-xl font-bold text-white">Gestión de turnos</h3>
@@ -43,12 +44,13 @@ const FeatureSection = () => {
             eficiente
           </p>
         </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
-          className="flex flex-col items-center justify-center gap-4 rounded-lg border border-[#007FFF] p-6 min-h-[200px]"
+          className="flex flex-col items-center justify-center gap-4 rounded-lg border border-[#007FFF] p-6 min-h-[200px] bg-black-main"
         >
           <Icon icon="mdi:users" width="24" height="24" />
           <h3 className="text-xl font-bold text-white">Gestión de clientes</h3>
@@ -56,12 +58,13 @@ const FeatureSection = () => {
             Mantén un registro detallado de las preferencias de tus clientes
           </p>
         </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
           viewport={{ once: true }}
-          className="flex flex-col items-center justify-center gap-4 rounded-lg border border-[#007FFF] p-6 min-h-[200px]"
+          className="flex flex-col items-center justify-center gap-4 rounded-lg border border-[#007FFF] p-6 min-h-[200px] bg-black-main"
         >
           <Icon icon="ri:time-line" width="24" height="24" />{" "}
           <h3 className="text-xl font-bold text-white">Ahorro de Tiempo</h3>
