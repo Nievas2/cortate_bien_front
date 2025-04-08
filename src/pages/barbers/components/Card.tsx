@@ -5,9 +5,9 @@ const Card = ({ barber }: { barber: BarberGet }) => {
   return (
     <Link
       to={`/barbers/${barber.id}`}
-      className="flex flex-col md:flex-row gap-3 w-[300px] md:w-[400px] bg-gray-800 rounded-lg border border-gray-700  p-4"
+      className="flex flex-col lg:flex-row gap-3 w-[300px] lg:w-[400px] bg-gray-800 rounded-lg border border-gray-700 p-4 min-h-[364px] h-full"
     >
-      <div className="flex flex-col items-center justify-center w-full md:w-[69%] gap-4">
+      <div className="flex flex-col items-center justify-center w-full lg:w-[69%] gap-4">
         <img
           className="size-36 aspect-square rounded-full border-2 border-blue-main"
           src={barber.imagen_perfil}
@@ -42,7 +42,8 @@ const Card = ({ barber }: { barber: BarberGet }) => {
           ))}
         </div>
       </div>
-      <div className="flex flex-col w-full gap-2">
+
+      <div className="flex flex-col w-full gap-2 h-full">
         <h4 className="w-full font-extrabold">{barber.nombre}</h4>
 
         <div className="flex flex-col gap-2">
