@@ -23,8 +23,6 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   function (response: any) {
-    console.log("test response", response)
-
     return response
   },
 

@@ -32,7 +32,7 @@ const BarbersPage = () => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["barbers"],
     queryFn: () => {
-      if(changeCountry) {
+      if (changeCountry) {
         return getBarbers({
           page: currentPage,
           city: authUser?.user.city_id,
@@ -68,7 +68,7 @@ const BarbersPage = () => {
     if (data) {
       setTotalPages(data.data.total_pages)
     }
-  }, [])
+  }, [data])
 
   useEffect(() => {
     refetch()

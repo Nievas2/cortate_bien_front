@@ -211,7 +211,7 @@ export async function getBarbers({
 }) {
   try {
     const res = await axiosInstance.get(
-      `barberia/find/all?page=${page}?order=${order}&city=${city}&long=${long}&lat=${lat}&radius=${radius}`
+      `barberia/find/all?page=${page}&order=${order}&city=${city}&long=${long}&lat=${lat}&radius=${radius}`
     )
     return res
   } catch (error) {
