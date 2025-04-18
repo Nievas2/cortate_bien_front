@@ -13,6 +13,17 @@ const useLogin = () => {
   const [loading, setLoading] = useState(false)
   const { setAuthUser } = useAuthContext()
 
+  const setCookieAsync = (
+    name: string,
+    value: string,
+    options: Cookies.CookieAttributes
+  ): Promise<void> => {
+    return new Promise((resolve) => {
+      Cookies.set(name, value, options)
+      resolve()
+    })
+  }
+
   const login = async ({ email, password }: LoginParams) => {
     setLoading(true)
 
@@ -30,7 +41,7 @@ const useLogin = () => {
       }
       setAuthUser(userAuth)
 
-      Cookies.set("token", data.accesToken, {
+      await setCookieAsync("token", data.accesToken, {
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
       })
 
