@@ -25,8 +25,9 @@ axiosInstance.interceptors.response.use(
   function (response: any) {
     return response
   },
-
+  
   function (error: AxiosError) {
+    console.log("response", error)
     if (error.response == undefined) {
       window.location.href = "/mantenimiento"
       return Promise.reject(error)
