@@ -28,6 +28,7 @@ import { ProtecteBarberRoute } from "./components/shared/ProtectedBarber"
 import BarberByIdPage from "./pages/barbers/barberById/BarberByIdPage"
 import UpdateBarberPage from "./pages/dashboard/updateBarber/UpdateBarberPage"
 import MaintenancePage from "./pages/maintenance/MaintenancePage"
+import Cookies from "js-cookie"
 
 function App() {
   const location = useLocation()
@@ -125,12 +126,12 @@ function App() {
 
             <Route
               path="/auth/iniciar-sesion"
-              element={authUser ? <Navigate to="/" /> : <LoginPage />}
+              element={Cookies.get("token") ? <Navigate to="/" /> : <LoginPage />}
             />
 
             <Route
               path="/auth/registrarse"
-              element={authUser ? <Navigate to="/" /> : <RegisterPage />}
+              element={Cookies.get("token") ? <Navigate to="/" /> : <RegisterPage />}
             />
 
             {/* Dashboard Barbers */}
