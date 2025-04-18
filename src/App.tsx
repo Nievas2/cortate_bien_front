@@ -40,7 +40,20 @@ function App() {
 
         <div className="flex w-full flex-1 max-w-8xl">
           <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<LandingPage />} />
+            <Route
+              path="/"
+              element={
+                authUser == null ? (
+                  <LandingPage />
+                ) : authUser.user.tipo_de_cuenta === "CLIENTE" ? (
+                  <Navigate to="/barbers" />
+                ) : authUser.user.tipo_de_cuenta === "BARBERO" ? (
+                  <Navigate to="/dashboard" />
+                ) : (
+                  <LandingPage />
+                )
+              }
+            />
 
             <Route
               path="/terms-and-conditions"
