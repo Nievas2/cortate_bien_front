@@ -7,7 +7,7 @@ const TermsAndConditions = () => {
         </h1>
 
         <span className="text-sm font-light">
-          Última actualización: 10/2/2025
+          Última actualización: 21/4/2025
         </span>
       </div>
 
@@ -51,7 +51,7 @@ const TermsAndConditions = () => {
           6. Cambios en los términos Podemos modificar estos términos en
           cualquier momento. Te notificaremos sobre cambios significativos. Al
           usar Cortate Bien, aceptas cumplir con estos términos. Si tienes
-          preguntas, contáctanos en angelgabrielnievas@gmail.com.
+          preguntas, contáctanos en cortatebienapp@gmail.com.
         </li>
       </ol>
     </div>

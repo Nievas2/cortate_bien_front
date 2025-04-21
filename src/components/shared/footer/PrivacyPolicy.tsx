@@ -7,7 +7,7 @@ const PrivacyPolicy = () => {
         </h1>
 
         <span className="text-sm font-light">
-          Última actualización: 10/2/2025
+          Última actualización: 21/4/2025
         </span>
       </div>
 
@@ -48,14 +48,14 @@ const PrivacyPolicy = () => {
         <li className="first-letter:font-bold">
           5. Tus derechos Puedes acceder, rectificar o eliminar tus datos
           personales. Para ejercer estos derechos, contáctanos en
-          angelgabrielnievas@gmail.com.
+          cortatebienapp@gmail.com
         </li>
 
         <li className="first-letter:font-bold">
           6. Cambios en esta política Nos reservamos el derecho de modificar
           esta política en cualquier momento. Te notificaremos de cambios
           significativos. Si tienes preguntas, no dudes en escribirnos a
-          angelgabrielnievas@gmail.com.
+          cortatebienapp@gmail.com.
         </li>
       </ol>
     </div>
