@@ -61,7 +61,7 @@ const ChangeBarberShop = ({
     },
   })
   return (
-    <section className="flex flex-col items-center justify-center gap-8 w-full p-4">
+    <section className="flex flex-col items-center justify-center gap-8 w-full p-4 min-h-screen">
       <motion.h2
         initial={{ y: 100 }}
         whileInView={{ y: 0 }}
