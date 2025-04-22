@@ -3,10 +3,12 @@ import FeatureSection from "./components/FeatureSection"
 import HeroSection from "./components/HeroSection"
 import SubscriptionSection from "./components/SubscriptionSection"
 import { useEffect } from "react"
-import Cookies from "js-cookie"/* 
-import { decodeJwt } from "@/utils/decodeJwt" */
+import Cookies from "js-cookie"
+import { decodeJwt } from "@/utils/decodeJwt"
+import { useAuthContext } from "@/contexts/authContext"
 
 const LandingPage = () => {
+  const { setAuthUser } = useAuthContext()
   const { search } = useLocation()
   document.title = "Cortate bien | Inicio"
   console.log("search", search.split("=")[1])
@@ -16,7 +18,13 @@ const LandingPage = () => {
       Cookies.set("token", token, {
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
       })
-     /*  const decode = decodeJwt(token)
+      const user = decodeJwt(token)
+      const userAuth = {
+        user: user,
+        token: token,
+      }
+      setAuthUser(userAuth)
+      /*  const decode = decodeJwt(token)
       if (
         decode.city_id == undefined ||
         decode.city_id == null ||
