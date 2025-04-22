@@ -11,6 +11,8 @@ const DashboardPage = () => {
     queryFn: getBarbers,
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
+    retry: 1,
+    enabled: authUser != undefined,
   })
 
   async function getBarbers() {

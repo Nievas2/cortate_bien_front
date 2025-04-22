@@ -24,6 +24,7 @@ const LandingPage = () => {
         token: token,
       }
       setAuthUser(userAuth)
+      window.location.href = "/"
       /*  const decode = decodeJwt(token)
       if (
         decode.city_id == undefined ||
