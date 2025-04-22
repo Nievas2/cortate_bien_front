@@ -40,6 +40,7 @@ const Notifications = () => {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     staleTime: 1000 * 60 * 60 * 24,
+    retry: 1,
   })
 
   useEffect(() => {
