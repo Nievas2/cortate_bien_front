@@ -23,9 +23,13 @@ import CountrySelect from "@/pages/dashboard/components/CountrySelect"
 import { getCountries } from "@/services/CountryService"
 import CitySelect from "@/pages/dashboard/components/CitySelect"
 import useReCaptcha from "@/hooks/useReCaptcha"
+import CountryNumberSelect from "@/pages/dashboard/components/CountryNumberSelect"
 
 const RegisterPage = () => {
   document.title = "Cortate bien | Registro"
+  const [selectCountryNumber, setSelectCountryNumber] = useState<
+    undefined | string
+  >()
   const { loading, register } = useRegister()
   const navigation = useNavigate()
   const [error, setError] = useState("")
@@ -83,6 +87,10 @@ const RegisterPage = () => {
     }
     try {
       await executeRecaptcha("register")
+      if (!selectCountryNumber) {
+        return setError("Debes seleccionar la caracteristica del pais")
+      }
+      values.telefono = selectCountryNumber + values.telefono
       const response = await register(values)
       setSuccess(true)
       navigation(`/auth?email=${response.data.email}`)
@@ -174,12 +182,19 @@ const RegisterPage = () => {
                     <div className="flex flex-row gap-2 items-end">
                       <Label>Telefono</Label>
                     </div>
-
-                    <Input
-                      type="telefono"
-                      {...registerForm("telefono")}
-                      placeholder="3544888888"
-                    />
+                    <div className="flex flex-row gap-2">
+                      {isSuccessCountries && Array.isArray(data?.data) && (
+                        <CountryNumberSelect
+                          countries={data?.data}
+                          onChange={(e: any) => setSelectCountryNumber(e)}
+                        />
+                      )}
+                      <Input
+                        type="telefono"
+                        {...registerForm("telefono")}
+                        placeholder="Telefono"
+                      />
+                    </div>
 
                     <small className="font-bold text-red-500">
                       {errors.telefono?.message}
