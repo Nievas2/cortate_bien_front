@@ -31,7 +31,7 @@ const Footer = () => {
             target="_blank"
           >
             <LinkedinIcon />
-            Gabi
+            Gabriel Nievas
           </Link>
 
           <Link
@@ -40,7 +40,7 @@ const Footer = () => {
             target="_blank"
           >
             <LinkedinIcon />
-            Emi
+            Emiliano Gonzalez
           </Link>
         </section>
       </footer>
