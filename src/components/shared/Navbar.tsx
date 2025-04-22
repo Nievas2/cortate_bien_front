@@ -90,11 +90,13 @@ const Navbar = () => {
               {/* Navlinks */}
               <div className="hidden md:ml-6 md:flex md:flex-1">
                 <div className="flex w-full items-center justify-end text-center flex-row gap-2 ">
-                  <NavbarItemDestock
-                    location="/"
-                    pathname={pathname}
-                    name="Inicio"
-                  />
+                  {authUser === null && (
+                    <NavbarItemDestock
+                      location="/"
+                      pathname={pathname}
+                      name="Inicio"
+                    />
+                  )}
 
                   <NavbarItemDestock
                     location="/barbers"
@@ -244,12 +246,14 @@ const Navbar = () => {
 
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-2">
-                <NavbarItemMobile
-                  name="Inicio"
-                  location="/"
-                  pathname={pathname}
-                  setOpen={setOpen}
-                />
+                {authUser === null && (
+                  <NavbarItemMobile
+                    name="Inicio"
+                    location="/"
+                    pathname={pathname}
+                    setOpen={setOpen}
+                  />
+                )}
 
                 <NavbarItemMobile
                   name="Precios"
