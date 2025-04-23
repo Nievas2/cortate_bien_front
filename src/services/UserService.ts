@@ -9,25 +9,23 @@ export async function getUserById(id: string) {
   }
 }
 
-export async function updateUser({
-  id,
+export async function completeRegistration({
   fechaNacimiento,
   telefono,
-  password,
+  tipoDeCuenta,
   ciudad_id,
 }: {
-  id: string
   fechaNacimiento: string | number
   telefono: string
-  password: string
-  ciudad_id: string
+  tipoDeCuenta: string
+  ciudad_id: number
 }) {
   try {
-    const res = await axiosInstance.put(`users/updat${id}`, {
-      fechaNacimiento,
-      telefono,
-      password,
-      ciudad_id,
+    const res = await axiosInstance.patch(`users/complete-registration`, {
+      fechaNacimiento : fechaNacimiento,
+      telefono : telefono,
+      tipoDeCuenta : tipoDeCuenta,
+      ciudad : ciudad_id,
     })
     return res
   } catch (error) {
