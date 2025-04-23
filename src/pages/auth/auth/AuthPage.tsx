@@ -52,7 +52,7 @@ const AuthPage = () => {
       const { email, code } = values
       try {
         const res = await validateCode(code, email)
-        navigate("/")
+        navigate("/auth/iniciar-sesion")
         return res
       } catch (error: any) {
         setError(error.response.data.message)
@@ -101,9 +101,9 @@ const AuthPage = () => {
                     )}
                   </div>
                 ) : (
-                  <span className="text-center font-bold">
+                  <span className="text-center font-bold text-sm">
                     Se le ha enviado un correo con el código para activar su
-                    cuenta.
+                    cuenta. Por favor, revise su bandeja de entrada o spam.
                   </span>
                 )}
 
@@ -133,13 +133,12 @@ const AuthPage = () => {
                     Reenviar el código
                   </Button>
                   <span>
-                    {isResendDisabled
-                      ? `Volver a enviar el código en ${Math.floor(timer / 60)}:${(
-                          timer % 60
-                        )
-                          .toString()
-                          .padStart(2, "0")}`
-                      : "Puede reenviar"}
+                    {isResendDisabled &&
+                      `Volver a enviar el código en ${Math.floor(timer / 60)}:${(
+                        timer % 60
+                      )
+                        .toString()
+                        .padStart(2, "0")}`}
                   </span>
                 </div>
 
