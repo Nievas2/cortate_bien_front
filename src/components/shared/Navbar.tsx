@@ -104,11 +104,13 @@ const Navbar = () => {
                     name="Barberias"
                   />
 
-                  <NavbarItemDestock
-                    location="/prices"
-                    pathname={pathname}
-                    name="Precios"
-                  />
+                  {authUser?.user.tipo_de_cuenta !== "BARBERO" && (
+                    <NavbarItemDestock
+                      location="/prices"
+                      pathname={pathname}
+                      name="Precios"
+                    />
+                  )}
 
                   {authUser != null &&
                     authUser?.user.tipo_de_cuenta === "BARBERO" && (
@@ -255,12 +257,14 @@ const Navbar = () => {
                   />
                 )}
 
-                <NavbarItemMobile
-                  name="Precios"
-                  location="/prices"
-                  pathname={pathname}
-                  setOpen={setOpen}
-                />
+                {authUser?.user.tipo_de_cuenta !== "BARBERO" && (
+                  <NavbarItemMobile
+                    name="Precios"
+                    location="/prices"
+                    pathname={pathname}
+                    setOpen={setOpen}
+                  />
+                )}
 
                 {authUser?.user.rol === "USER" && (
                   <>
