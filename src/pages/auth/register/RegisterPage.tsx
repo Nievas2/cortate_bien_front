@@ -90,7 +90,7 @@ const RegisterPage = () => {
       if (!selectCountryNumber) {
         return setError("Debes seleccionar la caracteristica del pais")
       }
-      values.telefono = selectCountryNumber + values.telefono
+      values.telefono = `+${selectCountryNumber}${values.telefono}`
       const response = await register(values)
       setSuccess(true)
       navigation(`/auth?email=${response.data.email}`)
