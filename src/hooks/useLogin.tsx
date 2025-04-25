@@ -8,21 +8,21 @@ export interface LoginParams {
   email: string
   password: string
 }
+export const setCookieAsync = (
+  name: string,
+  value: string,
+  options: Cookies.CookieAttributes
+): Promise<void> => {
+  return new Promise((resolve) => {
+    Cookies.set(name, value, options)
+    resolve()
+  })
+}
 
 const useLogin = () => {
   const [loading, setLoading] = useState(false)
   const { setAuthUser } = useAuthContext()
 
-  const setCookieAsync = (
-    name: string,
-    value: string,
-    options: Cookies.CookieAttributes
-  ): Promise<void> => {
-    return new Promise((resolve) => {
-      Cookies.set(name, value, options)
-      resolve()
-    })
-  }
 
   const login = async ({ email, password }: LoginParams) => {
     setLoading(true)
