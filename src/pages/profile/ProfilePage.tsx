@@ -1,8 +1,8 @@
 import { useAuthContext } from "@/contexts/authContext"
-import { getUserById } from "@/services/UserService"
+import { completeRegistration, getUserById } from "@/services/UserService"
 import { useQuery } from "@tanstack/react-query"
 import Layout from "./Layout"
-/* import { Label } from "@/components/ui/label"
+import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
@@ -17,28 +17,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Icon } from "@iconify/react/dist/iconify.js"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { updateUserSchema } from "@/utils/schemas/userSchema"
 import { Button } from "@/components/ui/button"
-import { useLocation } from "react-router-dom" */
+import { useLocation } from "react-router-dom"
+import CountryNumberSelect from "../dashboard/components/CountryNumberSelect"
+import { decodeJwt } from "@/utils/decodeJwt"
+import { setCookieAsync } from "@/hooks/useLogin"
 
 const ProfilePage = () => {
   document.title = "Cortate bien | Perfil"
-/*   const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [selectCountryNumber, setSelectCountryNumber] = useState<
+    undefined | string
+  >()
   const [countryId, setCountryId] = useState<undefined | number>()
   const [stateId, setStateId] = useState<undefined | number>()
-  const required = location.search.split("=")[1] */
- /*  const location = useLocation() */
-  const { authUser } = useAuthContext()
+  const [error, setError] = useState<undefined | string>()
+  const location = useLocation()
+  const required = location.search.split("=")[1]
+  const { authUser, setAuthUser } = useAuthContext()
 
-/*   const { data, isSuccess: isSuccessCountries } = useQuery({
+  const { data, isSuccess: isSuccessCountries } = useQuery({
     queryKey: ["countries"],
     queryFn: getCountries,
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
-  }) */
+  })
 
   const { data: user } = useQuery({
     queryKey: ["get-user-by-id"],
@@ -50,47 +54,48 @@ const ProfilePage = () => {
     staleTime: 1000 * 60 * 60 * 24,
   })
 
-/*   const {
+  const {
     register,
     formState: { errors },
     handleSubmit,
     setValue,
   } = useForm({
     values: {
-      telefono: user?.data.telefono ? user?.data.telefono : "",
-      ciudad_id: user?.data.ciudad_id ? user?.data.ciudad_id.toString() : "",
-      fechaNacimiento: user?.data.fechaNacimiento
-        ? user?.data.fechaNacimiento.split("T")[0]
-        : new Date().toISOString().split("T")[0],
-      tipoDeCuenta: user?.data.tipoDeCuenta ? user?.data.tipoDeCuenta : "",
-      password: user?.data.password ? user?.data.password : "",
-      confirmPassword: user?.data.password ? user?.data.password : "",
+      telefono: "",
+      ciudad_id: "",
+      fechaNacimiento: new Date().toISOString().split("T")[0],
+      tipoDeCuenta: "",
     },
     resolver: zodResolver(updateUserSchema),
-  }) */
+  })
 
-/*   const togglePasswordVisibility = () => {
-    setShowPassword((prevState) => !prevState)
-  }
-
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword((prevState) => !prevState)
-  }
-
-  const updateUserFunction = handleSubmit((values) => {
+  const updateUserFunction = handleSubmit(async (values) => {
     try {
-      const res = updateUser({
-        id: user?.data.id,
-        ciudad_id: values.ciudad_id,
-        telefono: values.telefono,
+      if (!selectCountryNumber) {
+        return setError("Debes seleccionar la caracteristica del pais")
+      }
+      const res = await completeRegistration({
+        ciudad_id: Number(values.ciudad_id),
+        telefono: `+${selectCountryNumber}${values.telefono}`,
         fechaNacimiento: values.fechaNacimiento,
-        password: values.password,
+        tipoDeCuenta: values.tipoDeCuenta,
+      })
+      const user = decodeJwt(res.data.token)
+      const userAuth = {
+        user: user,
+        token: res.data.token,
+      }
+      setAuthUser(userAuth)
+
+      await setCookieAsync("token", res.data.token, {
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
       })
       return res
     } catch (error) {
+      setError("Error al actualizar la informacion")
       throw error
     }
-  }) */
+  })
 
   return (
     <Layout>
@@ -108,137 +113,62 @@ const ProfilePage = () => {
           </div>
         </section>
 
-    {/*     <section className="flex flex-col items-center justify-center w-full gap-8">
-          <h2 className="text-2xl text-center font-semibold">
-            Actualizar información personal
-          </h2>
-
-          {required == "true" && (
+        {required == "true" && (
+          <section className="flex flex-col items-center justify-center w-full gap-8">
+            <h2 className="text-2xl text-center font-semibold">
+              Actualizar información personal
+            </h2>
             <p className="text-red-500">
               Por favor, completa todos los campos para usar su cuenta
             </p>
-          )}
-
-          <form
-            className="flex flex-col gap-4 max-w-96 w-full"
-            onSubmit={updateUserFunction}
-          >
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-row gap-2 items-end">
-                <Label>Telefono</Label>
-              </div>
-
-              <Input
-                type="telefono"
-                {...register("telefono")}
-                placeholder="3544888888"
-              />
-
-              {errors.telefono?.message && (
-                <small className="font-bold text-red-500">
-                  {errors.telefono?.message.toString()}
-                </small>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-row gap-2 items-end">
-                <Label>Fecha de nacimiento</Label>
-              </div>
-
-              <Input
-                type="date"
-                {...register("fechaNacimiento")}
-                onChange={(e) => setValue("fechaNacimiento", e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
-                placeholder="YYYY-MM-DD"
-              />
-
-              {errors.fechaNacimiento?.message && (
-                <small className="font-bold text-red-500">
-                  {errors.fechaNacimiento?.message.toString()}
-                </small>
-              )}
-            </div>
-
-            {user?.data.password == "" && (
-              <>
-                <div className="flex flex-col gap-2">
-                  <Label>Contraseña</Label>
-
-                  <div className="relative">
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="•••••••••••••••"
-                      {...register("password")}
+            <form
+              className="flex flex-col gap-4 max-w-96 w-full"
+              onSubmit={updateUserFunction}
+            >
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-row gap-2 items-end">
+                  <Label>Telefono</Label>
+                </div>
+                <div className="flex flex-row gap-2">
+                  {isSuccessCountries && Array.isArray(data?.data) && (
+                    <CountryNumberSelect
+                      countries={data?.data}
+                      onChange={(e: any) => setSelectCountryNumber(e)}
                     />
-
-                    <button
-                      type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                      onClick={togglePasswordVisibility}
-                    >
-                      <Icon
-                        className={`h-5 w-5 text-black transition-opacity duration-200 ${
-                          showPassword ? "opacity-100" : "opacity-0"
-                        }`}
-                        icon="ph:eye-bold"
-                      />
-                      <Icon
-                        className={`h-5 w-5 text-black transition-opacity duration-200 absolute ${
-                          showPassword ? "opacity-0" : "opacity-100"
-                        }`}
-                        icon="ph:eye-closed-bold"
-                      />
-                    </button>
-                  </div>
-
-                  {errors.password?.message && (
-                    <small className="font-bold text-red-500">
-                      {errors.password?.message.toString()}
-                    </small>
                   )}
+                  <Input
+                    type="telefono"
+                    {...register("telefono")}
+                    placeholder="3544888888"
+                  />
                 </div>
 
-                <div className="flex flex-col gap-2">
-                  <Label>Confirmar contraseña</Label>
+                {errors.telefono?.message && (
+                  <small className="font-bold text-red-500">
+                    {errors.telefono?.message.toString()}
+                  </small>
+                )}
+              </div>
 
-                  <div className="relative">
-                    <Input
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder="•••••••••••••••"
-                      {...register("confirmPassword")}
-                    />
-
-                    <button
-                      type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                      onClick={toggleConfirmPasswordVisibility}
-                    >
-                      <Icon
-                        className={`h-5 w-5 text-black transition-opacity duration-200 ${
-                          showConfirmPassword ? "opacity-100" : "opacity-0"
-                        }`}
-                        icon="ph:eye-bold"
-                      />
-                      <Icon
-                        className={`h-5 w-5 text-black transition-opacity duration-200 absolute ${
-                          showConfirmPassword ? "opacity-0" : "opacity-100"
-                        }`}
-                        icon="ph:eye-closed-bold"
-                      />
-                    </button>
-                  </div>
-
-                  {errors.confirmPassword?.message && (
-                    <small className="font-bold text-red-500">
-                      {errors.confirmPassword?.message.toString()}
-                    </small>
-                  )}
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-row gap-2 items-end">
+                  <Label>Fecha de nacimiento</Label>
                 </div>
-              </>
-            )}
 
-            {user?.data.country_id === null && (
+                <Input
+                  type="date"
+                  {...register("fechaNacimiento")}
+                  onChange={(e) => setValue("fechaNacimiento", e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
+                  placeholder="YYYY-MM-DD"
+                />
+
+                {errors.fechaNacimiento?.message && (
+                  <small className="font-bold text-red-500">
+                    {errors.fechaNacimiento?.message.toString()}
+                  </small>
+                )}
+              </div>
+
               <div className="flex flex-col gap-2">
                 <Label>Pais</Label>
                 {isSuccessCountries && Array.isArray(data?.data) ? (
@@ -252,66 +182,67 @@ const ProfilePage = () => {
                   </span>
                 )}
               </div>
-            )}
 
-            {countryId && (
-              <div className="flex flex-col gap-2">
-                <Label>Estado / provincia</Label>
-                <StateSelect
-                  countryId={countryId}
-                  onChange={(state: number) => setStateId(state)}
-                />
+              {countryId && (
+                <div className="flex flex-col gap-2">
+                  <Label>Estado / provincia</Label>
+                  <StateSelect
+                    countryId={countryId}
+                    onChange={(state: number) => setStateId(state)}
+                  />
+                </div>
+              )}
+
+              {stateId && (
+                <div className="flex flex-col gap-2">
+                  <Label>Ciudad</Label>
+                  <CitySelect
+                    stateId={stateId}
+                    onChange={(city: number) =>
+                      setValue("ciudad_id", city.toString())
+                    }
+                  />
+                </div>
+              )}
+
+              {errors.ciudad_id && errors.ciudad_id.message && (
+                <span className="text-sm text-red-500">
+                  {errors.ciudad_id?.message.toString()}
+                </span>
+              )}
+
+              <div className="flex flex-col w-full">
+                <Select onValueChange={(e) => setValue("tipoDeCuenta", e)}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Tipo de cuenta" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-main text-white w-full">
+                    <SelectItem value="BARBERO">Barbero</SelectItem>
+                    <SelectItem value="CLIENTE">Cliente</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <small className="font-bold text-red-500">
+                  {errors.tipoDeCuenta && "El tipo de cuenta es requerido"}
+                </small>
               </div>
-            )}
+              {error && (
+                <small className="font-bold text-red-500">{error}</small>
+              )}
 
-            {stateId && (
-              <div className="flex flex-col gap-2">
-                <Label>Ciudad</Label>
-                <CitySelect
-                  stateId={stateId}
-                  onChange={(city: number) =>
-                    setValue("ciudad_id", city.toString())
-                  }
-                />
-              </div>
-            )}
-
-            {errors.ciudad_id && errors.ciudad_id.message && (
-              <span className="text-sm text-red-500">
-                {errors.ciudad_id?.message.toString()}
-              </span>
-            )}
-
-            <div className="flex flex-col w-full">
-              <Select
-                onValueChange={(e) => setValue("tipoDeCuenta", e)}
+              <Button
+                variant="auth"
+                className="w-full rounded-lg"
+                type="submit"
+                id="register"
+                aria-label="Register"
+                role="button"
               >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Tipo de cuenta" />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-main text-white w-full">
-                  <SelectItem value="BARBERO">Barbero</SelectItem>
-                  <SelectItem value="CLIENTE">Cliente</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <small className="font-bold text-red-500">
-                {errors.tipoDeCuenta && "El tipo de cuenta es requerido"}
-              </small>
-            </div>
-
-            <Button
-              variant="auth"
-              className="w-full rounded-lg"
-              type="submit"
-              id="register"
-              aria-label="Register"
-              role="button"
-            >
-              Actualizar informacion 
-            </Button>
-          </form>
-        </section> */}
+                Actualizar informacion
+              </Button>
+            </form>
+          </section>
+        )}
       </main>
     </Layout>
   )
