@@ -29,6 +29,7 @@ export interface BarberGet {
   imagenes: string[]
   imagen_perfil: string
   horarios: Hour[]
+  barbero: string
 }
 
 export interface BarberProfile {
