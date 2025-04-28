@@ -104,7 +104,7 @@ const Navbar = () => {
                     name="Barberias"
                   />
 
-                  {authUser?.user.tipo_de_cuenta !== "BARBERO" && (
+                  {authUser?.user.tipo_de_cuenta == "BARBERO" && (
                     <NavbarItemDestock
                       location="/prices"
                       pathname={pathname}
@@ -139,7 +139,7 @@ const Navbar = () => {
                   {/* User session */}
                   {authUser != null ? (
                     <>
-                      {authUser?.user.rol === "USER" ? (
+                      {authUser?.user.tipo_de_cuenta === "CLIENTE" ? (
                         <DropdownMenu
                           open={isDropdownOpen}
                           onOpenChange={setIsDropdownOpen}
@@ -257,7 +257,7 @@ const Navbar = () => {
                   />
                 )}
 
-                {authUser?.user.tipo_de_cuenta !== "BARBERO" && (
+                {authUser?.user.tipo_de_cuenta == "BARBERO" && (
                   <NavbarItemMobile
                     name="Precios"
                     location="/prices"
@@ -266,7 +266,7 @@ const Navbar = () => {
                   />
                 )}
 
-                {authUser?.user.rol === "USER" && (
+                {authUser?.user.tipo_de_cuenta === "CLIENTE" && (
                   <>
                     <NavbarItemMobile
                       name="Barberias"
