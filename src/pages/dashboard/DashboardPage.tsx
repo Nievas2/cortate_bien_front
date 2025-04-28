@@ -6,7 +6,7 @@ import { useAuthContext } from "@/contexts/authContext"
 const DashboardPage = () => {
   const { authUser } = useAuthContext()
 
-  const { data, refetch, error } = useQuery({
+  const { data, refetch, error, isPending } = useQuery({
     queryKey: ["getbarberyid"],
     queryFn: getBarbers,
     refetchOnWindowFocus: false,
@@ -22,6 +22,6 @@ const DashboardPage = () => {
     }
   }
 
-  return <ChangeBarberShop refetch={refetch} Barbers={data?.data} error={error} />
+  return <ChangeBarberShop refetch={refetch} Barbers={data?.data} error={error} isPending={isPending} />
 }
 export default DashboardPage
