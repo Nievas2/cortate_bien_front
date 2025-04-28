@@ -45,17 +45,18 @@ interface ChangeBarberShopProps {
   Barbers?: Barber[]
   refetch: Function
   error: Error | null
+  isPending: boolean 
 }
 
 const ChangeBarberShop = ({
   Barbers,
   refetch,
   error,
+  isPending
 }: ChangeBarberShopProps) => {
   const {
     mutate: deleteFunction,
     isSuccess,
-    isPending,
   } = useMutation({
     mutationKey: ["delete-barber"],
     mutationFn: (id: string) => {
@@ -120,7 +121,7 @@ const ChangeBarberShop = ({
                 <Dialog>
                   <DialogTrigger className="absolute top-2 right-2 z-40 flex gap-2">
                     <Button
-                      variant="secondary"
+                      variant="solid"
                       size="xs"
                       className="rounded-sm"
                     >
@@ -174,7 +175,7 @@ const ChangeBarberShop = ({
                 >
                   <Button
                     className="max-w-[170px] text-wrap line-clamp-1 px-1"
-                    variant="secondary"
+                    variant="solid"
                   >
                     {barber.nombre}
                   </Button>
