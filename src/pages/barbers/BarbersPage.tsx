@@ -260,14 +260,16 @@ const BarbersPage = () => {
           </span>
         </section>
       )}
-      <section className="flex items-center justify-center pb-4">
-        <PaginationBarbers
-          currentPage={currentPage!}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-          disabled={isLoading}
-        />
-      </section>
+      {data?.data.results.length !== 0 && (
+        <section className="flex items-center justify-center pb-4">
+          <PaginationBarbers
+            currentPage={currentPage!}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            disabled={isLoading}
+          />
+        </section>
+      )}
     </main>
   )
 }
