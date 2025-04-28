@@ -52,6 +52,7 @@ const ProfilePage = () => {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     staleTime: 1000 * 60 * 60 * 24,
+    retry: 1,
   })
 
   const {
@@ -74,22 +75,30 @@ const ProfilePage = () => {
       if (!selectCountryNumber) {
         return setError("Debes seleccionar la caracteristica del pais")
       }
+      console.log(
+        values,
+        new Date(values.fechaNacimiento).toISOString().split("T")[0]
+      )
+
       const res = await completeRegistration({
         ciudad_id: Number(values.ciudad_id),
         telefono: `+${selectCountryNumber}${values.telefono}`,
-        fechaNacimiento: values.fechaNacimiento,
+        fechaNacimiento: new Date(values.fechaNacimiento)
+          .toISOString()
+          .split("T")[0],
         tipoDeCuenta: values.tipoDeCuenta,
       })
-      const user = decodeJwt(res.data.token)
+      const user = decodeJwt(res.data.accesToken)
       const userAuth = {
         user: user,
-        token: res.data.token,
+        token: res.data.accesToken,
       }
       setAuthUser(userAuth)
 
-      await setCookieAsync("token", res.data.token, {
+      await setCookieAsync("token", res.data.accesToken, {
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
       })
+      window.location.href = "/barbers"
       return res
     } catch (error) {
       setError("Error al actualizar la informacion")
