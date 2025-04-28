@@ -40,6 +40,7 @@ import MapSelector from "@/hooks/dashboard/MapSelector"
 import { motion } from "framer-motion"
 import { useDropzone } from "react-dropzone"
 import { postImage } from "@/services/ImagesService"
+import { RenderBarbersCardDashboardSkeletons } from "../skeletons/BarbersCardDashboardSkeleton"
 interface ChangeBarberShopProps {
   Barbers?: Barber[]
   refetch: Function
@@ -51,7 +52,11 @@ const ChangeBarberShop = ({
   refetch,
   error,
 }: ChangeBarberShopProps) => {
-  const { mutate: deleteFunction, isSuccess } = useMutation({
+  const {
+    mutate: deleteFunction,
+    isSuccess,
+    isPending,
+  } = useMutation({
     mutationKey: ["delete-barber"],
     mutationFn: (id: string) => {
       return deleteBarbery(id)
@@ -103,7 +108,9 @@ const ChangeBarberShop = ({
           </DialogContent>
         </Dialog>
 
-        {Barbers && (
+        {isPending ? (
+          RenderBarbersCardDashboardSkeletons()
+        ) : (
           <>
             {Barbers?.map((barber: Barber) => (
               <div
