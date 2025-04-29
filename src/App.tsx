@@ -29,7 +29,7 @@ import BarberByIdPage from "./pages/barbers/barberById/BarberByIdPage"
 import UpdateBarberPage from "./pages/dashboard/updateBarber/UpdateBarberPage"
 import MaintenancePage from "./pages/maintenance/MaintenancePage"
 import Cookies from "js-cookie"
-import DisabledBarbersByIdPage from "./pages/admins/disabledBarbers/disabledBarbersById/DisabledBarbersByIdPage"
+/* import DisabledBarbersByIdPage from "./pages/admins/disabledBarbers/disabledBarbersById/DisabledBarbersByIdPage" */
 
 function App() {
   const location = useLocation()
@@ -199,14 +199,14 @@ function App() {
               }
             />
             
-            <Route
+            {/* <Route
               path="admins/dashboard/barbers/disabled/id"
               element={
                 <ProtectedAdminRoute>
                   <DisabledBarbersByIdPage />
                 </ProtectedAdminRoute>
               }
-            />
+            /> */}
 
             <Route
               path="admins/dashboard/plans"
