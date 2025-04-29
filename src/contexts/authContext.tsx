@@ -61,11 +61,6 @@ export const AuthContextProvider = ({
     storedUser ? storedUser : null
   )
 
-  if (storedUser && storedUser.user.city_id === null) {
-    //revisa que la ubicacion actual sea distinta a /profile
-    if (window.location.pathname !== "/profile") return window.location.href = "/profile?required=true"
-  }
-
   return (
     <AuthContext.Provider value={{ authUser, setAuthUser }}>
       {children}
