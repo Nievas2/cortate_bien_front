@@ -17,12 +17,13 @@ import { useAuthContext } from "@/contexts/authContext"
 import CountUp from "@/utils/functions/CountUp"
 import { createOrderByPlan } from "@/services/OrderService"
 import { useEffect } from "react"
+import { RenderPricesSkeletons } from "../skeletons/PricesSkeleton"
 
 const SubscriptionSection = () => {
   const location = useLocation()
   const { authUser } = useAuthContext()
   const id = location.search.split("=")[1]
-  const { data, isLoading } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ["plans"],
     queryFn: getAllPlans,
     refetchOnWindowFocus: false,
@@ -65,26 +66,17 @@ const SubscriptionSection = () => {
           </div>
         </div>
 
-        {isLoading && (
-          <div className="flex items-center justify-center w-full h-full py-10">
-            <Icon
-              icon="eos-icons:loading"
-              width="40"
-              height="40"
-              className="text-gray-400 animate-spin"
-            />
-          </div>
-        )}
-
-        {data != undefined && (
-          <div className="grid max-w-5xl gap-8 gap-y-14 lg:grid-cols-3 mx-auto">
-            {data?.data.map((plan: Plan) => (
+        <div className="grid gap-8 gap-y-14 lg:grid-cols-3 place-items-center">
+          {isPending ? (
+            RenderPricesSkeletons()
+          ) : (
+            data?.data.map((plan: Plan) => (
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: 0.2 }}
                 viewport={{ once: true }}
-                className="flex flex-col gap-2 rounded-lg border bg-black-main px-10 py-4"
+                className="flex flex-col gap-2 rounded-lg border bg-black-main px-10 py-4 w-full h-full max-w-md"
                 key={plan.id}
               >
                 <h3 className="text-2xl font-bold text-white">{plan.nombre}</h3>
@@ -144,9 +136,11 @@ const SubscriptionSection = () => {
                   </Button>
                 </Link>
               </motion.div>
-            ))}
-
-            {/* <motion.div
+            ))
+          )}
+        </div>
+      </section>
+      {/* <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2, delay: 0.2 }}
@@ -257,50 +251,6 @@ const SubscriptionSection = () => {
               Comenzar ahora
             </Button>
           </motion.div> */}
-          </div>
-        )}
-      </section>
-      {/* 
-      <section className="flex flex-col gap-8 px-4 md:px-6 pb-3 w-full">
-        <div className="flex flex-col gap-4 items-center justify-center text-center">
-          <div className="flex flex-col gap-4">
-            <p className="max-w-[600px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Mas detalles sobre cada plan que nosotros ofrecemos.
-            </p>
-          </div>
-        </div>
-
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="border border-gray-main text-base">
-                Caracteristicas
-              </TableHead>
-              <TableHead className="border border-gray-main text-base">
-                Gratuito
-              </TableHead>
-              <TableHead className="border border-gray-main text-base">
-                Mensual
-              </TableHead>
-              <TableHead className="border border-gray-main text-base">
-                Anual
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell className="border border-gray-main">
-                ¿Cuánto cuesta?
-              </TableCell>
-              <TableCell className="border border-gray-main">Nada</TableCell>
-              <TableCell className="border border-gray-main">Algo</TableCell>
-              <TableCell className="border border-gray-main">
-                Bastante
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </section> */}
     </main>
   )
 }
