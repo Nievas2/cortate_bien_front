@@ -6,12 +6,13 @@ import usepaginationReviews from "@/hooks/profile/usePaginationReviews"
 import { useEffect } from "react"
 import { Review } from "@/interfaces/Review"
 import CardReview from "./components/CardReview"
+import { RenderReviewCardSkeletons } from "@/components/Skeletons/CardReviewSkeleton"
 
 const ProfileReviewsPage = () => {
   const { currentPage, totalPages, handlePageChange, setTotalPages } =
     usepaginationReviews()
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, refetch, isPending } = useQuery({
     queryKey: ["getreviews"],
     queryFn: getReviewsByUser,
     refetchOnWindowFocus: false,
@@ -32,14 +33,17 @@ const ProfileReviewsPage = () => {
           <p>Aquí podrás encontrar todas tus reseñas.</p>
         </section>
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center min-h-96">
-          {data?.data.results.map((review: Review) => (
-            <CardReview review={review} refetch={refetch} key={review.id} />
-          ))}
           {data?.data.results.length == 0 && (
             <section className="flex items-center justify-center">
               <h1 className="text-2xl font-semibold">No tienes reseñas</h1>
             </section>
           )}
+
+          {isPending
+            ? RenderReviewCardSkeletons()
+            : data?.data.results.map((review: Review) => (
+                <CardReview review={review} refetch={refetch} key={review.id} />
+              ))}
         </section>
         {data?.data.results.length > 0 && (
           <section className="flex items-center justify-center">
