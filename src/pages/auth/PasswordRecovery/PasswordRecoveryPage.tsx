@@ -71,7 +71,7 @@ const PasswordRecoveryPage = () => {
       return resetPasswordConfirm(values)
     },
     onSuccess: () => {
-      setStep(2)
+      window.location.href = "/auth/iniciar-sesion"
     },
   })
 
