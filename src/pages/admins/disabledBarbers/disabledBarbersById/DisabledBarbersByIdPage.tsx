@@ -1,11 +1,11 @@
 import CarouselDesktop, { CarouselMobile } from "@/components/shared/Carousel"
 import { Icon } from "@iconify/react/dist/iconify.js"
-import { useParams } from "react-router-dom"
+/* import { useParams } from "react-router-dom" */
 import { Button } from "@/components/ui/button"
 import { BarberGet } from "@/interfaces/Barber"
 
 const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
-  const params = useParams()
+/*   const params = useParams() */
  /*  const { data, isLoading } = useQuery({
     queryKey: ["barber", params.id],
     queryFn: () => {
