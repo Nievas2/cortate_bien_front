@@ -11,7 +11,6 @@ const LandingPage = () => {
   const { setAuthUser } = useAuthContext()
   const { search } = useLocation()
   document.title = "Cortate bien | Inicio"
-  console.log("search", search.split("=")[1])
   useEffect(() => {
     const token = search.split("=")[1]
     if (token) {

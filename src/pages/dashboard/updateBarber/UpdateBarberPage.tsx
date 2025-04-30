@@ -33,7 +33,10 @@ import {
 } from "@/components/ui/select"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { getCountries } from "@/services/CountryService"
-import { ProfileFormSkeleton, BasicFormSkeleton } from "./components/SkeletonForms";
+import {
+  ProfileFormSkeleton,
+  BasicFormSkeleton,
+} from "./components/SkeletonForms"
 
 const UpdateBarberPage = () => {
   const { search } = useLocation()
@@ -80,8 +83,6 @@ const ProfileForm = ({
   barber: Barber
   ciudad: string
 }) => {
-  console.log(barber)
-
   const [position, setPosition] = useState({
     lat: barber?.latitud ? barber.latitud.toString() : 0,
     lng: barber?.longitud ? barber.longitud.toString() : 0,
@@ -662,8 +663,6 @@ const BasicForm = ({ barber }: { barber: Barber }) => {
       imagenes: imagenes,
       imagen_perfil: imagen_perfil,
     }
-    console.log(formData);
-    
     return update(formData)
   }
 

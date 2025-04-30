@@ -11,8 +11,6 @@ export async function getBarberById(id: string) {
 }
 
 export async function createbarber(barber: any) {
-  console.log(barber)
-
   barber.horarios.forEach((element: any) => {
     if (element.pausa_inicio.length === 0) element.pausa_inicio = null
     if (element.pausa_fin.length === 0) element.pausa_fin = null
@@ -181,7 +179,6 @@ export async function updateBarberBasic(
     if (element.pausa_fin != null && element.pausa_fin.length === 0)
       element.pausa_fin = null
   })
-  console.log(barberUpdated)
 
   const updatedFields = getUpdatedBasicFields(barber, barberUpdated)
 

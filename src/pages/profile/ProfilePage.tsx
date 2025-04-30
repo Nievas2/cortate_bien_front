@@ -75,11 +75,6 @@ const ProfilePage = () => {
       if (!selectCountryNumber) {
         return setError("Debes seleccionar la caracteristica del pais")
       }
-      console.log(
-        values,
-        new Date(values.fechaNacimiento).toISOString().split("T")[0]
-      )
-
       const res = await completeRegistration({
         ciudad_id: Number(values.ciudad_id),
         telefono: `+${selectCountryNumber}${values.telefono}`,
