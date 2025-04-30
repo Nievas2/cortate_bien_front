@@ -6,8 +6,6 @@ import { BarberGet } from "@/interfaces/Barber"
 
 const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
   const params = useParams()
-  console.log(params)
-
  /*  const { data, isLoading } = useQuery({
     queryKey: ["barber", params.id],
     queryFn: () => {

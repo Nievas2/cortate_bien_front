@@ -51,7 +51,7 @@ const LoginPage = () => {
       await executeRecaptcha("login")
       await login(values)
     } catch (error: any) {
-      console.log(error)
+      console.error(error)
       setLoginError(error.response.data.message)
     }
   })

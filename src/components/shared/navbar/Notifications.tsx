@@ -53,8 +53,6 @@ const Notifications = () => {
   }, [filter, filterViewed])
 
   useEffect(() => {
-    console.log(data)
-
     if (currentPage == "1") return setNotifications(data?.data.results)
     if (data)
       setNotifications((prevNotis) => prevNotis.concat(data.data.results))

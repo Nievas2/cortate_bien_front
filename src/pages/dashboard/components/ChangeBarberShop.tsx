@@ -275,8 +275,6 @@ export function ChangeBarberShopDialog({
   })
 
   const handleSubmitForm = async (data: any) => {
-    console.log("test")
-
     setLoading(true)
     const { imagenes, imagen_perfil } = await handleSubmitImages()
     if (imagenes.length === 0 && !imagen_perfil) return setLoading(false)
@@ -408,7 +406,6 @@ export function ChangeBarberShopDialog({
               formData.append("image", imageUp)
               try {
                 const response = await postImage(formData)
-                console.log(response)
                 profilePictureUrl = response.data.directLink
               } catch (error) {
                 reject({ imagenes: [], imagen_perfil: "" })
@@ -425,7 +422,6 @@ export function ChangeBarberShopDialog({
             formData.append("image", imageUp)
             try {
               const response = await postImage(formData)
-              console.log(response)
               imagesUploadUrl.push(response.data.directLink)
             } catch (error) {
               reject({ imagenes: [], imagen_perfil: "" })
@@ -433,11 +429,6 @@ export function ChangeBarberShopDialog({
             }
           }
         }
-
-        console.log({
-          imagenes: imagesUploadUrl,
-          imagen_perfil: profilePictureUrl,
-        })
         resolve({ imagenes: imagesUploadUrl, imagen_perfil: profilePictureUrl })
       } catch (error) {
         reject({ imagenes: [], imagen_perfil: "" })

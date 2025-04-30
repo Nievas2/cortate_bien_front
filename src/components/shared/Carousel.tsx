@@ -60,7 +60,6 @@ export const CarouselMobile = ({ images, isLoading }: CarouselMobileProps) => {
       setCurrent(api.selectedScrollSnap() + 1)
     })
   }, [api])
-  console.log(count, current)
 
   return isLoading != undefined && isLoading == true ? (
     <CarouselMobileSkeleton />
