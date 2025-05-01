@@ -41,10 +41,10 @@ const LoginPage = () => {
   function loginGoogle() {
     window.open(`${import.meta.env.VITE_API_URL}auth/google`, "_self")
   }
-
+/* 
   function loginFacebook() {
     window.open(`${import.meta.env.VITE_API_URL}auth/facebook`, "_self")
-  }
+  } */
 
   const loginFunction = handleSubmit(async (values) => {
     try {
@@ -160,7 +160,7 @@ const LoginPage = () => {
                       <span className="text-sm">Continuar con Google</span>
                     </Button>
 
-                    <Button
+                   {/*  <Button
                       variant="simple"
                       className="flex gap-3"
                       type="button"
@@ -168,7 +168,7 @@ const LoginPage = () => {
                     >
                       <Icon className="size-6" icon="logos:facebook" />
                       <span className="text-sm">Continuar con Facebook</span>
-                    </Button>
+                    </Button> */}
 
                     <p className="text-sm font-light text-center">
                       ¿Olvidaste tu contraseña?{" "}
