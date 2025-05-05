@@ -23,6 +23,11 @@ const SideBarAdmins = ({ open }: { open: boolean }) => {
       icon: "streamline:subscription-cashflow",
       href: `/admins/dashboard/plans`,
     },
+    {
+      name: "Firebase",
+      icon: "tabler:brand-firefox",
+      href: `/admins/dashboard/firebase`,
+    },
   ]
 
   return (
