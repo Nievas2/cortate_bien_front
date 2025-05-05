@@ -29,6 +29,7 @@ import BarberByIdPage from "./pages/barbers/barberById/BarberByIdPage"
 import UpdateBarberPage from "./pages/dashboard/updateBarber/UpdateBarberPage"
 import MaintenancePage from "./pages/maintenance/MaintenancePage"
 import Cookies from "js-cookie"
+import FirebasePage from "./pages/admins/firebase/FirebasePage"
 /* import DisabledBarbersByIdPage from "./pages/admins/disabledBarbers/disabledBarbersById/DisabledBarbersByIdPage" */
 
 function App() {
@@ -213,6 +214,15 @@ function App() {
               element={
                 <ProtectedAdminRoute>
                   <PlansPage />
+                </ProtectedAdminRoute>
+              }
+            />
+            
+            <Route
+              path="admins/dashboard/firebase"
+              element={
+                <ProtectedAdminRoute>
+                  <FirebasePage />
                 </ProtectedAdminRoute>
               }
             />
