@@ -1,14 +1,16 @@
-/* import { useState } from "react"
-import { useMutation } from "@tanstack/react-query"
-import { getFirebaseToken } from "@/services/FirebaseService"
-import { Button } from "@/components/ui/button" */
 import { Label } from "@radix-ui/react-dropdown-menu"
 import Layout from "../Layout"
 import { useMutation } from "@tanstack/react-query"
-import { postNotificationFirebase } from "@/services/FirebaseService"
+import {
+  deleteTokenFirebase,
+  postNotificationFirebase,
+} from "@/services/FirebaseService"
+import {
+  createNotificactionsSchema,
+  createTokenSchema,
+} from "@/utils/schemas/adminsSchama"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { createNotificactionsSchema } from "@/utils/schemas/adminsSchama"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
@@ -16,18 +18,7 @@ import { useAuthContext } from "@/contexts/authContext"
 
 const FirebasePage = () => {
   const { authUser } = useAuthContext()
-  /*   const [step, setStep] = useState(1)
-  const [token, setToken] = useState()
-  const { mutate, isSuccess } = useMutation({
-    mutationKey: ["generate-firebase-token"],
-    mutationFn: async () => {
-      getFirebaseToken()
-    },
-    onSuccess(data: any) {
-      console.log(data)
-      setToken(data.data.token)
-    },
-  }) */
+  /* send notifications */
   const { register, handleSubmit } = useForm({
     defaultValues: {
       title: "",
@@ -37,7 +28,7 @@ const FirebasePage = () => {
     resolver: zodResolver(createNotificactionsSchema),
   })
 
-  const { mutate } = useMutation({
+  const { mutate, isSuccess } = useMutation({
     mutationKey: ["send-notification-firebase"],
     mutationFn: async (data: { title: string; body: string }) => {
       if (!authUser) return
@@ -52,7 +43,25 @@ const FirebasePage = () => {
   const onSubmit = handleSubmit(async (data: any) => {
     mutate(data)
   })
+  /* delete token */
+  const { mutate: deleteToken, isSuccess: isSuccessDelete } = useMutation({
+    mutationKey: ["delete-token-firebase"],
+    mutationFn: async (token: string) => {
+      return deleteTokenFirebase(token)
+    },
+  })
 
+  const { register: registerDelete, handleSubmit: handleSubmitDelete } =
+    useForm({
+      defaultValues: {
+        token: "",
+      },
+      resolver: zodResolver(createTokenSchema),
+    })
+
+  const onSubmitDelete = handleSubmitDelete(async (data: any) => {
+    deleteToken(data.token)
+  })
   return (
     <Layout>
       <main className="flex flex-col gap-8 w-full h-full p-6">
@@ -67,6 +76,7 @@ const FirebasePage = () => {
               placeholder="Titulo de la notificacion"
             />
           </div>
+
           <div className="flex flex-col gap-4">
             <Label>Mensaje</Label>
             <Textarea
@@ -74,37 +84,25 @@ const FirebasePage = () => {
               placeholder="Mensaje de la notificacion"
             />
           </div>
-          <Button variant="secondary" type="submit">
-            Enviar
+
+          <Button variant="secondary" type="submit" disabled={isSuccess}>
+            {isSuccess ? "Notificacion enviada" : "Enviar notificacion"}
           </Button>
         </form>
-        {/* {step === 1 ? (
-          <div className="flex flex-col gap-4 w-full h-full">
-            <h1 className="text-2xl font-bold">Firebase</h1>
-            <p className="text-sm text-gray-500">
-              Genera un token para autenticarte en Firebase
-            </p>
-            <Button
-              onClick={() => mutate()}
-              variant="secondary"
-              disabled={isSuccess}
-            >
-              {isSuccess ? "Token Generado" : "Generar Token"}
-            </Button>
+
+        <form
+          className="flex flex-col gap-4 w-full bg-gray-main p-2 rounded-md"
+          onSubmit={onSubmitDelete}
+        >
+          <div className="flex flex-col gap-4">
+            <Label>Token</Label>
+            <Input placeholder="Token" {...registerDelete("token")} />
           </div>
-        ) : (
-          <div className="flex flex-col gap-4 w-full h-full">
-            <h1 className="text-2xl font-bold">Token Generado</h1>
-            <p className="text-sm text-gray-500">Tu token es: {token}</p>
-            <button
-              onClick={() => setStep(1)}
-              className="bg-blue-500 text-white p-2 rounded"
-            >
-              Regresar
-            </button>
-          </div>
-        )} */}
-        <form action=""></form>
+
+          <Button variant="secondary" type="submit" disabled={isSuccessDelete}>
+            {isSuccessDelete ? "Token eliminado" : "Eliminar token"}
+          </Button>
+        </form>
       </main>
     </Layout>
   )
