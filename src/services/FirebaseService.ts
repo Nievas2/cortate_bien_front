@@ -29,3 +29,12 @@ export async function postNotificationFirebase({
     throw error
   }
 }
+
+export async function deleteTokenFirebase(token: string) {
+  try {
+    const res = await axiosInstance.delete(`firebase/delete/${token}`)
+    return res
+  } catch (error) {
+    throw error
+  }
+}
