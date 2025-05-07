@@ -1,8 +1,10 @@
 import axiosInstance from "@/api/axiosInstance"
 
-export async function getFirebaseToken() {
+export async function getFirebaseToken(token: string) {
   try {
-    const res = await axiosInstance.post("firebase/create")
+    const res = await axiosInstance.post("firebase/create", {
+      token,
+    })
     return res
   } catch (error) {
     throw error
