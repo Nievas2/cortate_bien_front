@@ -20,6 +20,7 @@ interface User {
 export interface AuthUser {
   user: User
   token: string
+  fcmToken?: string
 }
 
 interface AuthContextType {
