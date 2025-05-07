@@ -1,7 +1,11 @@
+import { useAuthContext } from "./contexts/authContext"
+import { ProtectedRoute } from "./components/shared/ProtectedRoute"
+import { ProtecteBarberRoute } from "./components/shared/ProtectedBarber"
+import { ProtectedAdminRoute } from "./components/shared/ProtectedAdminRoute"
+import { useLocation, Routes, Route, Navigate } from "react-router-dom"
+import toast, { Toaster } from "react-hot-toast"
 import Footer from "./components/shared/Footer"
 import Navbar from "./components/shared/Navbar"
-import { useAuthContext } from "./contexts/authContext"
-import { useLocation, Routes, Route, Navigate } from "react-router-dom"
 import NotFoundPage from "./pages/notFound/NotFoundPage"
 import LoginPage from "./pages/auth/login/LoginPage"
 import AuthPage from "./pages/auth/auth/AuthPage"
@@ -11,9 +15,7 @@ import DashboardPage from "./pages/dashboard/DashboardPage"
 import AppointmentsPage from "./pages/dashboard/appointment/AppointmentsPage"
 import ReviewsPage from "./pages/dashboard/review/ReviewsPage"
 import BarberPage from "./pages/dashboard/barber/BarberPage"
-import { ProtectedRoute } from "./components/shared/ProtectedRoute"
 import AdminsPage from "./pages/admins/AdminsPage"
-import { ProtectedAdminRoute } from "./components/shared/ProtectedAdminRoute"
 import PricesPage from "./pages/prices/PricesPage"
 import BarbersPage from "./pages/barbers/BarbersPage"
 import DisabledBarbersPage from "./pages/admins/disabledBarbers/DisabledBarbersPage"
@@ -24,18 +26,62 @@ import PrivacyPolicy from "./components/shared/footer/PrivacyPolicy"
 import ProfileAppointmentPage from "./pages/profile/appointment/ProfileAppointmentPage"
 import ProfileReviewsPage from "./pages/profile/reviews/ProfileReviewsPage"
 import PasswordRecoveryPage from "./pages/auth/PasswordRecovery/PasswordRecoveryPage"
-import { ProtecteBarberRoute } from "./components/shared/ProtectedBarber"
 import BarberByIdPage from "./pages/barbers/barberById/BarberByIdPage"
 import UpdateBarberPage from "./pages/dashboard/updateBarber/UpdateBarberPage"
 import MaintenancePage from "./pages/maintenance/MaintenancePage"
 import Cookies from "js-cookie"
 import FirebasePage from "./pages/admins/firebase/FirebasePage"
 /* import DisabledBarbersByIdPage from "./pages/admins/disabledBarbers/disabledBarbersById/DisabledBarbersByIdPage" */
+import { getToken, onMessage } from "firebase/messaging"
+import { messaging } from "./firebase"
+import { useEffect } from "react"
+import { useMutation } from "@tanstack/react-query"
+import { getFirebaseToken } from "./services/FirebaseService"
+import { Button } from "./components/ui/button"
 
 function App() {
   const location = useLocation()
-  const { authUser } = useAuthContext()
+  const { authUser, setAuthUser } = useAuthContext()
 
+  const { mutate } = useMutation({
+    mutationKey: ["get-firebase-token"],
+    mutationFn: async (token: string) => {
+      if (authUser == null) return
+      return getFirebaseToken(token)
+    },
+  })
+  const activarMensajes = async () => {
+    const token = await getToken(messaging, {
+      vapidKey: import.meta.env.VITE_VAPID_KEY,
+    }).catch((error) =>
+      console.log("Error al obtener el token de Firebase:", error)
+    )
+
+    if (token && authUser?.user) {
+      setAuthUser({ ...authUser, fcmToken: token })
+      mutate(token)
+    }
+  }
+  useEffect(() => {
+    if (authUser == null) return
+    if (authUser.fcmToken == undefined || authUser.fcmToken == null) {
+      activarMensajes()
+    }
+    onMessage(messaging, (message) => {
+      toast.custom((t) => (
+        <div className="flex flex-col gap-2 bg-black-main p-4 rounded-lg text-white max-w-md">
+          <span className="text-sm font-bold">
+            {message.notification?.title}
+          </span>
+          <p className="text-sm">{message.notification?.body}</p>
+
+          <Button variant="secondary" onClick={() => toast.dismiss(t.id)}>
+            Cerrar
+          </Button>
+        </div>
+      ))
+    })
+  }, [])
   return (
     <main className="bg-black-main text-white">
       <section className="w-full font-poppins flex flex-col justify-center items-center min-h-screen">
@@ -128,12 +174,16 @@ function App() {
 
             <Route
               path="/auth/iniciar-sesion"
-              element={Cookies.get("token") ? <Navigate to="/" /> : <LoginPage />}
+              element={
+                Cookies.get("token") ? <Navigate to="/" /> : <LoginPage />
+              }
             />
 
             <Route
               path="/auth/registrarse"
-              element={Cookies.get("token") ? <Navigate to="/" /> : <RegisterPage />}
+              element={
+                Cookies.get("token") ? <Navigate to="/" /> : <RegisterPage />
+              }
             />
 
             {/* Dashboard Barbers */}
@@ -199,7 +249,7 @@ function App() {
                 </ProtectedAdminRoute>
               }
             />
-            
+
             {/* <Route
               path="admins/dashboard/barbers/disabled/id"
               element={
@@ -217,7 +267,7 @@ function App() {
                 </ProtectedAdminRoute>
               }
             />
-            
+
             <Route
               path="admins/dashboard/firebase"
               element={
@@ -235,6 +285,7 @@ function App() {
 
         <Footer />
       </section>
+      <Toaster position="top-center" reverseOrder={true} />
     </main>
   )
 }
