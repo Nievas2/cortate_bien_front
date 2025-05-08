@@ -51,6 +51,7 @@ function App() {
     },
   })
   const activarMensajes = async () => {
+    const active = localStorage.getItem("active")
     const token = await getToken(messaging, {
       vapidKey: import.meta.env.VITE_VAPID_KEY,
     }).catch((error) =>
@@ -59,7 +60,10 @@ function App() {
 
     if (token && authUser?.user) {
       setAuthUser({ ...authUser, fcmToken: token })
-      mutate(token)
+      if (active != "true") {
+        mutate(token)
+        localStorage.setItem("active", "true")
+      }
     }
   }
   useEffect(() => {
