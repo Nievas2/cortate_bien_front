@@ -32,7 +32,7 @@ const CardBarberyDisabled = ({
         {barber.descripcion}
       </span>
       {!isSuccess ? (
-        <div className="flex justify-between items-center gap-2 w-full">
+        <div className="flex flex-col justify-between items-center gap-2 w-full">
           <Button
             variant="secondary"
             className="w-full"
@@ -41,7 +41,7 @@ const CardBarberyDisabled = ({
             Ver más
           </Button>
 
-          <Button variant="simple" onClick={handleActive}>
+          <Button variant="simple" className="w-full" onClick={handleActive}>
             Habilitar
           </Button>
         </div>
