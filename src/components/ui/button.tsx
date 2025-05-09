@@ -11,19 +11,19 @@ const buttonVariants = cva(
       variant: {
         default:
           "bg-primary text-primary-foreground hover:bg-primary/90 rounded-full",
-        destructive: "bg-red-500 text-white hover:bg-red-500/90 rounded-full",
+        destructive: "bg-red-500 text-black hover:bg-red-500/90 rounded-full",
         outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "bg-blue-main rounded-full border border-blue-main hover:bg-blue-main/80 hover:shadow-md hover:shadow-blue-main/50",
+          "bg-blue-main rounded-full border border-blue-main hover:bg-blue-main/80 hover:shadow-md hover:shadow-blue-main/50 text-black",
         solid:
-          "bg-blue-main rounded-full border border-blue-main",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+          "bg-blue-main rounded-full border border-blue-main text-black",
+        ghost: "hover:bg-accent hover:text-accent-foreground text-white hover:text-gray-500",
         barberDash:
-          "flex flex-col items-center justify-center rounded-xl border border-blue-main group-hover:bg-blue-main/80 group-hover:text-white",
-        link: "text-primary underline-offset-4 hover:underline",
+          "flex flex-col items-center justify-center rounded-xl border border-blue-main group-hover:bg-blue-main/80 group-hover:text-black",
+        link: "text-primary underline-offset-4 hover:underline text-white hover:text-black",
         simple:
-          "bg-transparent rounded-full border border-blue-main hover:bg-blue-main/80 hover:shadow-md hover:shadow-blue-main/50 text-white",
+          "bg-transparent rounded-full border border-blue-main hover:bg-blue-main/80 hover:shadow-md hover:shadow-blue-main/50 text-white hover:text-black",
         auth: "bg-transparent rounded-full border border-blue-secondary group-hover:bg-blue-secondary/80 text-white",
       },
       size: {
