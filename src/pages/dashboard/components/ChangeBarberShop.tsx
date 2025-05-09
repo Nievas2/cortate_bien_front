@@ -45,19 +45,16 @@ interface ChangeBarberShopProps {
   Barbers?: Barber[]
   refetch: Function
   error: Error | null
-  isPending: boolean 
+  isPending: boolean
 }
 
 const ChangeBarberShop = ({
   Barbers,
   refetch,
   error,
-  isPending
+  isPending,
 }: ChangeBarberShopProps) => {
-  const {
-    mutate: deleteFunction,
-    isSuccess,
-  } = useMutation({
+  const { mutate: deleteFunction, isSuccess } = useMutation({
     mutationKey: ["delete-barber"],
     mutationFn: (id: string) => {
       return deleteBarbery(id)
@@ -124,6 +121,7 @@ const ChangeBarberShop = ({
                       variant="solid"
                       size="xs"
                       className="rounded-sm"
+                      aria-label="Eliminar barbería"
                     >
                       <Icon
                         icon="material-symbols:delete"
@@ -163,10 +161,9 @@ const ChangeBarberShop = ({
                     )}
                   </DialogContent>
                 </Dialog>
-
                 <img
                   src={barber.imagen_perfil}
-                  className="absolute w-full h-full rounded-xl "
+                  className="absolute max-w-full max-h-full rounded-xl object-contain"
                   alt="imagen not found"
                 />
                 <Link
