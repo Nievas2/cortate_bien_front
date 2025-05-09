@@ -44,7 +44,7 @@ const Card = ({ barber }: { barber: BarberGet }) => {
       </div>
 
       <div className="flex flex-col w-full gap-2 h-full">
-        <h4 className="w-full font-extrabold">{barber.nombre}</h4>
+        <h2 className="w-full font-extrabold">{barber.nombre}</h2>
 
         <div className="flex flex-col gap-2">
           <div className="flex gap-0.5">
@@ -57,13 +57,13 @@ const Card = ({ barber }: { barber: BarberGet }) => {
         </div>
 
         <div className="flex justify-end items-end h-full">
-          <Link
-            className="flex items-center hover:gap-2 duration-200 transition-transform text-blue-main"
+            <Link
+            className="flex items-center hover:gap-2 duration-200 transition-transform text-blue-500"
             to={`/barbers/${barber.id}`}
-          >
+            >
             Ver detalles{" "}
             <Icon icon="material-symbols:arrow-right-alt-rounded" width={20} />
-          </Link>
+            </Link>
         </div>
       </div>
     </Link>

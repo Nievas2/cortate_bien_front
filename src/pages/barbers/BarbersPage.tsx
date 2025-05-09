@@ -122,6 +122,7 @@ const BarbersPage = () => {
                     getPosition()
                     setChangeCountry(false)
                   }}
+                  aria-label="Ubicacion actual"
                 >
                   <Icon
                     icon="ic:baseline-change-circle"
