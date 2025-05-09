@@ -6,7 +6,7 @@ const Footer = () => {
     <main className="flex flex-col gap-4 min-h-20 bg-gray-main p-6 w-full">
       <footer className="flex flex-col md:flex-row items-center md:justify-center gap-8 w-full">
         <section className="flex flex-col gap-4 w-full h-full items-center justify-center md:justify-start md:items-start">
-          <img src="/logo.png" alt="logo" className="size-18" />
+          <img src="/logo.png" alt="logo" className="h-auto max-h-16 w-auto" />
           <p className="text-gray-400">
             © 2025 - Todos los derechos reservados
           </p>
