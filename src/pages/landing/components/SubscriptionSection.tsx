@@ -43,7 +43,7 @@ const SubscriptionSection = () => {
   }, [])
   return (
     <main className="flex flex-col gap-8 w-full bg-linear-to-t from-gray-main/20 to-gray-main">
-      <section className="flex flex-col gap-8 px-4 md:px-6 pb-4">
+      <section className="flex flex-col gap-8 px-4 md:px-6 pb-6">
         <div className="flex flex-col gap-4 items-center justify-center text-center">
           <div className="flex flex-col gap-4">
             <motion.h2
@@ -131,7 +131,7 @@ const SubscriptionSection = () => {
                       : `/prices?id=${plan.id}`
                   }
                 >
-                  <Button className=" w-full bg-[#007FFF] text-white hover:bg-[#0d3868]">
+                  <Button variant="solid" className="w-full">
                     Comenzar ahora
                   </Button>
                 </Link>
