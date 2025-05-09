@@ -76,7 +76,11 @@ const Navbar = () => {
               onClick={GoToTop}
               aria-label="Home"
             >
-              <img className="size-14  md:size-16" src="/logo.png" alt="Logo" />
+              <img
+                className="h-auto max-h-16 w-auto"
+                src="/logo.png"
+                alt="Logo"
+              />
               {/* Logo */}
             </Link>
 
@@ -181,7 +185,7 @@ const Navbar = () => {
                         <Button
                           variant="auth"
                           onClick={logOut}
-                          className="relative group"
+                          className="relative group text-white"
                         >
                           Cerrar sesion
                           <div className="absolute -inset-1 bg-linear-to-r from-blue-secondary to-blue-secondary rounded-lg blur-md opacity-0 group-hover:opacity-60 transition duration-200 group-hover:duration-200" />
