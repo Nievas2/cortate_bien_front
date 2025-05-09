@@ -54,6 +54,7 @@ export const PaginationBarbers: React.FC<PaginationProps> = ({
       <button
         className='border border-gray-main text-white rounded-full p-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-20 disabled:bg-black transition duration-150 disableStyles w98 h-9 cp:w-10 cp:h-10 xl:w-10 xl:h-10 flex items-center justify-center'
         onClick={() => handlePageChange(currentPage - 1)}
+        aria-label="Previous Page"
         disabled={currentPage === 1 || disabled}
       >
         <Icon icon="iconamoon:arrow-left-2-duotone" className='text-xl' />
@@ -66,6 +67,7 @@ export const PaginationBarbers: React.FC<PaginationProps> = ({
       <button
         className='border border-gray-main text-white rounded-full p-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-20 disabled:bg-black transition duration-150 disableStyles w-9 h-9 cp:w-10 cp:h-10 xl:w-10 xl:h-10 flex items-center justify-center'
         onClick={() => handlePageChange(currentPage + 1)}
+        aria-label="Next Page"
         disabled={currentPage === totalPages || disabled}
       >
         <Icon icon="iconamoon:arrow-right-2-duotone" className='text-xl' />
