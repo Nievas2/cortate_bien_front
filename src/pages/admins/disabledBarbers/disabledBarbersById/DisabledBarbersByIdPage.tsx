@@ -1,26 +1,9 @@
 import CarouselDesktop, { CarouselMobile } from "@/components/shared/Carousel"
 import { Icon } from "@iconify/react/dist/iconify.js"
-/* import { useParams } from "react-router-dom" */
 import { Button } from "@/components/ui/button"
 import { BarberGet } from "@/interfaces/Barber"
 
 const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
-/*   const params = useParams() */
- /*  const { data, isLoading } = useQuery({
-    queryKey: ["barber", params.id],
-    queryFn: () => {
-      if (params.id === undefined) {
-        return Promise.reject("Barberia no encontrada")
-      }
-      console.log("params.id", params.id)
-
-      return getBarberById(params.id)
-    },
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 60 * 24,
-    retry: false,
-  }) */
-
   return (
     <main className="flex flex-col min-h-screen w-full relative">
       <Button
@@ -76,21 +59,6 @@ const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
                 {barber.descripcion}
               </p>
             </div>
-
-            <div className="hidden sm:flex flex-col gap-2 h-full">
-              <span className="font-extrabold">Horarios</span>
-              {/* {barber.horarios.map((horario: any) => (
-                <div
-                  key={crypto.randomUUID()}
-                  className="flex gap-2 justify-between"
-                >
-                  <p className="font-extralight text-sm">{horario.dia}</p>
-                  <p className="font-extralight text-sm">
-                    {horario.hora_apertura} - {horario.hora_cierre}
-                  </p>
-                </div>
-              ))} */}
-            </div>
           </div>
 
           <div className="flex flex-col gap-2 m-0.5 p-2 bg-black-main rounded-xl w-full">
@@ -109,27 +77,6 @@ const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
             />
           </div>
         </section>
-
-        <div className="flex sm:hidden flex-col gap-2 m-0.5 p-2 bg-black-main rounded-xl">
-          <span className="font-extrabold">Horarios</span>
-          {/* {barber.horarios.map((horario: any) => (
-            <div
-              key={crypto.randomUUID()}
-              className="flex gap-2 justify-between"
-            >
-              <p className="font-extralight text-sm">{horario.dia}</p>
-              <p className="font-extralight text-sm">
-                {horario.hora_apertura} - {horario.hora_cierre}
-              </p>
-            </div>
-          ))} */}
-        </div>
-
-        <div className="flex flex-col gap-2 m-0.5 p-2 bg-black-main rounded-xl">
-          <span className="font-extrabold">Reseñas</span>
-
-          <span>No se encontraron reseñas</span>
-        </div>
 
         <Button variant="secondary" className="w-full">
           Habilitar barberia
