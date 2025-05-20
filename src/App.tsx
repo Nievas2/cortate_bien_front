@@ -96,15 +96,15 @@ function App() {
             <Route
               path="/"
               element={
-                authUser == null ? (
+                /* authUser == null ? (
                   <LandingPage />
                 ) : authUser.user.tipo_de_cuenta === "CLIENTE" ? (
                   <Navigate to="/barbers" />
                 ) : authUser.user.tipo_de_cuenta === "BARBERO" ? (
                   <Navigate to="/dashboard" />
-                ) : (
+                ) : ( */
                   <LandingPage />
-                )
+               /*  ) */
               }
             />
 
