@@ -9,11 +9,20 @@ export async function deleteUser(id: string) {
   }
 }
 
-export async function logOutUser (id:string){
-    try {
-        const res = axiosInstance.delete(`auth/logout/devices/${id}`)
-        return res
-    } catch (error) {
-        throw error
-    }
+export async function logOutUser(id: string) {
+  try {
+    const res = axiosInstance.delete(`auth/logout/devices/${id}`)
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function changeStatusBarber(barberId: string, status: string) {
+  try {
+    const res = axiosInstance.post(`barbers/update/admin/${barberId}?status=${status}`)
+    return res
+  } catch (error) {
+    throw error
+  }
 }

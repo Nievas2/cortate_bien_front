@@ -225,9 +225,11 @@ export async function getBarbersById(id: string) {
   }
 }
 
-export async function getBarbersDisabled() {
+export async function getBarbersDisabled(filter: string) {
   try {
-    const res = await axiosInstance.get("barberia/find/all/pending")
+    const res = await axiosInstance.get(
+      `barberia/find/all/admin?status=${filter}`
+    )
     return res
   } catch (error) {
     throw error
