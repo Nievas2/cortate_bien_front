@@ -31,10 +31,10 @@ axiosInstance.interceptors.response.use(
       window.location.href = "/mantenimiento"
       return Promise.reject(error)
     }
-    if (error.response.status === 401) {
+   /*  if (error.response.status === 401) {
       Cookies.remove("token")
       window.location.href = "/auth/iniciar-sesion"
-    }
+    } */
 
     return Promise.reject(error)
   }
