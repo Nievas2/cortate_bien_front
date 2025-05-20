@@ -7,6 +7,7 @@ import { recoveryPasswordSchema } from "@/utils/schemas/userSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { useMutation } from "@tanstack/react-query"
+import { AxiosError } from "axios"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import z from "zod"
@@ -61,7 +62,11 @@ const PasswordRecoveryPage = () => {
     },
   })
 
-  const { mutate: mutateUpdate, isPending: isPendingUpdate } = useMutation({
+  const {
+    mutate: mutateUpdate,
+    isPending: isPendingUpdate,
+    error: errorUpdate,
+  } = useMutation({
     mutationKey: ["update-user"],
     mutationFn: (values: {
       email: string
@@ -270,6 +275,12 @@ const PasswordRecoveryPage = () => {
               <small className="font-bold text-red-500">
                 Creemos que eres un robot 🤖, prueba de nuevo más tarde.
               </small>
+            )}
+
+            {errorUpdate instanceof AxiosError && errorUpdate.response && (
+              <span className="text-red-500 font-bold">
+                {errorUpdate.response.data.message}
+              </span>
             )}
 
             <Button

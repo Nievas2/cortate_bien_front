@@ -179,7 +179,7 @@ function App() {
             <Route
               path="/auth/iniciar-sesion"
               element={
-                Cookies.get("token") ? <Navigate to="/" /> : <LoginPage />
+                /* Cookies.get("token") ? <Navigate to="/" /> :  */<LoginPage />
               }
             />
 

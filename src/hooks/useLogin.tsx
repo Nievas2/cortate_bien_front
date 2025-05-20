@@ -23,7 +23,6 @@ const useLogin = () => {
   const [loading, setLoading] = useState(false)
   const { setAuthUser } = useAuthContext()
 
-
   const login = async ({ email, password }: LoginParams) => {
     setLoading(true)
 
@@ -47,8 +46,9 @@ const useLogin = () => {
 
       if (userAuth.user.tipo_de_cuenta == "BARBERO") {
         window.location.href = "/dashboard"
-      } else {
-        window.location.href = "/"
+      }
+      if (userAuth.user.tipo_de_cuenta == "CLIENTE") {
+        window.location.href = "/barbers"
       }
 
       return null
