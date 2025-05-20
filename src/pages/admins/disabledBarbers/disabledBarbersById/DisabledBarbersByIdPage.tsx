@@ -2,8 +2,28 @@ import CarouselDesktop, { CarouselMobile } from "@/components/shared/Carousel"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { Button } from "@/components/ui/button"
 import { BarberGet } from "@/interfaces/Barber"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { useState } from "react"
+import { useMutation } from "@tanstack/react-query"
+import { changeStatusBarber } from "@/services/AdminService"
 
 const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
+  const [value, setValue] = useState("")
+  const { mutate, error, isPending } = useMutation({
+    mutationKey: ["barber"],
+    mutationFn: async () => {
+      if (value.length == 0 || barber.id == undefined) {
+        return new Error("No se ha seleccionado un estado")
+      }
+      return await changeStatusBarber(barber.id, value)
+    },
+  })
   return (
     <main className="flex flex-col min-h-screen w-full relative">
       <Button
@@ -18,7 +38,7 @@ const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
         <div className="static sm:hidden w-full h-full">
           <CarouselMobile
             images={[barber.imagen_perfil, ...(barber.imagenes || [])]}
-          /*   isLoading={isLoading} */
+            /*   isLoading={isLoading} */
           />
         </div>
       </section>
@@ -27,10 +47,7 @@ const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
         <div className="flex flex-row sm:flex-col justify-between items-center gap-2">
           <div className="hidden sm:flex max-w-[400px] -ml-20">
             <CarouselDesktop
-              images={[
-                barber.imagen_perfil,
-                ...(barber.imagenes || []),
-              ]}/* 
+              images={[barber.imagen_perfil, ...(barber.imagenes || [])]} /* 
               isLoading={isLoading} */
             />
           </div>
@@ -55,9 +72,7 @@ const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
           <div className="flex flex-col gap-2 m-0.5 p-2 bg-black-main rounded-xl w-full">
             <div className="flex flex-col gap-2 h-full">
               <span className="font-extrabold">Sobre nosotros</span>
-              <p className="font-extralight text-sm">
-                {barber.descripcion}
-              </p>
+              <p className="font-extralight text-sm">{barber.descripcion}</p>
             </div>
           </div>
 
@@ -77,10 +92,35 @@ const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
             />
           </div>
         </section>
+        {error && (
+          <p className="text-red-500 text-sm font-extrabold">Algo salio mal</p>
+        )}
 
-        <Button variant="secondary" className="w-full">
-          Habilitar barberia
-        </Button>
+        <div className="flex items-center w-full">
+          <Button
+            variant="secondary"
+            onClick={() => mutate()}
+            className="w-full"
+            disabled={isPending}
+          >
+            Habilitar barberia
+          </Button>
+
+          <Select onValueChange={(e) => setValue(e)} disabled={isPending}>
+            <SelectTrigger
+              className={`w-[180px] ${value == "" ? "border-red-500" : ""}`}
+            >
+              <SelectValue placeholder="Estado" />
+            </SelectTrigger>
+            <SelectContent className="bg-gray-main text-white w-full">
+              <SelectItem value="ACTIVO">Aceptar</SelectItem>
+              <SelectItem value="RECHAZADO">Rechazar</SelectItem>
+              <SelectItem value="BANEO">Banear</SelectItem>
+              <SelectItem value="PENDIENTE">Pendiente</SelectItem>
+              <SelectItem value="INACTIVO">Inactivo</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </section>
     </main>
   )
