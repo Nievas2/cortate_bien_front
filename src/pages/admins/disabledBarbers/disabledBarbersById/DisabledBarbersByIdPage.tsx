@@ -96,16 +96,7 @@ const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
           <p className="text-red-500 text-sm font-extrabold">Algo salio mal</p>
         )}
 
-        <div className="flex items-center w-full">
-          <Button
-            variant="secondary"
-            onClick={() => mutate()}
-            className=""
-            disabled={isPending}
-          >
-            Habilitar barberia
-          </Button>
-
+        <div className="flex flex-col gap-2 items-center w-full">
           <Select onValueChange={(e) => setValue(e)} disabled={isPending}>
             <SelectTrigger
               className={`w-[180px] ${value == "" ? "border-red-500" : ""}`}
@@ -120,6 +111,30 @@ const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
               <SelectItem value="INACTIVO">Inactivo</SelectItem>
             </SelectContent>
           </Select>
+          {value ? (
+            <Button
+              variant="secondary"
+              onClick={() => mutate()}
+              className="w-full"
+              disabled={isPending}
+            >
+              Poner en{" "}
+              {value == "PENDIENTE"
+                ? "pendiente"
+                : value == "INACTIVO"
+                  ? "inactivo"
+                  : value == "ACTIVO"
+                    ? "activo"
+                    : value == "RECHAZADO"
+                      ? "rechazado"
+                      : value == "BANEO"
+                        ? "baneo"
+                        : ""}{" "}
+              la barberia
+            </Button>
+          ) : (
+            ""
+          )}
         </div>
       </section>
     </main>

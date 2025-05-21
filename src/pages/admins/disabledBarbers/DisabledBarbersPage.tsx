@@ -45,19 +45,18 @@ const DisabledBarbersPage = () => {
       )}
       {selectBarber ? (
         <>
-         <Button
-              variant="simple"
-              className="fixed top-24 left-4 z-50"
-              onClick={() => setSelectBarber(undefined)}
-            >
-              <Icon icon="carbon:arrow-left" width={24} />
-            </Button>
-        <DisabledBarbersByIdPage barber={selectBarber} />
+          <Button
+            variant="secondary"
+            className="fixed top-24 left-4 z-50"
+            onClick={() => setSelectBarber(undefined)}
+          >
+            <Icon icon="carbon:arrow-left" width={24} />
+          </Button>
+          <DisabledBarbersByIdPage barber={selectBarber} />
         </>
       ) : (
         <Layout>
           <div className="flex flex-col gap-4 items-center justify-center w-full">
-           
             <section className="flex flex-wrap gap-2 justify-center">
               {/*  ACTIVO, INACTIVO, RECHAZADO, PENDIENTE, BANEO */}
               <Button
