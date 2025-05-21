@@ -44,67 +44,80 @@ const DisabledBarbersPage = () => {
         </Button>
       )}
       {selectBarber ? (
+        <>
+         <Button
+              variant="simple"
+              className="fixed top-24 left-4 z-50"
+              onClick={() => setSelectBarber(undefined)}
+            >
+              <Icon icon="carbon:arrow-left" width={24} />
+            </Button>
         <DisabledBarbersByIdPage barber={selectBarber} />
+        </>
       ) : (
         <Layout>
-          <section className="flex flex-wrap gap-2 justify-center">
-            <Button
-              variant={filter === "PENDIENTE" ? "secondary" : "simple"}
-              disabled={filter === "PENDIENTE"}
-              onClick={() => setFilter("PENDIENTE")}
-            >
-              Pendientes
-            </Button>
+          <div className="flex flex-col gap-4 items-center justify-center w-full">
+           
+            <section className="flex flex-wrap gap-2 justify-center">
+              {/*  ACTIVO, INACTIVO, RECHAZADO, PENDIENTE, BANEO */}
+              <Button
+                variant={filter === "PENDIENTE" ? "secondary" : "simple"}
+                disabled={filter === "PENDIENTE"}
+                onClick={() => setFilter("PENDIENTE")}
+              >
+                Pendientes
+              </Button>
 
-            <Button
-              variant={filter === "CONFIRMADO" ? "secondary" : "simple"}
-              disabled={filter === "CONFIRMADO"}
-              onClick={() => setFilter("CONFIRMADO")}
-            >
-              Aceptados
-            </Button>
+              <Button
+                variant={filter === "ACTIVO" ? "secondary" : "simple"}
+                disabled={filter === "ACTIVO"}
+                onClick={() => setFilter("ACTIVO")}
+              >
+                Aceptados
+              </Button>
 
-            <Button
-              variant={filter === "CANCELADO" ? "secondary" : "simple"}
-              disabled={filter === "CANCELADO"}
-              onClick={() => setFilter("CANCELADO")}
-            >
-              Cancelados
-            </Button>
+              <Button
+                variant={filter === "INACTIVO" ? "secondary" : "simple"}
+                disabled={filter === "INACTIVO"}
+                onClick={() => setFilter("INACTIVO")}
+              >
+                Cancelados
+              </Button>
 
-            <Button
-              variant={filter === "REPROGRAMADO" ? "secondary" : "simple"}
-              disabled={filter === "REPROGRAMADO"}
-              onClick={() => setFilter("REPROGRAMADO")}
-            >
-              Reprogramados
-            </Button>
+              <Button
+                variant={filter === "RECHAZADO" ? "secondary" : "simple"}
+                disabled={filter === "RECHAZADO"}
+                onClick={() => setFilter("RECHAZADO")}
+              >
+                Reprogramados
+              </Button>
 
-            <Button
-              variant={filter === "COMPLETADO" ? "secondary" : "simple"}
-              disabled={filter === "COMPLETADO"}
-              onClick={() => setFilter("COMPLETADO")}
-            >
-              Reprogramados
-            </Button>
-          </section>
+              <Button
+                variant={filter === "BANEO" ? "secondary" : "simple"}
+                disabled={filter === "BANEO"}
+                onClick={() => setFilter("BANEO")}
+              >
+                Reprogramados
+              </Button>
+            </section>
 
-          <section className="flex flex-col ">
-            {data?.data.results.length === 0 ? (
-              <span className="text-center w-full">
-                No hay barberias deshabilitadas
-              </span>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {data?.data.results.map((barber: any) => (
-                  <CardBarberyDisabled
-                    key={barber.id}
-                    barber={barber}
-                    setSelectBarber={(e: BarberGet) => setSelectBarber(e)}
-                  />
-                ))}
-              </div>
-            )}
+            <section className="flex flex-col h-full">
+              {data?.data.results.length === 0 ? (
+                <span className="text-center w-full">
+                  No hay barberias deshabilitadas
+                </span>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {data?.data.results.map((barber: any) => (
+                    <CardBarberyDisabled
+                      key={barber.id}
+                      barber={barber}
+                      setSelectBarber={(e: BarberGet) => setSelectBarber(e)}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
 
             {data?.data.results.length !== 0 && (
               <section className="flex items-center justify-center pb-4">
@@ -116,7 +129,7 @@ const DisabledBarbersPage = () => {
                 />
               </section>
             )}
-          </section>
+          </div>
         </Layout>
       )}
     </>

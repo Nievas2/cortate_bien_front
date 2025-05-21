@@ -100,7 +100,7 @@ const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
           <Button
             variant="secondary"
             onClick={() => mutate()}
-            className="w-full"
+            className=""
             disabled={isPending}
           >
             Habilitar barberia
