@@ -24,8 +24,10 @@ const HeroSection = () => {
 
       <section className="flex items-center justify-center">
         {/* Proximamente en la play store */}
-        <div className="flex gap-2 p-3 rounded-md border border-gray-600 bg-gray-800">
-          <Icon icon="logos:google-play-icon" width={40} />
+        <div className="flex items-center justify-center gap-2 p-3 rounded-md border border-gray-600 bg-gray-800">
+          <div className="w-10 h-10 flex items-center justify-center">
+            <Icon icon="logos:google-play-icon" width={40} height={40} />
+          </div>
           <div className="flex flex-col items-start justify-center">
             <p className="text-gray-400 text-sm">Proximamente en</p>
             <p className="text-gray-400 text-2xl font-semibold">Google Play</p>

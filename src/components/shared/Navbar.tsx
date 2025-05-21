@@ -144,43 +144,45 @@ const Navbar = () => {
                   {authUser != null ? (
                     <>
                       {authUser?.user.tipo_de_cuenta === "CLIENTE" ? (
-                        <DropdownMenu
-                          open={isDropdownOpen}
-                          onOpenChange={setIsDropdownOpen}
-                        >
-                          <DropdownMenuTrigger>
-                            <Icon
-                              className="h-12 w-12 cursor-pointer"
-                              icon="carbon:user-avatar-filled"
-                            />
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent className="bg-black-main w-[288px]">
-                            <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <Link to="/profile" onClick={handleDropdownClick}>
-                              <DropdownMenuItem className="flex gap-2 items-center hover:text-blue-main cursor-pointer">
-                                <Icon icon="material-symbols:person" />
-                                Mi perfil
-                              </DropdownMenuItem>
-                            </Link>
-                            <DropdownMenuItem
-                              className="hover:text-red-500 text-base cursor-pointer"
-                              onClick={logOut}
-                            >
-                              <button
-                                className="flex items-center flex-row gap-2 w-full cursor-pointer"
-                                onClick={handleDropdownClick}
+                        <div className="flex justify-center items-centerh-12 w-12">
+                          <DropdownMenu
+                            open={isDropdownOpen}
+                            onOpenChange={setIsDropdownOpen}
+                          >
+                            <DropdownMenuTrigger>
+                              <Icon
+                                className="h-12 w-12 cursor-pointer"
+                                icon="carbon:user-avatar-filled"
+                              />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="bg-black-main w-[288px]">
+                              <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <Link to="/profile" onClick={handleDropdownClick}>
+                                <DropdownMenuItem className="flex gap-2 items-center hover:text-blue-main cursor-pointer">
+                                  <Icon icon="material-symbols:person" />
+                                  Mi perfil
+                                </DropdownMenuItem>
+                              </Link>
+                              <DropdownMenuItem
+                                className="hover:text-red-500 text-base cursor-pointer"
+                                onClick={logOut}
                               >
-                                <Icon
-                                  icon="material-symbols:logout"
-                                  width="24"
-                                  height="24"
-                                />
-                                <p>Cerrar sesión</p>
-                              </button>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                                <button
+                                  className="flex items-center flex-row gap-2 w-full cursor-pointer"
+                                  onClick={handleDropdownClick}
+                                >
+                                  <Icon
+                                    icon="material-symbols:logout"
+                                    width="24"
+                                    height="24"
+                                  />
+                                  <p>Cerrar sesión</p>
+                                </button>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       ) : (
                         <Button
                           variant="auth"
