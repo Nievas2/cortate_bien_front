@@ -20,7 +20,7 @@ export async function logOutUser(id: string) {
 
 export async function changeStatusBarber(barberId: string, status: string) {
   try {
-    const res = axiosInstance.post(`barbers/update/admin/${barberId}?status=${status}`)
+    const res = axiosInstance.patch(`barberia/update/admin/${barberId}?status=${status}`)
     return res
   } catch (error) {
     throw error
