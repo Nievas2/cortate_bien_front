@@ -91,7 +91,7 @@ function App() {
       <section className="w-full font-poppins flex flex-col justify-center items-center min-h-screen">
         <Navbar />
 
-        <div className="flex w-full flex-1 max-w-8xl">
+        <div className="flex w-full flex-1">
           <Routes location={location} key={location.pathname}>
             <Route
               path="/"
