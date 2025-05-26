@@ -49,7 +49,7 @@ const HeroSection = () => {
     <>
       <main
         ref={heroRef}
-        className="relative flex flex-col items-center justify-center w-full min-h-screen overflow-hidden pb-10"
+        className="relative flex flex-col items-center justify-center w-full min-h-screen pt-5 overflow-hidden pb-10"
         style={{
           background: `
             radial-gradient(circle at 20% 30%, rgba(96, 165, 250, 0.15) 0%, transparent 50%),
@@ -203,7 +203,7 @@ const HeroSection = () => {
                     {/* Placeholder para tu captura principal */}
                     <div className="absolute inset-4 bg-gradient-to-br from-blue-900/20 to-blue-800/20 rounded-3xl border border-blue-500/20 flex flex-col items-center justify-center overflow-hidden">
                       <img
-                        src="public/screenshot/inicio_screen.png"
+                        src="/screenshot/inicio_screen.png"
                         alt="Captura de pantalla de inicio"
                         className="w-full h-full object-cover"
                       />
@@ -218,7 +218,7 @@ const HeroSection = () => {
                   <div className="w-48 h-96 bg-gradient-to-br from-gray-800 to-gray-900 rounded-[1.5rem] flex items-center justify-center overflow-hidden">
                     <div className="text-center">
                       <img
-                        src="public/screenshot/Turno_Screen.png"
+                        src="/screenshot/Turno_Screen.png"
                         alt="Captura de pantalla de TurnoCard"
                         className="w-full h-full"
                       />
@@ -232,8 +232,8 @@ const HeroSection = () => {
                   <div className="w-48 h-96 bg-gradient-to-br from-gray-800 to-gray-900 rounded-[1.5rem] flex items-center justify-center overflow-hidden">
                     <div className="text-center">
                       <img
-                        src="public/screenshot/filtro_screen.png"
-                        alt="Captura de pantalla de TurnoCard"
+                        src="/screenshot/filtro_screen.png"
+                        alt="Captura de pantalla de Filtro"
                         className="w-full h-full"
                       />
                     </div>
