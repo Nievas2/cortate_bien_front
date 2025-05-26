@@ -34,7 +34,7 @@ const PricesPage = () => {
   }, [id])
 
   return (
-    <section className="flex flex-col w-full pt-6 bg-linear-to-t from-gray-main/20 to-gray-main">
+    <section className="flex flex-col w-full bg-linear-to-t from-gray-main/20 to-gray-main">
       <SubscriptionSection />
     </section>
   )
