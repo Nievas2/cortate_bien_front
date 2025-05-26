@@ -134,7 +134,7 @@ const HeroSection = () => {
                 colors={["#40ffaa", "#4079ff", "#40ffaa", "#4079ff", "#40ffaa"]}
                 animationSpeed={3}
                 showBorder={false}
-                className="text-4xl font-black tracking-tight leading-tight lg:text-6xl xl:text-7xl max-w-4xl"
+                className="text-4xl font-black tracking-tight leading-tight lg:text-6xl max-w-4xl"
               >
                 Gestiona tu barbería de manera inteligente
               </GradientText>
