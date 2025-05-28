@@ -280,7 +280,7 @@ const SubscriptionSection = () => {
                               className="text-blue-400 text-lg flex-shrink-0"
                             />
                             <span className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
-                              {plan.turnosMaximos} turnos mensuales
+                              {plan.turnosMaximos} turnos diarios
                             </span>
                           </li>
                           <li className="flex items-center gap-3">
