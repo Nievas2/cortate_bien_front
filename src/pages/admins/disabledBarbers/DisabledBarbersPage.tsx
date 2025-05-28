@@ -52,7 +52,7 @@ const DisabledBarbersPage = () => {
           >
             <Icon icon="carbon:arrow-left" width={24} />
           </Button>
-          <DisabledBarbersByIdPage barber={selectBarber} />
+          <DisabledBarbersByIdPage barber={selectBarber} refetch={refetch} setSelectBarber={setSelectBarber} />
         </>
       ) : (
         <Layout>

@@ -13,7 +13,15 @@ import { useState } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { changeStatusBarber } from "@/services/AdminService"
 
-const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
+const DisabledBarbersByIdPage = ({
+  barber,
+  refetch,
+  setSelectBarber,
+}: {
+  barber: BarberGet
+  refetch: Function
+  setSelectBarber: Function
+}) => {
   const [value, setValue] = useState("")
   const { mutate, error, isPending } = useMutation({
     mutationKey: ["barber"],
@@ -22,6 +30,10 @@ const DisabledBarbersByIdPage = ({ barber }: { barber: BarberGet }) => {
         return new Error("No se ha seleccionado un estado")
       }
       return await changeStatusBarber(barber.id, value)
+    },
+    onSuccess: () => {
+      refetch()
+      setSelectBarber(undefined)
     },
   })
   return (
