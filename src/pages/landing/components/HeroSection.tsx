@@ -171,6 +171,7 @@ const HeroSection = () => {
             {/* Google Play Store */}
             <Link
               to="https://play.google.com/store/apps/details?id=com.cortate_bien_app"
+              target="_blank"
               className="flex items-center justify-center lg:justify-start"
             >
               <div className="flex items-center gap-4 p-4 rounded-2xl border border-gray-700/50 bg-gray-800/30 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300 hover:scale-105">
@@ -178,7 +179,7 @@ const HeroSection = () => {
                   <Icon icon="logos:google-play-icon" width={48} height={48} />
                 </div>
                 <div className="flex flex-col items-start">
-                  <p className="text-gray-400 text-sm">Próximamente en</p>
+                  <p className="text-gray-400 text-sm">Disponible en</p>
                   <p className="text-white text-xl font-bold">Google Play</p>
                 </div>
               </div>
