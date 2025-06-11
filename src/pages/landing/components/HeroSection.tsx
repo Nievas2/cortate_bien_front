@@ -1,49 +1,50 @@
-import GradientText from "@/utils/functions/GradientText";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { useEffect, useRef } from "react";
+import GradientText from "@/utils/functions/GradientText"
+import { Icon } from "@iconify/react/dist/iconify.js"
+import { useEffect, useRef } from "react"
+import { Link } from "react-router-dom"
 
 const HeroSection = () => {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const phoneRef = useRef<HTMLDivElement>(null);
-  const floatingElementsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const textRef = useRef<HTMLHeadingElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null)
+  const phoneRef = useRef<HTMLDivElement>(null)
+  const floatingElementsRef = useRef<(HTMLDivElement | null)[]>([])
+  const textRef = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
     // Simular GSAP - Animaciones de entrada
-    const hero = heroRef.current;
-    const phone = phoneRef.current;
-    const text = textRef.current;
+    const hero = heroRef.current
+    const phone = phoneRef.current
+    const text = textRef.current
 
     if (hero && phone && text) {
       // Animación inicial del texto
-      text.style.transform = "translateY(50px)";
-      text.style.opacity = "0";
+      text.style.transform = "translateY(50px)"
+      text.style.opacity = "0"
 
       setTimeout(() => {
-        text.style.transition = "all 1.2s cubic-bezier(0.16, 1, 0.3, 1)";
-        text.style.transform = "translateY(0)";
-        text.style.opacity = "1";
-      }, 300);
+        text.style.transition = "all 1.2s cubic-bezier(0.16, 1, 0.3, 1)"
+        text.style.transform = "translateY(0)"
+        text.style.opacity = "1"
+      }, 300)
 
       // Animación del teléfono
-      phone.style.transform = "translateY(100px) scale(0.8)";
-      phone.style.opacity = "0";
+      phone.style.transform = "translateY(100px) scale(0.8)"
+      phone.style.opacity = "0"
 
       setTimeout(() => {
-        phone.style.transition = "all 1.5s cubic-bezier(0.16, 1, 0.3, 1)";
-        phone.style.transform = "translateY(0) scale(1)";
-        phone.style.opacity = "1";
-      }, 600);
+        phone.style.transition = "all 1.5s cubic-bezier(0.16, 1, 0.3, 1)"
+        phone.style.transform = "translateY(0) scale(1)"
+        phone.style.opacity = "1"
+      }, 600)
 
       // Animaciones de elementos flotantes
       floatingElementsRef.current.forEach((el, i) => {
         if (el) {
-          el.style.animation = `float ${3 + i * 0.5}s ease-in-out infinite alternate`;
-          el.style.animationDelay = `${i * 0.2}s`;
+          el.style.animation = `float ${3 + i * 0.5}s ease-in-out infinite alternate`
+          el.style.animationDelay = `${i * 0.2}s`
         }
-      });
+      })
     }
-  }, []);
+  }, [])
 
   return (
     <>
@@ -168,7 +169,10 @@ const HeroSection = () => {
             </div>
 
             {/* Google Play Store */}
-            <section className="flex items-center justify-center lg:justify-start">
+            <Link
+              to="https://play.google.com/store/apps/details?id=com.cortate_bien_app"
+              className="flex items-center justify-center lg:justify-start"
+            >
               <div className="flex items-center gap-4 p-4 rounded-2xl border border-gray-700/50 bg-gray-800/30 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300 hover:scale-105">
                 <div className="w-12 h-12 flex items-center justify-center">
                   <Icon icon="logos:google-play-icon" width={48} height={48} />
@@ -178,7 +182,7 @@ const HeroSection = () => {
                   <p className="text-white text-xl font-bold">Google Play</p>
                 </div>
               </div>
-            </section>
+            </Link>
           </section>
 
           {/* Sección de capturas de pantalla */}
@@ -245,7 +249,7 @@ const HeroSection = () => {
         </div>
       </main>
     </>
-  );
-};
+  )
+}
 
-export default HeroSection;
+export default HeroSection
