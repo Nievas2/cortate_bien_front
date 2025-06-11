@@ -56,7 +56,7 @@ const DisabledBarbersPage = () => {
         </>
       ) : (
         <Layout>
-          <div className="flex flex-col gap-4 items-center justify-center w-full">
+          <div className="flex flex-col gap-4 items-center justify-center w-full min-h-screen">
             <section className="flex flex-wrap gap-2 justify-center">
               {/*  ACTIVO, INACTIVO, RECHAZADO, PENDIENTE, BANEO */}
               <Button
