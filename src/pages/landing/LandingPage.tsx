@@ -12,7 +12,8 @@ const LandingPage = () => {
   const { search } = useLocation()
   document.title = "Cortate bien | Inicio"
   useEffect(() => {
-    const token = search.split("=")[1]
+    const params = new URLSearchParams(search)
+    const token = params.get("token")
     if (token) {
       Cookies.set("token", token, {
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
@@ -24,16 +25,10 @@ const LandingPage = () => {
       }
       setAuthUser(userAuth)
       window.location.href = "/"
-      /*  const decode = decodeJwt(token)
-      if (
-        decode.city_id == undefined ||
-        decode.city_id == null ||
-        decode.city_id == 0
-      ) {
-        window.location.href = "/profile?required=true"
-      } */
+    } else if (search) {
+      window.location.href = "/"
     }
-  }, [])
+  }, [search])
   return (
     <div className="flex flex-col w-full">
       <HeroSection />
