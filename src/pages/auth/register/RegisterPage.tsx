@@ -3,12 +3,17 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Link, useNavigate } from "react-router-dom"
 import { Icon } from "@iconify/react/dist/iconify.js"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRegister } from "@/hooks/useRegister"
 import { signupSchema } from "@/utils/schemas/signUp"
 import { Register } from "@/services/AuthService"
 import { zodResolver } from "@hookform/resolvers/zod"
-
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import {
   Select,
   SelectContent,
@@ -39,6 +44,7 @@ const RegisterPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [countryId, setCountryId] = useState<undefined | number>()
   const [stateId, setStateId] = useState<undefined | number>()
+  const [modal, setModal] = useState(false)
   const { executeRecaptcha } = useReCaptcha({
     siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
     onError() {
@@ -106,7 +112,17 @@ const RegisterPage = () => {
   function loginGoogle() {
     window.open(`${import.meta.env.VITE_API_URL}auth/google`, "_self")
   }
-/* 
+
+  useEffect(() => {
+    const firstTime = localStorage.getItem("first-time")
+    console.log(firstTime)
+
+    if (firstTime === null || firstTime === "true") {
+      setModal(true)
+      localStorage.setItem("first-time", "false")
+    }
+  }, [])
+  /* 
   function loginFacebook() {
     window.open(`${import.meta.env.VITE_API_URL}auth/facebook`, "_self")
   } */
@@ -446,6 +462,29 @@ const RegisterPage = () => {
           )}
         </form>
       </div>
+      <Dialog open={modal} onOpenChange={() => setModal(!modal)}>
+        <DialogContent forceMount>
+          <DialogHeader>
+            <DialogTitle>¡Bienvenido a cortate bien!🎉🎉</DialogTitle>
+          </DialogHeader>
+          {/* mensaje de premium gratis */}
+          <h2>
+            🎉 Registrate como barbero y obtené 30 días de Premium GRATIS ✂️
+          </h2>
+          <p>
+            Al registrarte como barbero, activás automáticamente el plan Premium
+            por 30 días, sin necesidad de esperar aprobación.
+          </p>
+          <p>
+            🔓 Gestioná tu barbería al instante: podés hacer cambios, agregar
+            servicios, horarios y más, ¡sin demoras ni intermediarios! ¡Empezá a
+            usar todas las funciones ahora mismo! 💈
+          </p>
+          <Button variant="secondary" onClick={() => setModal(false)}>
+            Comenzar ahora 🚀
+          </Button>
+        </DialogContent>
+      </Dialog>
     </section>
   )
 }
