@@ -29,4 +29,10 @@ export const planSchema = z.object({
     .refine((val) => !Number.isNaN(parseInt(val, 10)), {
       message: "Expected number, received a string",
     }),
+  precioPromedio: z.boolean().default(false),
+  servicios: z.boolean().default(false),
+  barberos: z.boolean().default(false),
+  autoActivacion: z.boolean().default(false),
+  soportePrioritario: z.boolean().default(false),
+
 })
