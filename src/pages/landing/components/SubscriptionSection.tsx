@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { getAllPlans } from "@/services/PlansService"
-import { Plan, PlanGet } from "@/interfaces/Plan"
+import { Plan } from "@/interfaces/Plan"
 import { Link, useLocation } from "react-router-dom"
 import { useAuthContext } from "@/contexts/authContext"
 import CountUp from "@/utils/functions/CountUp"
@@ -210,7 +210,7 @@ const SubscriptionSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl place-items-center">
           {isPending
             ? RenderPricesSkeletons()
-            : data?.data.map((plan: PlanGet, index: number) => {
+            : data?.data.map((plan: Plan, index: number) => {
                 const isPopular = popularPlan && plan.id === popularPlan.id
 
                 return (
