@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { getAllPlans } from "@/services/PlansService"
-import { Plan } from "@/interfaces/Plan"
+import { Plan, PlanGet } from "@/interfaces/Plan"
 import { Link, useLocation } from "react-router-dom"
 import { useAuthContext } from "@/contexts/authContext"
 import CountUp from "@/utils/functions/CountUp"
@@ -210,7 +210,7 @@ const SubscriptionSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl place-items-center">
           {isPending
             ? RenderPricesSkeletons()
-            : data?.data.map((plan: Plan, index: number) => {
+            : data?.data.map((plan: PlanGet, index: number) => {
                 const isPopular = popularPlan && plan.id === popularPlan.id
 
                 return (
@@ -283,33 +283,81 @@ const SubscriptionSection = () => {
                               {plan.turnosMaximos} turnos diarios
                             </span>
                           </li>
-                          <li className="flex items-center gap-3">
-                            <Icon
-                              icon="heroicons:check-circle"
-                              className="text-blue-400 text-lg flex-shrink-0"
-                            />
-                            <span className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
-                              {plan.cantDias} días de prueba
-                            </span>
-                          </li>
-                          <li className="flex items-center gap-3">
-                            <Icon
-                              icon="heroicons:check-circle"
-                              className="text-blue-400 text-lg flex-shrink-0"
-                            />
-                            <span className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
-                              Soporte completo
-                            </span>
-                          </li>
-                          <li className="flex items-center gap-3">
-                            <Icon
-                              icon="heroicons:check-circle"
-                              className="text-blue-400 text-lg flex-shrink-0"
-                            />
-                            <span className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
-                              Reportes básicos
-                            </span>
-                          </li>
+
+                          {plan.cantDias != 0 && (
+                            <li className="flex items-center gap-3">
+                              <Icon
+                                icon="heroicons:check-circle"
+                                className="text-blue-400 text-lg flex-shrink-0"
+                              />
+                              <span className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
+                                {plan.cantDias} días de prueba
+                              </span>
+                            </li>
+                          )}
+
+                          {plan.autoActivacion && (
+                            <li className="flex items-center gap-3">
+                              <Icon
+                                icon="heroicons:check-circle"
+                                className="text-blue-400 text-lg flex-shrink-0"
+                              />
+                              <span className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
+                                No requiere de que un administrador revise su
+                                barberia
+                              </span>
+                            </li>
+                          )}
+                          {plan.precioPromedio && (
+                            <li className="flex items-center gap-3">
+                              <Icon
+                                icon="heroicons:check-circle"
+                                className="text-blue-400 text-lg flex-shrink-0"
+                              />
+                              <span className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
+                                Permite agregar un precio promedio de sus
+                                servicios
+                              </span>
+                            </li>
+                          )}
+
+                          {plan.servicios && (
+                            <li className="flex items-center gap-3">
+                              <Icon
+                                icon="heroicons:check-circle"
+                                className="text-blue-400 text-lg flex-shrink-0"
+                              />
+                              <span className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
+                                Puede agregar el tipo de servicios que brinda su
+                                barberia
+                              </span>
+                            </li>
+                          )}
+
+                          {plan.servicios && (
+                            <li className="flex items-center gap-3">
+                              <Icon
+                                icon="heroicons:check-circle"
+                                className="text-blue-400 text-lg flex-shrink-0"
+                              />
+                              <span className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
+                                Puede asignar barberos a su barberia
+                              </span>
+                            </li>
+                          )}
+
+                          {plan.soportePrioritario && (
+                            <li className="flex items-center gap-3">
+                              <Icon
+                                icon="heroicons:check-circle"
+                                className="text-blue-400 text-lg flex-shrink-0"
+                              />
+                              <span className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
+                                Tiene prioridad de soporte ante cualquier
+                                inconveniente
+                              </span>
+                            </li>
+                          )}
                         </ul>
                       </div>
 
