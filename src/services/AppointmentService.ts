@@ -25,6 +25,22 @@ export async function getAppointmentsByBarberId(
   }
 }
 
+export async function getAppointmentsWithDateByBarberId(
+  id: string,
+  date?: string,
+  dateEnd?: string,
+  filter?: string
+) {
+  try {
+    const res = await axiosInstance.get(
+      `turno/find/all/date/${id}?date=${date}&date-end=${dateEnd}&status=${filter}`
+    )
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
 export async function getAppointmentsByUser({
   date,
 }: {
