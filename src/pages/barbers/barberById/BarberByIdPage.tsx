@@ -2,7 +2,7 @@ import CarouselDesktop, { CarouselMobile } from "@/components/shared/Carousel"
 import { getBarberById } from "@/services/BarberService"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { useQuery } from "@tanstack/react-query"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -23,10 +23,15 @@ import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import { getCheckReview, getReviews } from "@/services/ReviewService"
 import HandleChangeReviews from "@/pages/profile/reviews/components/HandleChangeReviews"
+import { createOrGetChat } from "@/services/ChatService"
+import { useAuthContext } from "@/contexts/authContext"
+import toast, { Toaster } from "react-hot-toast"
 
 const BarberByIdPage = () => {
   const [success, setSuccess] = useState(false)
+  const { authUser } = useAuthContext()
   const params = useParams()
+  const navigate = useNavigate()
   const { mutate, error } = useMutation({
     mutationKey: ["create-appointment"],
     mutationFn: async (values: any) => {
@@ -84,8 +89,46 @@ const BarberByIdPage = () => {
     staleTime: 1000 * 60 * 60 * 24,
     retry: false,
   })
+
+  const { mutate: initiateChat, isPending: isCreatingChat } = useMutation({
+    mutationFn: () => {
+      if (!data) {
+        throw new Error(
+          "La información de la barbería o del barbero no está disponible."
+        )
+      }
+      // El backend espera el ID del barbero y de la barbería.
+      // El 'clienteId' se extrae del token en el backend.
+      return createOrGetChat(data.data.idPropietario, data.data.id)
+    },
+    onSuccess: (chatData) => {
+      // Navegar a la pantalla de chat con el ID del chat obtenido
+      navigate(`/chats/${chatData.id}`)
+    },
+    onError: (err) => {
+      console.log(err)
+    },
+  })
+
+  const handleInitiateChat = () => {
+    // No permitir iniciar un chat consigo mismo (si el propietario ve su propia barbería)
+    if (data?.data.idPropietario === authUser?.user.sub) {
+      toast.error("No puedes iniciar un chat con tu propia barbería")
+      return
+    }
+    initiateChat()
+  }
   return (
     <main className="flex flex-col min-h-screen w-full relative">
+      <Button
+        variant="secondary"
+        className="fixed bottom-28 right-3"
+        onClick={handleInitiateChat}
+        disabled={isCreatingChat}
+      >
+        <Icon icon="material-symbols:chat" width={24} />
+      </Button>
+
       {checkReview?.data && (
         <a href="#reviews">
           <Button
@@ -510,6 +553,7 @@ const BarberByIdPage = () => {
           </Dialog>
         </div>
       </section>
+      <Toaster position="bottom-right" reverseOrder={false} />
     </main>
   )
 }

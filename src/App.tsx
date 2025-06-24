@@ -38,6 +38,8 @@ import { useEffect } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { getFirebaseToken } from "./services/FirebaseService"
 import { Button } from "./components/ui/button"
+import ChatsPage from "./pages/chats/ChatsPage"
+import ChatByIdPage from "./pages/chats/chatById/ChatByIdPage"
 
 function App() {
   const location = useLocation()
@@ -103,8 +105,8 @@ function App() {
                 ) : authUser.user.tipo_de_cuenta === "BARBERO" ? (
                   <Navigate to="/dashboard" />
                 ) : ( */
-                  <LandingPage />
-               /*  ) */
+                <LandingPage />
+                /*  ) */
               }
             />
 
@@ -169,6 +171,24 @@ function App() {
               }
             />
 
+            <Route
+              path="/chats"
+              element={
+                <ProtectedRoute>
+                  <ChatsPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/chats/:id"
+              element={
+                <ProtectedRoute>
+                  <ChatByIdPage />
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="/auth" element={<AuthPage />} />
 
             <Route
@@ -179,7 +199,7 @@ function App() {
             <Route
               path="/auth/iniciar-sesion"
               element={
-                /* Cookies.get("token") ? <Navigate to="/" /> :  */<LoginPage />
+                /* Cookies.get("token") ? <Navigate to="/" /> :  */ <LoginPage />
               }
             />
 
