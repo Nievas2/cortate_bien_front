@@ -1,4 +1,5 @@
 import axiosInstance from "@/api/axiosInstance"
+import { MessageResponseDto } from "@/interfaces/Chat"
 
 export const getUserChats = async () => {
   const response = await axiosInstance.get(`chat`)
@@ -11,7 +12,7 @@ export const getChatMessages = async ({
 }: {
   chatId: string
   pageParam?: number
-}) => {
+}) : Promise<MessageResponseDto[]> => {
   const response = await axiosInstance.get(
     `chat/${chatId}/messages?page=${pageParam}&limit=30` // Traemos 30 mensajes por página
   )

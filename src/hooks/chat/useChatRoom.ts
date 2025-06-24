@@ -156,8 +156,7 @@ export const useChatRoom = (chatId: string) => {
     300 // Tiempo de espera en ms
   )
   
-  const handleTypingChange = (text: string) => {
-    const isCurrentlyTyping = text.length > 0
+  const handleTypingChange = (isCurrentlyTyping: boolean) => {
     emitTyping(isCurrentlyTyping)
 
     // Cancelar typing después de 1 segundo de inactividad
