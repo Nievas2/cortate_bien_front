@@ -91,7 +91,9 @@ function App() {
   return (
     <main className="bg-black-main text-white">
       <section className="w-full font-poppins flex flex-col justify-center items-center min-h-screen">
-        <Navbar />
+        {
+          !/^\/chats\/[^/]+$/.test(location.pathname) && <Navbar/>
+        }
 
         <div className="flex w-full flex-1">
           <Routes location={location} key={location.pathname}>
@@ -307,7 +309,9 @@ function App() {
           </Routes>
         </div>
 
-        <Footer />
+        {
+          !/^\/chats\/[^/]+$/.test(location.pathname) && <Footer />
+        }
       </section>
       <Toaster position="top-center" reverseOrder={true} />
     </main>
