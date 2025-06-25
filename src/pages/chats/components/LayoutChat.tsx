@@ -14,8 +14,8 @@ const LayoutChat = ({ children }: { children: React.ReactNode }) => {
         <Button
           className={`z-40 transition-transform duration-300 ${
             open
-              ? "rotate-180 translate-x-2  translate-y-2 fixed sm:fixed top-20"
-              : "rotate-0 translate-y-2 translate-x-2 sm:translate-x-2 fixed sm:fixed top-20"
+              ? "rotate-180 translate-x-2  translate-y-2 fixed sm:fixed top-0"
+              : "rotate-0 translate-y-2 translate-x-2 sm:translate-x-2 fixed sm:fixed top-0"
           }`}
           variant="secondary"
           size="rounded"

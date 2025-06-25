@@ -3,7 +3,7 @@ import { useAuthContext } from "@/contexts/authContext"
 import { useChatsList } from "@/hooks/chat/useChatList"
 import { ChatResponseDto } from "@/interfaces/Chat"
 import { Icon } from "@iconify/react/dist/iconify.js"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 const SideBarChat = ({ open }: { open: boolean }) => {
   const { data: chats, isLoading, error, refetch } = useChatsList()
@@ -86,7 +86,7 @@ const SideBarChat = ({ open }: { open: boolean }) => {
       }`}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex flex-col gap-2 sticky top-20 w-full h-[88vh]">
+      <div className="flex flex-col gap-2 sticky top-0 w-full h-screen">
         {/* Header */}
         <div
           className={`flex items-center justify-end sm:justify-start gap-2 px-6 py-4 ${
@@ -245,6 +245,22 @@ const SideBarChat = ({ open }: { open: boolean }) => {
             )}
           </div>
         )}
+        <div
+          className={`${
+            open ? "flex flex-col w-full gap-2" : "hidden"
+          } p-2  px-3 border-t border-gray-100 bg-gray-900`}
+        >
+          <Link to="/">
+            <Button
+              className="flex justify-start gap-1 px-0 w-full"
+              variant="ghost"
+              size="sm"
+            >
+              <Icon icon="carbon:home" />
+              Inicio
+            </Button>
+          </Link>
+        </div>
       </div>
     </aside>
   )
