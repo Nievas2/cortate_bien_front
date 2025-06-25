@@ -51,7 +51,7 @@ const ChatsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-full h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Icon icon="eos-icons:loading" className="text-4xl text-blue-500" />
           <span className="text-gray-600">Cargando conversaciones...</span>
