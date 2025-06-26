@@ -92,7 +92,7 @@ const ChatsPage = () => {
   return (
     <div className="w-full h-screen bg-gray-700 flex flex-col">
       {/* Header */}
-      <div className="bg-black-main border-b border-gray-200 p-4 shadow-sm">
+      <div className="bg-black-main p-4 shadow-sm">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold">Mensajes</h1>
           <Button
@@ -118,7 +118,7 @@ const ChatsPage = () => {
                 <div
                   key={chat.id}
                   onClick={() => handleChatClick(chat.id)}
-                  className="flex items-center gap-3 p-4 bg-gray-900 border-b border-gray-100 hover:bg-gray-900/75 cursor-pointer transition-colors"
+                  className="flex items-center gap-3 p-4 hover:bg-gray-900/75 cursor-pointer transition-colors"
                 >
                   {/* Avatar */}
                   <div className="relative flex-shrink-0">
