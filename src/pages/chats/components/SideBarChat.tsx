@@ -4,6 +4,12 @@ import { useChatsList } from "@/hooks/chat/useChatList"
 import { ChatResponseDto } from "@/interfaces/Chat"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { Link, useNavigate } from "react-router-dom"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 const SideBarChat = ({ open }: { open: boolean }) => {
   const { data: chats, isLoading, error, refetch } = useChatsList()
@@ -151,13 +157,24 @@ const SideBarChat = ({ open }: { open: boolean }) => {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-1">
                               <div className="flex items-center gap-2">
-                                <h3
-                                  className={`font-medium truncate ${
-                                    !chat.visto ? "text-white" : "text-gray-700"
-                                  }`}
-                                >
-                                  {otherUser.nombre} {otherUser.apellido}
-                                </h3>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <h3
+                                        className={`font-medium truncate max-w-36 ${
+                                          !chat.visto
+                                            ? "text-white"
+                                            : "text-gray-700"
+                                        }`}
+                                      >
+                                        {otherUser.nombre} {otherUser.apellido}
+                                      </h3>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>{otherUser.nombre} {otherUser.apellido}</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
 
                                 {/* Role badge */}
                                 <span
@@ -186,15 +203,25 @@ const SideBarChat = ({ open }: { open: boolean }) => {
                             </div>
 
                             {/* Last message */}
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1">
                               {chat.ultimoMensaje && (
                                 <>
                                   {chat.ultimoMensaje.remitente ===
                                     authUser?.user.sub && (
-                                    <Icon
-                                      icon="material-symbols:check"
-                                      className="text-xs text-gray-400 flex-shrink-0"
-                                    />
+                                    <>
+                                      {chat.ultimoMensaje.visto ? (
+                                        <Icon
+                                          icon="mdi:check-all"
+                                          color="green"
+                                          className="size-4"
+                                        />
+                                      ) : (
+                                        <Icon
+                                          icon="material-symbols:check"
+                                          className="size-4"
+                                        />
+                                      )}
+                                    </>
                                   )}
                                   <p
                                     className={`text-sm truncate ${
