@@ -102,6 +102,9 @@ const Navbar = () => {
               {authUser?.user.tipo_de_cuenta === "BARBERO" && (
                 <NavbarItemDestock location="/dashboard" pathname={pathname} name="Dashboard" />
               )}
+              {authUser !== null && (
+                <NavbarItemDestock location="/chats" pathname={pathname} name="Chats" />
+              )}
               {authUser?.user.rol === "ADMIN" && (
                 <NavbarItemDestock location="/admins/dashboard" pathname={pathname} name="Admins" />
               )}
@@ -195,6 +198,7 @@ const Navbar = () => {
           {authUser?.user.tipo_de_cuenta === "BARBERO" && <NavbarItemMobile name="Precios" location="/prices" pathname={pathname} setOpen={setOpen} />}
           {authUser?.user.tipo_de_cuenta === "CLIENTE" && <NavbarItemMobile name="Mi perfil" location="/profile" pathname={pathname} setOpen={setOpen} />}
           {authUser?.user.tipo_de_cuenta === "BARBERO" && <NavbarItemMobile name="Dashboard" location="/dashboard" pathname={pathname} setOpen={setOpen} />}
+          {authUser != null && <NavbarItemMobile name="Chats" location="/chats" pathname={pathname} setOpen={setOpen} />}
           {authUser?.user.rol === "ADMIN" && <NavbarItemMobile name="Admin dashboard" location="/admins/dashboard" pathname={pathname} setOpen={setOpen} />}
         </div>
 
