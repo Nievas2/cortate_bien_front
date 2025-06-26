@@ -31,6 +31,7 @@ export interface ChatResponseDto {
     contenido: string
     fechaEnvio: Date
     remitente: string
+    visto: boolean
   }
   visto: boolean
 }
