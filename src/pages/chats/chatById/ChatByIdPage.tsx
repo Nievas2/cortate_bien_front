@@ -36,6 +36,7 @@ const ChatByIdPage = () => {
   const { authUser } = useAuthContext()
   const [message, setMessage] = useState("")
   const [showScrollToBottom, setShowScrollToBottom] = useState(false)
+  const [isFirstLoad, setIsFirstLoad] = useState(true)
 
   // GSAP Animations
   useEffect(() => {
@@ -54,7 +55,7 @@ const ChatByIdPage = () => {
     )
   }, [])
 
-  // Auto scroll to bottom with smooth animation
+  // Auto scroll to bottom con animación SUAVE cada vez que cambian los mensajes
   useEffect(() => {
     if (messagesEndRef.current) {
       gsap.to(messagesEndRef.current, {
@@ -64,6 +65,20 @@ const ChatByIdPage = () => {
       })
     }
   }, [messages])
+
+  // Scroll automático SOLO la primera vez que se cargan los mensajes
+  useEffect(() => {
+    if (
+      isFirstLoad &&
+      !isLoading &&
+      messages.length > 0 &&
+      messagesContainerRef.current
+    ) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight
+      setIsFirstLoad(false)
+    }
+  }, [isFirstLoad, isLoading, messages])
 
   // Mark messages as read when component mounts or messages change
   useEffect(() => {
@@ -121,12 +136,9 @@ const ChatByIdPage = () => {
     }
   }
 
-  const debouncedTyping = useDebouncedCallback(
-    (value: string) => {
-      handleTypingChange(value.length > 0)
-    },
-    200
-  )
+  const debouncedTyping = useDebouncedCallback((value: string) => {
+    handleTypingChange(value.length > 0)
+  }, 200)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
@@ -219,7 +231,7 @@ const ChatByIdPage = () => {
             >
               {messages[0]?.remitente.nombre?.charAt(0).toUpperCase() || "U"}
             </motion.div>
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col">
               <span className="text-sm md:text-lg font-semibold">
                 {messages[0]?.remitente.nombre}{" "}
                 {messages[0]?.remitente.apellido}
@@ -266,6 +278,8 @@ const ChatByIdPage = () => {
           className="flex flex-col h-[76vh] overflow-y-auto bg-gray-700 overflow-x-hidden"
           ref={messagesContainerRef}
           onScroll={handleScroll}
+          // Siempre mantener el scroll abajo usando scrollTop
+          style={{ scrollBehavior: "smooth" }}
         >
           {/* Load More Button */}
           {hasNextPage && (
@@ -304,7 +318,7 @@ const ChatByIdPage = () => {
           )}
 
           {/* Messages */}
-          <div className="flex flex-col gap-2 p-2 md:p-4 py-4 min-h-screen">
+          <div className="flex flex-col justify-end gap-2 p-2 md:p-4 py-4 min-h-screen">
             <AnimatePresence mode="popLayout">
               {isLoading ? (
                 renderSkeletonMessages()
@@ -463,11 +477,12 @@ const ChatByIdPage = () => {
             </div>
           </form>
         </motion.div>
+
         {/* Botón flotante para bajar al último mensaje */}
         {showScrollToBottom && (
           <button
             onClick={scrollToBottom}
-            className="fixed bottom-18 right-4 z-50 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg p-3 transition-all"
+            className="fixed bottom-24 right-4 z-50 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg p-3 transition-all"
             aria-label="Bajar al último mensaje"
           >
             <Icon icon="mdi:arrow-down" className="text-2xl" />
