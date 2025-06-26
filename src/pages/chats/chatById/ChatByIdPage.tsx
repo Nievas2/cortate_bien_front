@@ -255,7 +255,7 @@ const ChatByIdPage = () => {
 
         {/* Messages Container */}
         <div
-          className="flex flex-col h-[77vh] overflow-y-auto bg-gray-700 overflow-x-hidden"
+          className="flex flex-col h-[78vh] overflow-y-auto bg-gray-700 overflow-x-hidden"
           ref={messagesContainerRef}
           onScroll={handleScroll}
         >
@@ -303,67 +303,84 @@ const ChatByIdPage = () => {
               ) : (
                 <>
                   {messages.length > 0 ? (
-                    messages
-                      .map((msg: MessageResponseDto, index: number) => {
-                        const isOwnMessage =
-                          msg.remitente.id === authUser?.user.sub
+                    messages.map((msg: MessageResponseDto, index: number) => {
+                      const isOwnMessage =
+                        msg.remitente.id === authUser?.user.sub
 
-                        return (
+                      return (
+                        <motion.div
+                          key={msg.id || crypto.randomUUID()}
+                          className={`flex items-end gap-2 ${
+                            isOwnMessage ? "flex-row-reverse" : "flex-row"
+                          }`}
+                          variants={messageVariants}
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                          layout
+                          custom={index}
+                          transition={{
+                            delay: index * 0.05,
+                            layout: { duration: 0.3 },
+                          }}
+                        >
+                          {/* Message Bubble */}
                           <motion.div
-                            key={msg.id || crypto.randomUUID()}
-                            className={`flex items-end gap-2 ${
-                              isOwnMessage ? "flex-row-reverse" : "flex-row"
+                            className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${
+                              isOwnMessage
+                                ? "bg-blue-500 text-gray-main rounded-br-sm"
+                                : "bg-white text-gray-800 rounded-bl-sm border border-gray-200"
                             }`}
-                            variants={messageVariants}
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
-                            layout
-                            custom={index}
-                            transition={{
-                              delay: index * 0.05,
-                              layout: { duration: 0.3 },
+                            whileHover={{
+                              scale: 1.02,
+                              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                             }}
+                            transition={{ type: "spring", stiffness: 300 }}
                           >
-                            {/* Message Bubble */}
-                            <motion.div
-                              className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${
-                                isOwnMessage
-                                  ? "bg-blue-500 text-gray-main rounded-br-sm"
-                                  : "bg-white text-gray-800 rounded-bl-sm border border-gray-200"
-                              }`}
-                              whileHover={{
-                                scale: 1.02,
-                                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                              }}
-                              transition={{ type: "spring", stiffness: 300 }}
-                            >
-                              {/* Message content */}
-                              <div className="text-sm font-medium leading-relaxed break-all">
-                                {msg.contenido}
-                              </div>
+                            {/* Message content */}
+                            <div className="text-sm font-medium leading-relaxed break-all">
+                              {msg.contenido}
+                            </div>
 
-                              {/* Timestamp */}
-                              <motion.div
-                                className={`text-xs mt-1 text-black ${
-                                  isOwnMessage ? "text-right" : "text-left"
-                                }`}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.3 }}
-                              >
-                                {new Date(msg.fechaEnvio).toLocaleTimeString(
-                                  "es-ES",
-                                  {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  }
-                                )}
-                              </motion.div>
+                            {/* Timestamp */}
+                            <motion.div
+                              className={`flex gap-1 items-center text-xs mt-1 text-black ${
+                                isOwnMessage
+                                  ? "text-right flex-row-reverse"
+                                  : "text-left"
+                              }`}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: 0.3 }}
+                            >
+                              {isOwnMessage && (
+                                <>
+                                  {msg.leido ? (
+                                    <Icon
+                                      icon="mdi:check-all"
+                                      color="green"
+                                      className="size-4"
+                                    />
+                                  ) : (
+                                    <Icon
+                                      icon="material-symbols:check"
+                                      className="size-4"
+                                    />
+                                  )}{" "}
+                                </>
+                              )}
+                              {new Date(msg.fechaEnvio).toLocaleTimeString(
+                                "es-ES",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )}
                             </motion.div>
                           </motion.div>
-                        )
-                      })
+                        </motion.div>
+                      )
+                    })
                   ) : (
                     <motion.div
                       className="flex flex-col items-center justify-center py-12 text-gray-500"
