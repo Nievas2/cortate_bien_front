@@ -95,7 +95,7 @@ const SideBarChat = ({ open }: { open: boolean }) => {
       <div className="flex flex-col gap-2 sticky top-0 w-full h-screen">
         {/* Header */}
         <div
-          className={`flex items-center justify-end sm:justify-start gap-2 px-6 py-4 ${
+          className={`flex items-center justify-end sm:justify-start gap-2 px-6 py-[17px] relative bg-black-main border-b border-b-gray-300 ${
             open ? "flex" : "hidden"
           }`}
         >
@@ -106,6 +106,18 @@ const SideBarChat = ({ open }: { open: boolean }) => {
             height="30"
           />
           <span className="font-semibold">Mis chats</span>
+          <Link
+            to="/chats"
+            className="absolute bottom-0 right-0 left-0 translate-x-1/3 flex items-center text-xs group group-hover:underline group-hover:text-blue-600 duration-100 transition-colors"
+          >
+            <Icon
+              icon="material-symbols:arrow-forward"
+              className="text-white rotate-180 group-hover:-translate-x-1 transition-all duration-300 group-hover:text-blue-600 duration-100 "
+            />{" "}
+            <p className="group-hover:text-blue-600 duration-100 transition-colors">
+              Todos los chats
+            </p>
+          </Link>
         </div>
 
         {/* Navigation */}
@@ -138,7 +150,7 @@ const SideBarChat = ({ open }: { open: boolean }) => {
                         <div
                           key={chat.id}
                           onClick={() => handleChatClick(chat.id)}
-                          className="flex items-center gap-3 p-2 md:p-4 bg-gray-900 border-b border-gray-100 hover:bg-gray-900/75 cursor-pointer transition-colors relative"
+                          className="flex items-center gap-3 p-2 md:p-4 hover:bg-gray-900/75 cursor-pointer transition-colors relative"
                         >
                           {/* Avatar */}
                           <div className="relative flex-shrink-0">
@@ -171,7 +183,9 @@ const SideBarChat = ({ open }: { open: boolean }) => {
                                       </h3>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                      <p>{otherUser.nombre} {otherUser.apellido}</p>
+                                      <p>
+                                        {otherUser.nombre} {otherUser.apellido}
+                                      </p>
                                     </TooltipContent>
                                   </Tooltip>
                                 </TooltipProvider>
