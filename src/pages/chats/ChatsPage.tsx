@@ -62,7 +62,7 @@ const ChatsPage = () => {
 
   if (error) {
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-full h-screen flex items-center justify-center ">
         <div className="flex flex-col items-center gap-4 text-center">
           <Icon
             icon="material-symbols:error-outline"
