@@ -149,7 +149,7 @@ const ChatsPage = () => {
 
                         {/* Role badge */}
                         <span
-                          className={`text-xs px-2 py-1 rounded-full ${
+                          className={`text-xs hidden md:block px-2 py-1 rounded-full ${
                             userRole === "cliente"
                               ? "bg-blue-100 text-blue-700"
                               : "bg-green-100 text-green-700"
