@@ -1,6 +1,5 @@
 import { useLocation } from "react-router-dom"
 import { useState, useEffect, useRef } from "react"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useChatRoom } from "@/hooks/chat/useChatRoom"
 import { useAuthContext } from "@/contexts/authContext"
@@ -10,6 +9,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { gsap } from "gsap"
 import LayoutChat from "../components/LayoutChat"
 import { renderSkeletonMessages } from "../skeletons/MessagesSkeleton"
+import { Textarea } from "@/components/ui/textarea"
+import { useDebouncedCallback } from "use-debounce"
 
 const ChatByIdPage = () => {
   const { pathname } = useLocation()
@@ -120,10 +121,17 @@ const ChatByIdPage = () => {
     }
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const debouncedTyping = useDebouncedCallback(
+    (value: string) => {
+      handleTypingChange(value.length > 0)
+    },
+    200
+  )
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
     setMessage(value)
-    handleTypingChange(value.length > 0)
+    debouncedTyping(value)
   }
 
   const loadMoreMessages = () => {
@@ -255,7 +263,7 @@ const ChatByIdPage = () => {
 
         {/* Messages Container */}
         <div
-          className="flex flex-col h-[78vh] overflow-y-auto bg-gray-700 overflow-x-hidden"
+          className="flex flex-col h-[76vh] overflow-y-auto bg-gray-700 overflow-x-hidden"
           ref={messagesContainerRef}
           onScroll={handleScroll}
         >
@@ -422,12 +430,13 @@ const ChatByIdPage = () => {
                 whileFocus={{ scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <Input
-                  type="text"
+                <Textarea
                   value={message}
                   onChange={handleInputChange}
+                  rows={1}
                   placeholder="Escribe un mensaje..."
-                  className="pr-12 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pr-12 resize-none max-h-24 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm min-h-[50px]"
+                  style={{ lineHeight: "1.5", paddingTop: 6, paddingBottom: 6 }}
                 />
               </motion.div>
               <motion.div
