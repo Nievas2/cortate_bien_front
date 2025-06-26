@@ -55,30 +55,14 @@ const ChatByIdPage = () => {
     )
   }, [])
 
-  // Auto scroll to bottom con animación SUAVE cada vez que cambian los mensajes
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      gsap.to(messagesEndRef.current, {
-        scrollTop: messagesEndRef.current.scrollHeight,
-        duration: 0.5,
-        ease: "easeOut",
-      })
-    }
-  }, [messages])
-
   // Scroll automático SOLO la primera vez que se cargan los mensajes
   useEffect(() => {
-    if (
-      isFirstLoad &&
-      !isLoading &&
-      messages.length > 0 &&
-      messagesContainerRef.current
-    ) {
+    if (isFirstLoad && messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight
       setIsFirstLoad(false)
     }
-  }, [isFirstLoad, isLoading, messages])
+  }, [isFirstLoad])
 
   // Mark messages as read when component mounts or messages change
   useEffect(() => {
@@ -190,39 +174,11 @@ const ChatByIdPage = () => {
     exit: { opacity: 0, x: -20 },
   }
 
-  /*  if (isLoading) {
-    return (
-      <motion.div
-        className="w-full h-screen flex items-center justify-center"
-        variants={loadingVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <div className="flex flex-col items-center gap-4">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          >
-            <Icon icon="eos-icons:loading" className="text-4xl text-blue-500" />
-          </motion.div>
-          <motion.span
-            className="text-gray-600"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            Cargando mensajes...
-          </motion.span>
-        </div>
-      </motion.div>
-    )
-  } */
-
-  console.log(messages)
   return (
     <LayoutChat>
-      <div className="w-full min-h-screen flex flex-col ">
+      <div className="flex flex-col h-screen w-full">
         {/* Header */}
-        <motion.div className="flex items-center justify-between pl-20 p-2 bg-gray-main shadow-sm">
+        <motion.div className="flex-shrink-0 flex items-center justify-between pl-20 p-2 bg-gray-main shadow-sm">
           <div className="flex items-center gap-3">
             <motion.div
               className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-gray-main text-sm font-medium flex-shrink-0"
@@ -273,166 +229,175 @@ const ChatByIdPage = () => {
           </AnimatePresence>
         </motion.div>
 
-        {/* Messages Container */}
+        {/* Messages Container - Cambio principal aquí */}
         <div
-          className="flex flex-col h-[76vh] overflow-y-auto bg-gray-700 overflow-x-hidden"
+          className="flex-1 overflow-y-auto bg-gray-700 overflow-x-hidden"
           ref={messagesContainerRef}
           onScroll={handleScroll}
-          // Siempre mantener el scroll abajo usando scrollTop
           style={{ scrollBehavior: "smooth" }}
         >
-          {/* Load More Button */}
-          {hasNextPage && (
-            <motion.div
-              className="flex justify-center p-4"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
+          <div className="flex flex-col h-full">
+            {/* Load More Button */}
+            {hasNextPage && (
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="flex-shrink-0 flex justify-center p-4"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
               >
-                <Button
-                  onClick={loadMoreMessages}
-                  disabled={isFetchingNextPage}
-                  variant="outline"
-                  className="flex items-center gap-2"
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  {isFetchingNextPage && (
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                    >
-                      <Icon icon="eos-icons:loading" className="text-sm" />
-                    </motion.div>
-                  )}
-                  Cargar mensajes anteriores
-                </Button>
-              </motion.div>
-            </motion.div>
-          )}
-
-          {/* Messages */}
-          <div className="flex flex-col justify-end gap-2 p-2 md:p-4 py-4 min-h-screen">
-            <AnimatePresence mode="popLayout">
-              {isLoading ? (
-                renderSkeletonMessages()
-              ) : (
-                <>
-                  {messages.length > 0 ? (
-                    messages.map((msg: MessageResponseDto, index: number) => {
-                      const isOwnMessage =
-                        msg.remitente.id === authUser?.user.sub
-
-                      return (
-                        <motion.div
-                          key={msg.id || crypto.randomUUID()}
-                          className={`flex items-end gap-2 ${
-                            isOwnMessage ? "flex-row-reverse" : "flex-row"
-                          }`}
-                          variants={messageVariants}
-                          initial="hidden"
-                          animate="visible"
-                          exit="exit"
-                          layout
-                          custom={index}
-                          transition={{
-                            delay: index * 0.05,
-                            layout: { duration: 0.3 },
-                          }}
-                        >
-                          {/* Message Bubble */}
-                          <motion.div
-                            className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${
-                              isOwnMessage
-                                ? "bg-blue-500 text-gray-main rounded-br-sm"
-                                : "bg-white text-gray-800 rounded-bl-sm border border-gray-200"
-                            }`}
-                            whileHover={{
-                              scale: 1.02,
-                              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                            }}
-                            transition={{ type: "spring", stiffness: 300 }}
-                          >
-                            {/* Message content */}
-                            <div className="text-sm font-medium leading-relaxed break-all">
-                              {msg.contenido}
-                            </div>
-
-                            {/* Timestamp */}
-                            <motion.div
-                              className={`flex gap-1 items-center text-xs mt-1 text-black ${
-                                isOwnMessage
-                                  ? "text-right flex-row-reverse"
-                                  : "text-left"
-                              }`}
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ delay: 0.3 }}
-                            >
-                              {isOwnMessage && (
-                                <>
-                                  {msg.leido ? (
-                                    <Icon
-                                      icon="mdi:check-all"
-                                      color="green"
-                                      className="size-4"
-                                    />
-                                  ) : (
-                                    <Icon
-                                      icon="material-symbols:check"
-                                      className="size-4"
-                                    />
-                                  )}{" "}
-                                </>
-                              )}
-                              {new Date(msg.fechaEnvio).toLocaleTimeString(
-                                "es-ES",
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }
-                              )}
-                            </motion.div>
-                          </motion.div>
-                        </motion.div>
-                      )
-                    })
-                  ) : (
-                    <motion.div
-                      className="flex flex-col items-center justify-center py-12 text-gray-500"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 }}
-                    >
+                  <Button
+                    onClick={loadMoreMessages}
+                    disabled={isFetchingNextPage}
+                    variant="outline"
+                    className="flex items-center gap-2"
+                  >
+                    {isFetchingNextPage && (
                       <motion.div
-                        animate={{ scale: [1, 1.1, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
                       >
-                        <Icon
-                          icon="material-symbols:chat-bubble-outline"
-                          className="text-4xl mb-2"
-                        />
+                        <Icon icon="eos-icons:loading" className="text-sm" />
                       </motion.div>
-                      <span>No hay mensajes aún.</span>
-                      <span className="text-sm">¡Inicia la conversación!</span>
-                    </motion.div>
+                    )}
+                    Cargar mensajes anteriores
+                  </Button>
+                </motion.div>
+              </motion.div>
+            )}
+
+            {/* Messages List */}
+            <div className="flex-1 flex flex-col justify-end p-2 md:p-4">
+              <div className="flex flex-col gap-2">
+                <AnimatePresence mode="popLayout">
+                  {isLoading ? (
+                    renderSkeletonMessages()
+                  ) : (
+                    <>
+                      {messages.length > 0 ? (
+                        messages.map(
+                          (msg: MessageResponseDto, index: number) => {
+                            const isOwnMessage =
+                              msg.remitente.id === authUser?.user.sub
+
+                            return (
+                              <motion.div
+                                key={msg.id || crypto.randomUUID()}
+                                className={`flex items-end gap-2 ${
+                                  isOwnMessage ? "flex-row-reverse" : "flex-row"
+                                }`}
+                                variants={messageVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                layout
+                                custom={index}
+                                transition={{
+                                  delay: index * 0.05,
+                                  layout: { duration: 0.3 },
+                                }}
+                              >
+                                {/* Message Bubble */}
+                                <motion.div
+                                  className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${
+                                    isOwnMessage
+                                      ? "bg-blue-500 text-gray-main rounded-br-sm"
+                                      : "bg-white text-gray-800 rounded-bl-sm border border-gray-200"
+                                  }`}
+                                  whileHover={{
+                                    scale: 1.02,
+                                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                                  }}
+                                  transition={{
+                                    type: "spring",
+                                    stiffness: 300,
+                                  }}
+                                >
+                                  {/* Message content */}
+                                  <div className="text-sm font-medium leading-relaxed break-all">
+                                    {msg.contenido}
+                                  </div>
+
+                                  {/* Timestamp */}
+                                  <motion.div
+                                    className={`flex gap-1 items-center text-xs mt-1 text-black ${
+                                      isOwnMessage
+                                        ? "text-right flex-row-reverse"
+                                        : "text-left"
+                                    }`}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.3 }}
+                                  >
+                                    {isOwnMessage && (
+                                      <>
+                                        {msg.leido ? (
+                                          <Icon
+                                            icon="mdi:check-all"
+                                            color="green"
+                                            className="size-4"
+                                          />
+                                        ) : (
+                                          <Icon
+                                            icon="material-symbols:check"
+                                            className="size-4"
+                                          />
+                                        )}{" "}
+                                      </>
+                                    )}
+                                    {new Date(
+                                      msg.fechaEnvio
+                                    ).toLocaleTimeString("es-ES", {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </motion.div>
+                                </motion.div>
+                              </motion.div>
+                            )
+                          }
+                        )
+                      ) : (
+                        <motion.div
+                          className="flex flex-col items-center justify-center py-12 text-gray-500"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.5 }}
+                        >
+                          <motion.div
+                            animate={{ scale: [1, 1.1, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          >
+                            <Icon
+                              icon="material-symbols:chat-bubble-outline"
+                              className="text-4xl mb-2"
+                            />
+                          </motion.div>
+                          <span>No hay mensajes aún.</span>
+                          <span className="text-sm">
+                            ¡Inicia la conversación!
+                          </span>
+                        </motion.div>
+                      )}
+                    </>
                   )}
-                </>
-              )}
-            </AnimatePresence>
-            <div ref={messagesEndRef} />
+                </AnimatePresence>
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Input Form */}
         <motion.div
-          className="bg-gray-main border-t border-gray-200 p-4"
+          className="flex-shrink-0 bg-gray-main border-t border-gray-200 p-4"
           ref={inputRef}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
