@@ -304,7 +304,6 @@ const ChatByIdPage = () => {
                 <>
                   {messages.length > 0 ? (
                     messages
-                      .reverse()
                       .map((msg: MessageResponseDto, index: number) => {
                         const isOwnMessage =
                           msg.remitente.id === authUser?.user.sub
