@@ -26,6 +26,31 @@ import HandleChangeReviews from "@/pages/profile/reviews/components/HandleChange
 import { createOrGetChat } from "@/services/ChatService"
 import { useAuthContext } from "@/contexts/authContext"
 import toast, { Toaster } from "react-hot-toast"
+import moment from "moment"
+import { DayEnum } from "@/interfaces/Day"
+
+export function getDiaByDate(date: Date): DayEnum {
+  const dia = moment(date).day() // Devuelve 0 (Domingo) - 6 (Sábado)
+
+  switch (dia) {
+    case 0:
+      return DayEnum.DOMINGO
+    case 1:
+      return DayEnum.LUNES
+    case 2:
+      return DayEnum.MARTES
+    case 3:
+      return DayEnum.MIERCOLES
+    case 4:
+      return DayEnum.JUEVES
+    case 5:
+      return DayEnum.VIERNES
+    case 6:
+      return DayEnum.SABADO
+    default:
+      throw new Error("Día inválido")
+  }
+}
 
 const BarberByIdPage = () => {
   const [success, setSuccess] = useState(false)
@@ -118,6 +143,8 @@ const BarberByIdPage = () => {
     }
     initiateChat()
   }
+  const hoyEnum = getDiaByDate(new Date())
+  const isOpen = data?.data.horarios.some((horario: any) => horario.dia === hoyEnum)
   return (
     <main className="flex flex-col min-h-screen w-full relative">
       <Button
@@ -225,9 +252,9 @@ const BarberByIdPage = () => {
             <span>Ahora: </span>
             <p
               className={`font-extrabold text-md 
-            ${data?.data.abierto ? "text-green-500" : "text-red-500"} `}
+            ${isOpen ? "text-green-500" : "text-red-500"} `}
             >
-              {data?.data.abierto ? "Abierto" : "Cerrado"}
+              {isOpen ? "Abierto" : "Cerrado"}
             </p>
           </div>
         </div>
