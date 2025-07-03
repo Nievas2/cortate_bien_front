@@ -117,6 +117,8 @@ const ChatByIdPage = () => {
       setMessage("")
     } catch (error) {
       console.error("Error sending message:", error)
+    } finally {
+      scrollToBottom()
     }
   }
 
