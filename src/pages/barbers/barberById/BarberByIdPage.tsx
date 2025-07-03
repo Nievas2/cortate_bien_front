@@ -144,7 +144,30 @@ const BarberByIdPage = () => {
     initiateChat()
   }
   const hoyEnum = getDiaByDate(new Date())
-  const isOpen = data?.data.horarios.some((horario: any) => horario.dia === hoyEnum)
+
+  // Nueva lógica para saber si está abierto ahora mismo
+  const isOpen = (() => {
+    if (!data?.data.horarios) return false
+    const horarioHoy = data.data.horarios.find(
+      (horario: any) => horario.dia === hoyEnum
+    )
+    if (!horarioHoy) return false
+
+    // Obtener hora actual en formato HH:mm
+    const now = moment()
+    const horaApertura = moment(horarioHoy.hora_apertura, "HH:mm")
+    const horaCierre = moment(horarioHoy.hora_cierre, "HH:mm")
+
+    // Si el cierre es después de la apertura (horario normal)
+    if (horaCierre.isAfter(horaApertura)) {
+      return now.isBetween(horaApertura, horaCierre)
+    }
+    // Si el cierre es después de medianoche (ej: 22:00 - 02:00)
+    else {
+      return now.isAfter(horaApertura) || now.isBefore(horaCierre)
+    }
+  })()
+
   return (
     <main className="flex flex-col min-h-screen w-full relative">
       <Button
@@ -216,23 +239,27 @@ const BarberByIdPage = () => {
                     />
                   </span>
                 ))}
+                {!Number.isInteger(data?.data.puntaje) && (
+                  <Icon
+                    icon="material-symbols:star-half"
+                    color="gold"
+                    width={20}
+                  />
+                )}
+
+                {Array.from({
+                  length: 5 - Math.ceil(data?.data.puntaje),
+                }).map((_, index) => (
+                  <span key={index}>
+                    <Icon
+                      icon="material-symbols:star-outline"
+                      stroke="1"
+                      width={20}
+                    />
+                  </span>
+                ))}
               </div>
             )}
-            {!Number.isInteger(data?.data.puntaje) && (
-              <Icon icon="material-symbols:star-half" color="gold" width={20} />
-            )}
-
-            {Array.from({
-              length: 5 - Math.ceil(data?.data.puntaje),
-            }).map((_, index) => (
-              <span key={index}>
-                <Icon
-                  icon="material-symbols:star-outline"
-                  stroke="1"
-                  width={20}
-                />
-              </span>
-            ))}
           </div>
         </div>
 
