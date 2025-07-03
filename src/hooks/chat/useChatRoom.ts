@@ -17,9 +17,9 @@ export const useChatRoom = (chatId: string) => {
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ["chatMessages", chatId],
-      queryFn: ({ pageParam = 0 }: { pageParam?: number }) =>
+      queryFn: ({ pageParam = 1 }: { pageParam?: number }) =>
         getChatMessages({ chatId, pageParam }),
-      initialPageParam: 0,
+      initialPageParam: 1,
       getNextPageParam: (lastPage: any[], allPages: any[][]) => {
         return lastPage.length === 30 ? allPages.length : undefined
       },
