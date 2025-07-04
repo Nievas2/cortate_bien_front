@@ -14,6 +14,7 @@ export const useChatsList = () => {
     queryKey: ["chats"],
     queryFn: () => getUserChats(),
     enabled: !!authUser?.token,
+    refetchOnWindowFocus: false,
   })
 
   useEffect(() => {
