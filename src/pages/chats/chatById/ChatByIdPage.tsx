@@ -37,6 +37,7 @@ const ChatByIdPage = () => {
   const [message, setMessage] = useState("")
   const [showScrollToBottom, setShowScrollToBottom] = useState(false)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
+  const [ignoreScroll, setIgnoreScroll] = useState(false)
 
   // GSAP Animations
   useEffect(() => {
@@ -66,10 +67,11 @@ const ChatByIdPage = () => {
 
   // Nuevo: Scroll automático cada vez que cambian los mensajes
   useEffect(() => {
-    if (messagesContainerRef.current && !isFetchingNextPage) {
+    if (messagesContainerRef.current && !isFetchingNextPage && !ignoreScroll) {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight
     }
+    setIgnoreScroll(false)
   }, [messages.length, isFetchingNextPage])
 
   // Mark messages as read when component mounts or messages change
@@ -106,6 +108,7 @@ const ChatByIdPage = () => {
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIgnoreScroll(true)
     if (!message.trim()) return
 
     try {
