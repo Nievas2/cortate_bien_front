@@ -9,8 +9,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { gsap } from "gsap"
 import LayoutChat from "../components/LayoutChat"
 import { renderSkeletonMessages } from "../skeletons/MessagesSkeleton"
-import { Textarea } from "@/components/ui/textarea"
 import { useDebouncedCallback } from "use-debounce"
+import { Input } from "@/components/ui/input"
 
 const ChatByIdPage = () => {
   const { pathname } = useLocation()
@@ -133,7 +133,7 @@ const ChatByIdPage = () => {
     handleTypingChange(value.length > 0)
   }, 200)
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setMessage(value)
     debouncedTyping(value)
@@ -418,10 +418,9 @@ const ChatByIdPage = () => {
                 whileFocus={{ scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <Textarea
+                <Input
                   value={message}
                   onChange={handleInputChange}
-                  rows={1}
                   placeholder="Escribe un mensaje..."
                   className="pr-12 resize-none max-h-24 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm min-h-[50px]"
                   style={{ lineHeight: "1.5", paddingTop: 6, paddingBottom: 6 }}
