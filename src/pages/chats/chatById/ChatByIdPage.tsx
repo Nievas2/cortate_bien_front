@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useLayoutEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { useChatRoom } from "@/hooks/chat/useChatRoom"
 import { useAuthContext } from "@/contexts/authContext"
@@ -15,16 +15,18 @@ import { Input } from "@/components/ui/input"
 const ChatByIdPage = () => {
   const { pathname } = useLocation()
   const chatId = pathname.split("/")[2]
-  const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLDivElement>(null) // <-- Ref para el input
+
+  // --- Refs para la lógica de scroll ---
+  const scrollHeightBeforeAddRef = useRef(0)
+  const userScrolledRef = useRef(false)
 
   const {
     messages,
     fetchNextPage,
     hasNextPage,
     isLoading,
-    isPending,
     isFetchingNextPage,
     sendMessage,
     markAsRead,
@@ -37,19 +39,17 @@ const ChatByIdPage = () => {
   const { authUser } = useAuthContext()
   const [message, setMessage] = useState("")
   const [showScrollToBottom, setShowScrollToBottom] = useState(false)
-  const [isFirstLoad, setIsFirstLoad] = useState(true)
-  const wasNearBottomRef = useRef(true)
 
-  // GSAP Animations
+  // --- Animaciones GSAP restauradas ---
   useEffect(() => {
-    // Animate container on mount
+    // Animar contenedor al montar
     gsap.fromTo(
       messagesContainerRef.current,
       { opacity: 0, y: 20 },
       { opacity: 1, y: 0, duration: 0.6, ease: "easeOut" }
     )
 
-    // Animate input on mount
+    // Animar input al montar
     gsap.fromTo(
       inputRef.current,
       { opacity: 0, y: 30 },
@@ -57,30 +57,29 @@ const ChatByIdPage = () => {
     )
   }, [])
 
-  // Scroll automático SOLO la primera vez que se cargan los mensajes
-  useEffect(() => {
-    if (isFirstLoad && messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop =
-        messagesContainerRef.current.scrollHeight
-      setIsFirstLoad(false)
+  const loadMoreMessages = () => {
+    const container = messagesContainerRef.current
+    if (hasNextPage && !isFetchingNextPage && container) {
+      scrollHeightBeforeAddRef.current = container.scrollHeight
+      fetchNextPage()
     }
-  }, [isFirstLoad])
+  }
 
-  // Nuevo: Scroll automático cada vez que cambian los mensajes
-  useEffect(() => {
-    console.log("messages.length", messages.length)
-    console.log("isFetchingNextPage", isFetchingNextPage)
-    if (
-      messagesContainerRef.current &&
-      !isFetchingNextPage &&
-      messages.length > 0
-    ) {
-      messagesContainerRef.current.scrollTop =
-        messagesContainerRef.current.scrollHeight
+  useLayoutEffect(() => {
+    const container = messagesContainerRef.current
+    if (!container) return
+
+    if (scrollHeightBeforeAddRef.current > 0) {
+      const newScrollHeight = container.scrollHeight
+      const heightDifference =
+        newScrollHeight - scrollHeightBeforeAddRef.current
+      container.scrollTop += heightDifference
+      scrollHeightBeforeAddRef.current = 0
+    } else if (!userScrolledRef.current) {
+      container.scrollTop = container.scrollHeight
     }
-  }, [messages.length, isFetchingNextPage, isLoading, isPending])
+  }, [messages])
 
-  // Mark messages as read when component mounts or messages change
   useEffect(() => {
     const unreadMessageIds = messages
       .filter((msg) => !msg.leido && msg.remitente.id !== authUser?.user.sub)
@@ -91,23 +90,24 @@ const ChatByIdPage = () => {
     }
   }, [messages, authUser, markAsRead])
 
-  // Handler para scroll
   const handleScroll = () => {
     const container = messagesContainerRef.current
     if (!container) return
     const { scrollTop, scrollHeight, clientHeight } = container
-    // Si está a menos de 50px del fondo, ocultar el botón
-    if (scrollHeight - scrollTop - clientHeight < 50) {
-      setShowScrollToBottom(false)
-    } else {
+
+    if (scrollTop < scrollHeight - clientHeight - 100) {
+      userScrolledRef.current = true
       setShowScrollToBottom(true)
+    } else {
+      userScrolledRef.current = false
+      setShowScrollToBottom(false)
     }
   }
 
-  // Función para bajar al último mensaje
   const scrollToBottom = () => {
     const container = messagesContainerRef.current
     if (container) {
+      userScrolledRef.current = false
       container.scrollTop = container.scrollHeight
     }
   }
@@ -117,8 +117,10 @@ const ChatByIdPage = () => {
     if (!message.trim()) return
 
     try {
-      // Animate send button
-      const sendButton = e.currentTarget.querySelector('button[type="submit"]')
+      // Animar botón de envío
+      const sendButton = (e.currentTarget as HTMLFormElement).querySelector(
+        'button[type="submit"]'
+      )
       if (sendButton) {
         gsap.to(sendButton, {
           scale: 0.95,
@@ -129,12 +131,12 @@ const ChatByIdPage = () => {
         })
       }
 
+      userScrolledRef.current = false
       sendMessage(message.trim())
       setMessage("")
     } catch (error) {
       console.error("Error sending message:", error)
     }
-    // Quitar el scrollToBottom de aquí, ya no es necesario
   }
 
   const debouncedTyping = useDebouncedCallback((value: string) => {
@@ -147,34 +149,16 @@ const ChatByIdPage = () => {
     debouncedTyping(value)
   }
 
-  const loadMoreMessages = () => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
-    }
-  }
-
-  // Animation variants
+  // --- Variantes de animación restauradas ---
   const messageVariants = {
-    hidden: {
-      opacity: 0,
-      y: 20,
-      scale: 0.95,
-    },
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 25,
-      },
+      transition: { type: "spring", stiffness: 300, damping: 25 },
     },
-    exit: {
-      opacity: 0,
-      scale: 0.9,
-      transition: { duration: 0.2 },
-    },
+    exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } },
   }
 
   const typingVariants = {
@@ -182,42 +166,15 @@ const ChatByIdPage = () => {
     visible: {
       opacity: 1,
       x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 400,
-        damping: 25,
-      },
+      transition: { type: "spring", stiffness: 400, damping: 25 },
     },
     exit: { opacity: 0, x: -20 },
   }
 
-  // Antes de que cambien los mensajes, guarda si el usuario está cerca del fondo
-  useEffect(() => {
-    const container = messagesContainerRef.current
-    if (!container) return
-    const { scrollTop, scrollHeight, clientHeight } = container
-    // Considera "cerca del fondo" si está a menos de 100px del final
-    wasNearBottomRef.current = scrollHeight - (scrollTop + clientHeight) < 100
-  }, [isFetchingNextPage])
-
-  // Scroll automático SOLO si el usuario estaba cerca del fondo antes del cambio
-  useEffect(() => {
-    if (
-      messagesContainerRef.current &&
-      wasNearBottomRef.current &&
-      !isFetchingNextPage &&
-      !isLoading &&
-      !isPending
-    ) {
-      messagesContainerRef.current.scrollTop =
-        messagesContainerRef.current.scrollHeight
-    }
-  }, [messages.length, isFetchingNextPage, isLoading, isPending])
-
   return (
     <LayoutChat>
       <div className="flex flex-col h-screen w-full">
-        {/* Header */}
+        {/* Header (sin cambios) */}
         <motion.div className="flex-shrink-0 flex items-center justify-between pl-20 p-2 bg-gray-main shadow-sm">
           <div className="flex items-center gap-3">
             <motion.div
@@ -246,13 +203,11 @@ const ChatByIdPage = () => {
               </div>
             </div>
           </div>
-
-          {/* Typing indicator */}
           <AnimatePresence>
             {isTyping && typingUser && (
               <motion.div
                 className="flex items-center gap-2 text-sm text-gray-500"
-                variants={typingVariants}
+                variants={typingVariants} // <-- Variante usada
                 initial="hidden"
                 animate="visible"
                 exit="exit"
@@ -269,7 +224,7 @@ const ChatByIdPage = () => {
           </AnimatePresence>
         </motion.div>
 
-        {/* Messages Container - Cambio principal aquí */}
+        {/* Messages Container */}
         <div
           className="flex-1 overflow-y-auto bg-gray-700 overflow-x-hidden"
           ref={messagesContainerRef}
@@ -279,38 +234,19 @@ const ChatByIdPage = () => {
           <div className="flex flex-col h-full">
             {/* Load More Button */}
             {hasNextPage && (
-              <motion.div
-                className="flex-shrink-0 flex justify-center p-4"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+              <div className="flex-shrink-0 flex justify-center p-4">
+                <Button
+                  onClick={loadMoreMessages}
+                  disabled={isFetchingNextPage}
+                  variant="outline"
+                  className="flex items-center gap-2"
                 >
-                  <Button
-                    onClick={loadMoreMessages}
-                    disabled={isFetchingNextPage}
-                    variant="outline"
-                    className="flex items-center gap-2"
-                  >
-                    {isFetchingNextPage && (
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{
-                          duration: 1,
-                          repeat: Infinity,
-                          ease: "linear",
-                        }}
-                      >
-                        <Icon icon="eos-icons:loading" className="text-sm" />
-                      </motion.div>
-                    )}
-                    Cargar mensajes anteriores
-                  </Button>
-                </motion.div>
-              </motion.div>
+                  {isFetchingNextPage && (
+                    <Icon icon="eos-icons:loading" className="text-sm" />
+                  )}
+                  Cargar mensajes anteriores
+                </Button>
+              </div>
             )}
 
             {/* Messages List */}
@@ -333,7 +269,7 @@ const ChatByIdPage = () => {
                                 className={`flex items-end gap-2 ${
                                   isOwnMessage ? "flex-row-reverse" : "flex-row"
                                 }`}
-                                variants={messageVariants}
+                                variants={messageVariants} // <-- Variante usada
                                 initial="hidden"
                                 animate="visible"
                                 exit="exit"
@@ -344,7 +280,6 @@ const ChatByIdPage = () => {
                                   layout: { duration: 0.3 },
                                 }}
                               >
-                                {/* Message Bubble */}
                                 <motion.div
                                   className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${
                                     isOwnMessage
@@ -360,12 +295,9 @@ const ChatByIdPage = () => {
                                     stiffness: 300,
                                   }}
                                 >
-                                  {/* Message content */}
                                   <div className="text-sm font-medium leading-relaxed break-all">
                                     {msg.contenido}
                                   </div>
-
-                                  {/* Timestamp */}
                                   <motion.div
                                     className={`flex gap-1 items-center text-xs mt-1 text-black ${
                                       isOwnMessage
@@ -429,7 +361,6 @@ const ChatByIdPage = () => {
                     </>
                   )}
                 </AnimatePresence>
-                <div ref={messagesEndRef} />
               </div>
             </div>
           </div>
@@ -438,10 +369,7 @@ const ChatByIdPage = () => {
         {/* Input Form */}
         <motion.div
           className="flex-shrink-0 bg-gray-main border-t border-gray-200 p-4"
-          ref={inputRef}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
+          ref={inputRef} // <-- Ref añadida
         >
           <form onSubmit={handleSend} className="flex items-center gap-3">
             <div className="flex-1 relative">
