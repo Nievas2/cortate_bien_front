@@ -30,7 +30,7 @@ export const useChatRoom = (chatId: string) => {
     })
 
   // Aplanar los mensajes de todas las páginas en un solo array
-  const messages = data?.pages.flatMap((page: any) => page.results) || []
+  const messages = data?.pages.flat() ?? []
 
   // Lógica de WebSocket
   useEffect(() => {
