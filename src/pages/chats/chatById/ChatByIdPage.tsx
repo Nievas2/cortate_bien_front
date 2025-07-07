@@ -24,6 +24,7 @@ const ChatByIdPage = () => {
     fetchNextPage,
     hasNextPage,
     isLoading,
+    isPending,
     isFetchingNextPage,
     sendMessage,
     markAsRead,
@@ -66,17 +67,22 @@ const ChatByIdPage = () => {
 
   // Nuevo: Scroll automático cada vez que cambian los mensajes
   useEffect(() => {
+    console.log("messages.length", messages.length)
+    console.log("isFetchingNextPage", isFetchingNextPage)
+    console.log("isLoading", isLoading)
+    console.log("isPending", isPending)
+
     if (
       messagesContainerRef.current &&
       !isFetchingNextPage &&
       !isLoading &&
-      messages.length > 0
+      messages.length > 0 &&
+      !isPending
     ) {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight
-      setMessage("")
     }
-  }, [messages.length, isFetchingNextPage])
+  }, [messages.length])
 
   // Mark messages as read when component mounts or messages change
   useEffect(() => {
@@ -128,6 +134,7 @@ const ChatByIdPage = () => {
       }
 
       sendMessage(message.trim())
+      setMessage("")
     } catch (error) {
       console.error("Error sending message:", error)
     }
