@@ -29,8 +29,15 @@ export const useChatRoom = (chatId: string) => {
       enabled: !!chatId,
     })
 
-  // Aplanar los mensajes de todas las páginas en un solo array
-  const messages = data?.pages.flatMap((page) => page.results) || []
+  // Combinar mensajes de modo que los de la página más reciente estén al final.
+  // Cuando se carga una nueva página, sus mensajes se agregan al inicio del array.
+  const messages =
+    data?.pages
+      .map((page) => page.results)
+      .reduceRight(
+        (acc, curr) => [...curr, ...acc],
+        [] as MessageResponseDto[]
+      ) || []
 
   // Lógica de WebSocket
   useEffect(() => {
