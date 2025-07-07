@@ -57,17 +57,18 @@ const SideBarChat = ({ open }: { open: boolean }) => {
 
   if (error) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-50">
+      <div className="w-full h-full flex items-center justify-center border border-white">
         <div className="flex flex-col items-center gap-4 text-center">
           <Icon
             icon="material-symbols:error-outline"
-            className="text-4xl text-red-500"
+            color="white"
+            className="text-4xl"
           />
           <div className="flex flex-col gap-2">
-            <span className="text-gray-800 font-medium">
+            <span className="text-gray-100 font-medium">
               Error al cargar conversaciones
             </span>
-            <span className="text-gray-600 text-sm">
+            <span className="text-gray-200 text-sm">
               No se pudieron obtener tus mensajes
             </span>
           </div>
