@@ -64,6 +64,14 @@ const ChatByIdPage = () => {
     }
   }, [isFirstLoad])
 
+  // Nuevo: Scroll automático cada vez que cambian los mensajes
+  useEffect(() => {
+    if (messagesContainerRef.current && !isFetchingNextPage) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight
+    }
+  }, [messages.length, isFetchingNextPage])
+
   // Mark messages as read when component mounts or messages change
   useEffect(() => {
     const unreadMessageIds = messages
@@ -117,9 +125,8 @@ const ChatByIdPage = () => {
       setMessage("")
     } catch (error) {
       console.error("Error sending message:", error)
-    } finally {
-      scrollToBottom()
     }
+    // Quitar el scrollToBottom de aquí, ya no es necesario
   }
 
   const debouncedTyping = useDebouncedCallback((value: string) => {
