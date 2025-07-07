@@ -38,6 +38,7 @@ const ChatByIdPage = () => {
   const [message, setMessage] = useState("")
   const [showScrollToBottom, setShowScrollToBottom] = useState(false)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
+  const wasNearBottomRef = useRef(true)
 
   // GSAP Animations
   useEffect(() => {
@@ -83,6 +84,29 @@ const ChatByIdPage = () => {
       markAsRead(unreadMessageIds)
     }
   }, [messages, authUser, markAsRead])
+
+  // Antes de que cambien los mensajes, guarda si el usuario está cerca del fondo
+  useEffect(() => {
+    const container = messagesContainerRef.current
+    if (!container) return
+    const { scrollTop, scrollHeight, clientHeight } = container
+    // Considera "cerca del fondo" si está a menos de 100px del final
+    wasNearBottomRef.current = scrollHeight - (scrollTop + clientHeight) < 100
+  }, [isFetchingNextPage])
+
+  // Auto scroll solo si el usuario estaba cerca del fondo antes del cambio
+  useEffect(() => {
+    const container = messagesContainerRef.current
+    if (
+      container &&
+      wasNearBottomRef.current &&
+      !isFetchingNextPage &&
+      !isLoading &&
+      !isPending
+    ) {
+      container.scrollTop = container.scrollHeight
+    }
+  }, [messages.length, isFetchingNextPage])
 
   // Handler para scroll
   const handleScroll = () => {
