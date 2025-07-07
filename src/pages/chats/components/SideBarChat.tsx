@@ -55,36 +55,6 @@ const SideBarChat = ({ open }: { open: boolean }) => {
     navigate(`/chats/${chatId}`)
   }
 
-  if (error) {
-    return (
-      <div className="w-full h-full flex items-center justify-center border border-white">
-        <div className="flex flex-col items-center gap-4 text-center">
-          <Icon
-            icon="material-symbols:error-outline"
-            color="white"
-            className="text-4xl"
-          />
-          <div className="flex flex-col gap-2">
-            <span className="text-gray-100 font-medium">
-              Error al cargar conversaciones
-            </span>
-            <span className="text-gray-200 text-sm">
-              No se pudieron obtener tus mensajes
-            </span>
-          </div>
-          <Button
-            onClick={() => refetch()}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <Icon icon="material-symbols:refresh" />
-            Reintentar
-          </Button>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <aside
       className={`bg-gray-main h-full transition-all duration-300 absolute top-0 z-40 sm:sticky sm:top-0  ${
@@ -92,217 +62,249 @@ const SideBarChat = ({ open }: { open: boolean }) => {
       }`}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex flex-col gap-2 sticky top-0 w-full h-screen">
-        {/* Header */}
-        <div
-          className={`flex items-center justify-end sm:justify-start gap-2 px-6 py-[17px] relative bg-black-main border-b border-b-gray-300 ${
-            open ? "flex" : "hidden"
-          }`}
-        >
-          <Icon
-            className="text-white"
-            icon="mage:message-round"
-            width="30"
-            height="30"
-          />
-          <span className="font-semibold">Mis chats</span>
-          <Link
-            to="/chats"
-            className="absolute bottom-0 right-0 left-0 translate-x-1/3 flex items-center text-xs group group-hover:underline group-hover:text-blue-600 duration-100 transition-colors"
+      {error ? (
+        <div className="w-full h-full flex items-center justify-center border border-white">
+          <div className="flex flex-col items-center gap-4 text-center">
+            <Icon
+              icon="material-symbols:error-outline"
+              color="white"
+              className="text-4xl"
+            />
+            <div className="flex flex-col gap-2">
+              <span className="text-gray-100 font-medium">
+                Error al cargar conversaciones
+              </span>
+              <span className="text-gray-200 text-sm">
+                No se pudieron obtener tus mensajes
+              </span>
+            </div>
+            <Button
+              onClick={() => refetch()}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Icon icon="material-symbols:refresh" />
+              Reintentar
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2 sticky top-0 w-full h-screen">
+          {/* Header */}
+          <div
+            className={`flex items-center justify-end sm:justify-start gap-2 px-6 py-[17px] relative bg-black-main border-b border-b-gray-300 ${
+              open ? "flex" : "hidden"
+            }`}
           >
             <Icon
-              icon="material-symbols:arrow-forward"
-              className="text-white rotate-180 group-hover:-translate-x-1 transition-all duration-300 group-hover:text-blue-600 duration-100 "
-            />{" "}
-            <p className="group-hover:text-blue-600 duration-100 transition-colors">
-              Todos los chats
-            </p>
-          </Link>
-        </div>
-
-        {/* Navigation */}
-        {isLoading ? (
-          <div className="flex items-center justify-center">
-            <div className="flex flex-col items-center gap-4">
+              className="text-white"
+              icon="mage:message-round"
+              width="30"
+              height="30"
+            />
+            <span className="font-semibold">Mis chats</span>
+            <Link
+              to="/chats"
+              className="absolute bottom-0 right-0 left-0 translate-x-1/3 flex items-center text-xs group group-hover:underline group-hover:text-blue-600 duration-100 transition-colors"
+            >
               <Icon
-                icon="eos-icons:loading"
-                className="text-4xl text-blue-500"
-              />
-              <span className="text-gray-600">Cargando conversaciones...</span>
-            </div>
+                icon="material-symbols:arrow-forward"
+                className="text-white rotate-180 group-hover:-translate-x-1 transition-all duration-300 group-hover:text-blue-600 duration-100 "
+              />{" "}
+              <p className="group-hover:text-blue-600 duration-100 transition-colors">
+                Todos los chats
+              </p>
+            </Link>
           </div>
-        ) : (
-          <div className="flex-1 overflow-y-auto">
-            {chats && chats.length > 0 ? (
-              <div className="flex flex-col">
-                {[...chats]
-                  .sort(
-                    (a, b) =>
-                      new Date(b.ultimaActividad).getTime() -
-                      new Date(a.ultimaActividad).getTime()
-                  )
-                  .map((chat: ChatResponseDto) => {
-                    const otherUser = getOtherUser(chat)
-                    const userRole = getUserRole(chat)
 
-                    return (
-                      chat.ultimoMensaje && (
-                        <div
-                          key={chat.id}
-                          onClick={() => handleChatClick(chat.id)}
-                          className="flex items-center gap-3 p-2 md:p-4 hover:bg-gray-900/75 cursor-pointer transition-colors relative"
-                        >
-                          {/* Avatar */}
-                          <div className="relative flex-shrink-0">
-                            <div className="size-8 md:size-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-medium text-lg shadow-md">
-                              {otherUser.nombre.charAt(0).toUpperCase()}
-                              {otherUser.apellido.charAt(0).toUpperCase()}
+          {/* Navigation */}
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <div className="flex flex-col items-center gap-4">
+                <Icon
+                  icon="eos-icons:loading"
+                  className="text-4xl text-blue-500"
+                />
+                <span className="text-gray-600">
+                  Cargando conversaciones...
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex-1 overflow-y-auto">
+              {chats && chats.length > 0 ? (
+                <div className="flex flex-col">
+                  {[...chats]
+                    .sort(
+                      (a, b) =>
+                        new Date(b.ultimaActividad).getTime() -
+                        new Date(a.ultimaActividad).getTime()
+                    )
+                    .map((chat: ChatResponseDto) => {
+                      const otherUser = getOtherUser(chat)
+                      const userRole = getUserRole(chat)
+
+                      return (
+                        chat.ultimoMensaje && (
+                          <div
+                            key={chat.id}
+                            onClick={() => handleChatClick(chat.id)}
+                            className="flex items-center gap-3 p-2 md:p-4 hover:bg-gray-900/75 cursor-pointer transition-colors relative"
+                          >
+                            {/* Avatar */}
+                            <div className="relative flex-shrink-0">
+                              <div className="size-8 md:size-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-medium text-lg shadow-md">
+                                {otherUser.nombre.charAt(0).toUpperCase()}
+                                {otherUser.apellido.charAt(0).toUpperCase()}
+                              </div>
+
+                              {/* Unread indicator */}
+                              {!chat.visto && (
+                                <div className="absolute -top-1 -right-1 size-2 bg-red-500 rounded-full flex items-center justify-center"></div>
+                              )}
                             </div>
 
-                            {/* Unread indicator */}
-                            {!chat.visto && (
-                              <div className="absolute -top-1 -right-1 size-2 bg-red-500 rounded-full flex items-center justify-center"></div>
-                            )}
-                          </div>
+                            {/* Chat Info */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between mb-1">
+                                <div className="flex items-center gap-2">
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger>
+                                        <h3
+                                          className={`font-medium truncate max-w-36 ${
+                                            !chat.visto
+                                              ? "text-white"
+                                              : "text-gray-700"
+                                          }`}
+                                        >
+                                          {otherUser.nombre}{" "}
+                                          {otherUser.apellido}
+                                        </h3>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>
+                                          {otherUser.nombre}{" "}
+                                          {otherUser.apellido}
+                                        </p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
 
-                          {/* Chat Info */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between mb-1">
-                              <div className="flex items-center gap-2">
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger>
-                                      <h3
-                                        className={`font-medium truncate max-w-36 ${
-                                          !chat.visto
-                                            ? "text-white"
-                                            : "text-gray-700"
-                                        }`}
-                                      >
-                                        {otherUser.nombre} {otherUser.apellido}
-                                      </h3>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>
-                                        {otherUser.nombre} {otherUser.apellido}
-                                      </p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
+                                  {/* Role badge */}
+                                  <span
+                                    className={`text-xs hidden md:block px-2 py-1 rounded-full ${
+                                      userRole === "cliente"
+                                        ? "bg-blue-100 text-blue-700"
+                                        : "bg-green-100 text-green-700"
+                                    }`}
+                                  >
+                                    {userRole === "cliente"
+                                      ? "Barbero"
+                                      : "Cliente"}
+                                  </span>
+                                </div>
+                              </div>
 
-                                {/* Role badge */}
-                                <span
-                                  className={`text-xs hidden md:block px-2 py-1 rounded-full ${
-                                    userRole === "cliente"
-                                      ? "bg-blue-100 text-blue-700"
-                                      : "bg-green-100 text-green-700"
-                                  }`}
-                                >
-                                  {userRole === "cliente"
-                                    ? "Barbero"
-                                    : "Cliente"}
+                              {/* Barbershop name */}
+                              <div className="flex items-center gap-1 mb-1">
+                                <Icon
+                                  icon="material-symbols:store"
+                                  className="text-xs text-gray-400"
+                                />
+                                <span className="text-xs text-gray-500 truncate">
+                                  {chat.barberia.nombre}
                                 </span>
+                              </div>
+
+                              {/* Last message */}
+                              <div className="flex items-center gap-1">
+                                {chat.ultimoMensaje && (
+                                  <>
+                                    {chat.ultimoMensaje.remitente ===
+                                      authUser?.user.sub && (
+                                      <>
+                                        {chat.ultimoMensaje.visto ? (
+                                          <Icon
+                                            icon="mdi:check-all"
+                                            color="green"
+                                            className="size-4"
+                                          />
+                                        ) : (
+                                          <Icon
+                                            icon="material-symbols:check"
+                                            className="size-4"
+                                          />
+                                        )}
+                                      </>
+                                    )}
+                                    <p
+                                      className={`text-sm truncate ${
+                                        !chat.visto
+                                          ? "text-white font-medium"
+                                          : "text-gray-600"
+                                      }`}
+                                    >
+                                      {truncateMessage(
+                                        chat.ultimoMensaje.contenido
+                                      )}
+                                    </p>
+                                  </>
+                                )}
                               </div>
                             </div>
 
-                            {/* Barbershop name */}
-                            <div className="flex items-center gap-1 mb-1">
-                              <Icon
-                                icon="material-symbols:store"
-                                className="text-xs text-gray-400"
-                              />
-                              <span className="text-xs text-gray-500 truncate">
-                                {chat.barberia.nombre}
-                              </span>
-                            </div>
-
-                            {/* Last message */}
-                            <div className="flex items-center gap-1">
-                              {chat.ultimoMensaje && (
-                                <>
-                                  {chat.ultimoMensaje.remitente ===
-                                    authUser?.user.sub && (
-                                    <>
-                                      {chat.ultimoMensaje.visto ? (
-                                        <Icon
-                                          icon="mdi:check-all"
-                                          color="green"
-                                          className="size-4"
-                                        />
-                                      ) : (
-                                        <Icon
-                                          icon="material-symbols:check"
-                                          className="size-4"
-                                        />
-                                      )}
-                                    </>
-                                  )}
-                                  <p
-                                    className={`text-sm truncate ${
-                                      !chat.visto
-                                        ? "text-white font-medium"
-                                        : "text-gray-600"
-                                    }`}
-                                  >
-                                    {truncateMessage(
-                                      chat.ultimoMensaje.contenido
-                                    )}
-                                  </p>
-                                </>
-                              )}
-                            </div>
+                            {/* Arrow indicator */}
+                            <Icon
+                              icon="material-symbols:chevron-right"
+                              className="text-gray-400 text-lg flex-shrink-0 hidden md:block"
+                            />
+                            <span className="text-xs text-gray-500 flex-shrink-0 absolute top-2 right-2">
+                              {formatTime(chat.ultimaActividad)}
+                            </span>
                           </div>
-
-                          {/* Arrow indicator */}
-                          <Icon
-                            icon="material-symbols:chevron-right"
-                            className="text-gray-400 text-lg flex-shrink-0 hidden md:block"
-                          />
-                          <span className="text-xs text-gray-500 flex-shrink-0 absolute top-2 right-2">
-                            {formatTime(chat.ultimaActividad)}
-                          </span>
-                        </div>
+                        )
                       )
-                    )
-                  })}
-              </div>
-            ) : (
-              /* Empty state */
-              <div className="flex flex-col items-center justify-center h-full text-center p-8">
-                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-                  <Icon
-                    icon="material-symbols:chat-bubble-outline"
-                    className="text-3xl text-gray-400"
-                  />
+                    })}
                 </div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">
-                  No tienes conversaciones
-                </h3>
-                <p className="text-gray-600 max-w-sm">
-                  Cuando inicies una conversación con un barbero o cliente,
-                  aparecerá aquí.
-                </p>
-              </div>
-            )}
+              ) : (
+                /* Empty state */
+                <div className="flex flex-col items-center justify-center h-full text-center p-8">
+                  <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                    <Icon
+                      icon="material-symbols:chat-bubble-outline"
+                      className="text-3xl text-gray-400"
+                    />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">
+                    No tienes conversaciones
+                  </h3>
+                  <p className="text-gray-600 max-w-sm">
+                    Cuando inicies una conversación con un barbero o cliente,
+                    aparecerá aquí.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+          <div
+            className={`${
+              open ? "flex flex-col w-full gap-2" : "hidden"
+            } p-2  px-3 border-t border-gray-100 bg-gray-900`}
+          >
+            <Link to="/">
+              <Button
+                className="flex justify-start gap-1 px-0 w-full"
+                variant="ghost"
+                size="sm"
+              >
+                <Icon icon="carbon:home" />
+                Inicio
+              </Button>
+            </Link>
           </div>
-        )}
-        <div
-          className={`${
-            open ? "flex flex-col w-full gap-2" : "hidden"
-          } p-2  px-3 border-t border-gray-100 bg-gray-900`}
-        >
-          <Link to="/">
-            <Button
-              className="flex justify-start gap-1 px-0 w-full"
-              variant="ghost"
-              size="sm"
-            >
-              <Icon icon="carbon:home" />
-              Inicio
-            </Button>
-          </Link>
         </div>
-      </div>
+      )}
     </aside>
   )
 }
