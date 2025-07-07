@@ -20,15 +20,17 @@ export const useChatRoom = (chatId: string) => {
       queryFn: ({ pageParam = 1 }: { pageParam?: number }) =>
         getChatMessages({ chatId, pageParam }),
       initialPageParam: 1,
-      getNextPageParam: (lastPage: any[], allPages: any[][]) => {
-        return lastPage.length === 30 ? allPages.length : undefined
+      getNextPageParam: (lastPage: any) => {
+        return lastPage.current_page < lastPage.pages
+          ? lastPage.current_page + 1
+          : undefined
       },
       staleTime: 0,
       enabled: !!chatId,
     })
 
   // Aplanar los mensajes de todas las páginas en un solo array
-  const messages = data?.pages.flat() ?? []
+  const messages = data?.pages.flatMap((page: any) => page.results) || []
 
   // Lógica de WebSocket
   useEffect(() => {
@@ -155,7 +157,7 @@ export const useChatRoom = (chatId: string) => {
     },
     300 // Tiempo de espera en ms
   )
-  
+
   const handleTypingChange = (isCurrentlyTyping: boolean) => {
     emitTyping(isCurrentlyTyping)
 
