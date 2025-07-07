@@ -21,6 +21,8 @@ export const useChatRoom = (chatId: string) => {
         getChatMessages({ chatId, pageParam }),
       initialPageParam: 1,
       getNextPageParam: (lastPage: any) => {
+        console.log(lastPage);
+        
         return lastPage.current_page < lastPage.pages
           ? lastPage.current_page + 1
           : undefined
