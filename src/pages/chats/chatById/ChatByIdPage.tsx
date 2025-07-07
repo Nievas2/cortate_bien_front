@@ -38,6 +38,7 @@ const ChatByIdPage = () => {
   const [message, setMessage] = useState("")
   const [showScrollToBottom, setShowScrollToBottom] = useState(false)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
+  const wasNearBottomRef = useRef(true)
 
   // GSAP Animations
   useEffect(() => {
@@ -69,15 +70,10 @@ const ChatByIdPage = () => {
   useEffect(() => {
     console.log("messages.length", messages.length)
     console.log("isFetchingNextPage", isFetchingNextPage)
-    console.log("isLoading", isLoading)
-    console.log("isPending", isPending)
-
     if (
       messagesContainerRef.current &&
       !isFetchingNextPage &&
-      !isLoading &&
-      messages.length > 0 &&
-      !isPending
+      messages.length > 0
     ) {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight
@@ -194,6 +190,29 @@ const ChatByIdPage = () => {
     },
     exit: { opacity: 0, x: -20 },
   }
+
+  // Antes de que cambien los mensajes, guarda si el usuario está cerca del fondo
+  useEffect(() => {
+    const container = messagesContainerRef.current
+    if (!container) return
+    const { scrollTop, scrollHeight, clientHeight } = container
+    // Considera "cerca del fondo" si está a menos de 100px del final
+    wasNearBottomRef.current = scrollHeight - (scrollTop + clientHeight) < 100
+  }, [isFetchingNextPage])
+
+  // Scroll automático SOLO si el usuario estaba cerca del fondo antes del cambio
+  useEffect(() => {
+    if (
+      messagesContainerRef.current &&
+      wasNearBottomRef.current &&
+      !isFetchingNextPage &&
+      !isLoading &&
+      !isPending
+    ) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight
+    }
+  }, [messages.length, isFetchingNextPage, isLoading, isPending])
 
   return (
     <LayoutChat>
