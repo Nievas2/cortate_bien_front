@@ -63,7 +63,7 @@ const SideBarChat = ({ open }: { open: boolean }) => {
       onClick={(e) => e.stopPropagation()}
     >
       {error ? (
-        <div className="w-full h-full flex items-center justify-center border border-white">
+        <div className="w-full h-full flex items-center justify-center">
           <div className="flex flex-col items-center gap-4 text-center">
             <Icon
               icon="material-symbols:error-outline"
@@ -270,16 +270,16 @@ const SideBarChat = ({ open }: { open: boolean }) => {
               ) : (
                 /* Empty state */
                 <div className="flex flex-col items-center justify-center h-full text-center p-8">
-                  <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                  <div className="w-20 h-20 border border-white rounded-full flex items-center justify-center mb-4">
                     <Icon
                       icon="material-symbols:chat-bubble-outline"
-                      className="text-3xl text-gray-400"
+                      className="text-3xl text-white"
                     />
                   </div>
-                  <h3 className="text-lg font-medium text-gray-800 mb-2">
+                  <h3 className="text-lg font-medium text-gray-100 mb-2">
                     No tienes conversaciones
                   </h3>
-                  <p className="text-gray-600 max-w-sm">
+                  <p className="text-gray-200 max-w-sm">
                     Cuando inicies una conversación con un barbero o cliente,
                     aparecerá aquí.
                   </p>
