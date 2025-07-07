@@ -82,7 +82,7 @@ const ChatByIdPage = () => {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight
     }
-  }, [messages.length])
+  }, [messages.length, isFetchingNextPage, isLoading, isPending])
 
   // Mark messages as read when component mounts or messages change
   useEffect(() => {
