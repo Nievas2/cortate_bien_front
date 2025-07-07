@@ -34,10 +34,11 @@ export const useChatRoom = (chatId: string) => {
   const messages =
     data?.pages
       .map((page) => page.results)
-      .reduceRight(
-        (acc, curr) => [...curr, ...acc],
-        [] as MessageResponseDto[]
-      ) || []
+      .reduceRight((acc, curr) => {
+        console.log("previo", acc, "   ", "actual", curr)
+
+        return [...acc, ...curr]
+      }, [] as MessageResponseDto[]) || []
 
   // Lógica de WebSocket
   useEffect(() => {
