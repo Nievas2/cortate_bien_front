@@ -14,20 +14,26 @@ export const useChatRoom = (chatId: string) => {
   const [typingUser, setTypingUser] = useState<string | null>(null)
   const [isOnline, setIsOnline] = useState(false)
 
-  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ["chatMessages", chatId],
-      queryFn: ({ pageParam = 1 }: { pageParam?: number }) =>
-        getChatMessages({ chatId, pageParam }),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage: any) => {
-        return lastPage.current_page < lastPage.pages
-          ? lastPage.current_page + 1
-          : undefined
-      },
-      staleTime: 0,
-      enabled: !!chatId,
-    })
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+    isPending,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["chatMessages", chatId],
+    queryFn: ({ pageParam = 1 }: { pageParam?: number }) =>
+      getChatMessages({ chatId, pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage: any) => {
+      return lastPage.current_page < lastPage.pages
+        ? lastPage.current_page + 1
+        : undefined
+    },
+    staleTime: 0,
+    enabled: !!chatId,
+  })
 
   // Combinar mensajes de modo que los de la página más reciente estén al final.
   // Cuando se carga una nueva página, sus mensajes se agregan al inicio del array.
@@ -181,6 +187,7 @@ export const useChatRoom = (chatId: string) => {
     fetchNextPage,
     hasNextPage,
     isLoading,
+    isPending,
     isFetchingNextPage,
     sendMessage,
     markAsRead,
