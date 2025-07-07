@@ -32,8 +32,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   // La URL de tu backend
   const baseUrl = import.meta.env.VITE_API_URL_SHORT.replace(/\/$/, "")
   const socketUrl = `${baseUrl}/chat`
-  console.log(socketUrl)
-
   useEffect(() => {
     if (token) {
       // Conectamos al namespace 'chat' como se define en el backend

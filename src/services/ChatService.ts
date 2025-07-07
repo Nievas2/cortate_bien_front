@@ -17,8 +17,6 @@ export const getChatMessages = async ({
   const response = await axiosInstance.get<IGenericPage<MessageResponseDto>>(
     `chat/${chatId}/messages?page=${pageParam}&limit=30` // Traemos 30 mensajes por página
   )
-  if (!response.data.results) return response.data
-  response.data.results = response.data.results.reverse()
   return response.data
 }
 

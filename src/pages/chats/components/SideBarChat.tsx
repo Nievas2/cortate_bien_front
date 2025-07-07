@@ -15,7 +15,6 @@ const SideBarChat = ({ open }: { open: boolean }) => {
   const { data: chats, isLoading, error, refetch } = useChatsList()
   const { authUser } = useAuthContext()
   const navigate = useNavigate()
-  console.log(chats)
 
   const formatTime = (date: Date) => {
     const now = new Date()
