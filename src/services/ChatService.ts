@@ -13,11 +13,13 @@ export const getChatMessages = async ({
 }: {
   chatId: string
   pageParam?: number
-}) : Promise<MessageResponseDto[]> => {
+}) => {
   const response = await axiosInstance.get<IGenericPage<MessageResponseDto>>(
     `chat/${chatId}/messages?page=${pageParam}&limit=30` // Traemos 30 mensajes por página
   )
-  return response.data.results
+  if (!response.data.results) return response.data
+  response.data.results = response.data.results.reverse()
+  return response.data
 }
 
 export const markMessagesAsReadApi = async (messageIds: string[]) => {

@@ -21,8 +21,6 @@ export const useChatRoom = (chatId: string) => {
         getChatMessages({ chatId, pageParam }),
       initialPageParam: 1,
       getNextPageParam: (lastPage: any) => {
-        console.log(lastPage);
-        
         return lastPage.current_page < lastPage.pages
           ? lastPage.current_page + 1
           : undefined
@@ -32,7 +30,7 @@ export const useChatRoom = (chatId: string) => {
     })
 
   // Aplanar los mensajes de todas las páginas en un solo array
-  const messages = data?.pages.flat() ?? []
+  const messages = data?.pages.flatMap((page) => page.results) || []
 
   // Lógica de WebSocket
   useEffect(() => {
