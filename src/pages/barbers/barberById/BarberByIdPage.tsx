@@ -25,9 +25,9 @@ import { getCheckReview, getReviews } from "@/services/ReviewService"
 import HandleChangeReviews from "@/pages/profile/reviews/components/HandleChangeReviews"
 import { createOrGetChat } from "@/services/ChatService"
 import { useAuthContext } from "@/contexts/authContext"
-import toast, { Toaster } from "react-hot-toast"
 import moment from "moment"
 import { DayEnum } from "@/interfaces/Day"
+import toast from "react-hot-toast"
 
 export function getDiaByDate(date: Date): DayEnum {
   const dia = moment(date).day() // Devuelve 0 (Domingo) - 6 (Sábado)
@@ -172,7 +172,7 @@ const BarberByIdPage = () => {
     <main className="flex flex-col min-h-screen w-full relative">
       <Button
         variant="secondary"
-        className="fixed bottom-28 right-3"
+        className={`fixed ${checkReview?.data ? "bottom-28 right-3" : "bottom-16 right-3"} `}
         onClick={handleInitiateChat}
         disabled={isCreatingChat}
       >
@@ -182,14 +182,14 @@ const BarberByIdPage = () => {
       {checkReview?.data && (
         <a href="#reviews">
           <Button
-            variant="simple"
+            variant="secondary"
             className="fixed bottom-16 right-3"
             onClick={() => window.scrollTo(0, 10000)}
           >
             {/* Star */}
             <Icon
               icon="material-symbols:star"
-              color={checkReview.data.canCreate === true ? "white" : "gold"}
+              color="gold"
               width={24}
             />
           </Button>
@@ -607,7 +607,6 @@ const BarberByIdPage = () => {
           </Dialog>
         </div>
       </section>
-      <Toaster position="bottom-right" reverseOrder={false} />
     </main>
   )
 }
