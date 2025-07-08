@@ -313,7 +313,7 @@ function App() {
           !/^\/chats\/[^/]+$/.test(location.pathname) && <Footer />
         }
       </section>
-      <Toaster position="top-center" reverseOrder={true} />
+      <Toaster position="bottom-right" reverseOrder={true} />
     </main>
   )
 }
