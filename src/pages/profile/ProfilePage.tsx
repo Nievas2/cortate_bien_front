@@ -143,7 +143,7 @@ const ProfilePage = () => {
                   <Input
                     type="telefono"
                     {...register("telefono")}
-                    placeholder="3544888888"
+                    placeholder="1234567890"
                   />
                 </div>
 
