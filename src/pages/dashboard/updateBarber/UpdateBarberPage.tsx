@@ -37,6 +37,7 @@ import {
   ProfileFormSkeleton,
   BasicFormSkeleton,
 } from "./components/SkeletonForms"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const UpdateBarberPage = () => {
   const { search } = useLocation()
@@ -54,22 +55,44 @@ const UpdateBarberPage = () => {
     <Layout>
       <main className="flex flex-col gap-8 items-center justify-center w-full h-full">
         <h1 className="text-3xl font-semibold">Actualizar Barberia</h1>
-        <section className="flex flex-col gap-4 items-center justify-center w-full bg-gray-main rounded-lg p-4">
-          {isLoading ? (
-            <ProfileFormSkeleton />
-          ) : (
-            <ProfileForm barber={data?.data} ciudad={data?.data.ciudad} />
-          )}
-        </section>
+        <Tabs defaultValue="ProfileForm" className="w-full">
+          <TabsList className="flex gap-2 bg-slate-950/80 backdrop-blur-lg border-white/5 shadow-lg shadow-black/10 fixed left-0 bottom-0 md:sticky md:top-20 z-[39]">
+            <TabsTrigger
+              className="w-full bg-blue-main hover:bg-blue-700 transition-colors duration-150 text-md aria-selected:bg-blue-700"
+              value="ProfileForm"
+              onClick={() => window.scrollTo(0, 0)}
+            >
+              Perfil
+            </TabsTrigger>
 
-        <section className="flex flex-col gap-4 items-center justify-center w-full bg-gray-main rounded-lg p-4">
-          <h1 className="text-3xl font-semibold">Actualizar Servicios</h1>
-          {isLoading ? (
-            <BasicFormSkeleton />
-          ) : (
-            <BasicForm barber={data?.data} />
-          )}
-        </section>
+            <TabsTrigger
+              className="w-full bg-blue-main hover:bg-blue-700 transition-colors duration-150 text-md aria-selected:bg-blue-700"
+              value="BasicForm"
+              onClick={() => window.scrollTo(0, 0)}
+            >
+              General
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="ProfileForm">
+            <section className="flex flex-col gap-4 items-center justify-center w-full bg-gray-main rounded-lg p-4">
+              {isLoading ? (
+                <ProfileFormSkeleton />
+              ) : (
+                <ProfileForm barber={data?.data} ciudad={data?.data.ciudad} />
+              )}
+            </section>
+          </TabsContent>
+          <TabsContent value="BasicForm">
+            <section className="flex flex-col gap-4 items-center justify-center w-full bg-gray-main rounded-lg p-4">
+              <h1 className="text-3xl font-semibold">Actualizar Servicios</h1>
+              {isLoading ? (
+                <BasicFormSkeleton />
+              ) : (
+                <BasicForm barber={data?.data} />
+              )}
+            </section>
+          </TabsContent>
+        </Tabs>
       </main>
     </Layout>
   )
