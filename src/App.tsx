@@ -40,6 +40,7 @@ import { getFirebaseToken } from "./services/FirebaseService"
 import { Button } from "./components/ui/button"
 import ChatsPage from "./pages/chats/ChatsPage"
 import ChatByIdPage from "./pages/chats/chatById/ChatByIdPage"
+import BarberService from "./pages/dashboard/servicesBarber/BarberService"
 
 function App() {
   const location = useLocation()
@@ -236,6 +237,15 @@ function App() {
               element={
                 <ProtecteBarberRoute>
                   <UpdateBarberPage />
+                </ProtecteBarberRoute>
+              }
+            />
+            
+            <Route
+              path="/dashboard/barber/services"
+              element={
+                <ProtecteBarberRoute>
+                  <BarberService />
                 </ProtecteBarberRoute>
               }
             />

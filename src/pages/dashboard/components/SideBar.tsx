@@ -140,6 +140,16 @@ const SideBar = ({
               </Button>
             </Link>
 
+            <Link to={`/dashboard/barber/services?id=${barber?.id}`}>
+              <Button
+                className="flex justify-start px-0"
+                variant="ghost"
+                size="sm"
+              >
+                <Icon icon="tabler:tools" width={20} height={20} /> Services
+              </Button>
+            </Link>
+
             <Button
               className="flex justify-start px-0 text-red-500"
               variant="ghost"
