@@ -1,5 +1,6 @@
 import axiosInstance from "@/api/axiosInstance"
 import { Barber, BarberBasic, BarberProfile } from "@/interfaces/Barber"
+import { Servicio } from "@/interfaces/Servicio"
 
 export async function getBarberById(id: string) {
   try {
@@ -28,6 +29,15 @@ export async function createbarber(barber: any) {
       imagen_perfil: barber.imagen_perfil,
       horarios: barber.horarios,
     })
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function createService(service: Servicio, id: string) {
+  try {
+    const res = await axiosInstance.post("servicio/create/" + id, service)
     return res
   } catch (error) {
     throw error
@@ -230,6 +240,15 @@ export async function getBarbersDisabled(filter: string) {
     const res = await axiosInstance.get(
       `barberia/find/all/admin?status=${filter}`
     )
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function getServicesByBarberId(id: string) {
+  try {
+    const res = await axiosInstance.get(`servicio/find/all/${id}`)
     return res
   } catch (error) {
     throw error
