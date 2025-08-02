@@ -142,12 +142,14 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-4">
             {authUser?.user && <Notifications />}
             {/* Avatar para redirigir a la cuenta del usuario */}
-            <Link to="/profile" onClick={GoToTop}>
-              <Icon
-                className="h-10 w-10 text-gray-400 hover:text-white"
-                icon="carbon:user-avatar-filled"
-              />
-            </Link>
+            {authUser?.user && (
+              <Link to="/profile" onClick={GoToTop}>
+                <Icon
+                  className="h-10 w-10 text-gray-400 hover:text-white"
+                  icon="carbon:user-avatar-filled"
+                />
+              </Link>
+            )}
             {authUser ? (
               // Usuario Logueado
               authUser.user.tipo_de_cuenta === "CLIENTE" ? (
