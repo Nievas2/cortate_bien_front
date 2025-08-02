@@ -36,7 +36,11 @@ import { getFirebaseToken } from "./services/FirebaseService";
 import ChatsPage from "./pages/chats/ChatsPage";
 import ChatByIdPage from "./pages/chats/chatById/ChatByIdPage";
 import { useFirebaseMessaging } from "./hooks/fmc/useFirebaseMessaging";
-import { NotificationData, useFCMNotifications,  } from "./hooks/fmc/useFCMNotifications";
+import {
+  NotificationData,
+  useFCMNotifications,
+} from "./hooks/fmc/useFCMNotifications";
+import { DarkModeProvider } from "./contexts/DarkModeContext";
 
 function App() {
   const location = useLocation();
@@ -61,247 +65,249 @@ function App() {
     maxNotifications: 5,
     defaultDuration: 5000,
     onNotificationAction: (action: string, notification: NotificationData) => {
-      console.log('Acción de notificación:', action, notification);
-      
+      console.log("Acción de notificación:", action, notification);
+
       // Manejar diferentes tipos de acciones
       switch (action) {
-        case 'view_appointment':
+        case "view_appointment":
           // Navegar a citas
-          window.location.href = '/profile/appointments';
+          window.location.href = "/profile/appointments";
           break;
-        case 'view_chat':
+        case "view_chat":
           // Navegar a chats
-          window.location.href = '/chats';
+          window.location.href = "/chats";
           break;
-        case 'view_profile':
+        case "view_profile":
           // Navegar a perfil
-          window.location.href = '/profile';
+          window.location.href = "/profile";
           break;
         default:
-          console.log('Acción no reconocida:', action);
+          console.log("Acción no reconocida:", action);
       }
     },
   });
 
   return (
-    <main className="bg-black-main text-white">
-      <section className="w-full font-poppins flex flex-col justify-center items-center min-h-screen">
-        {!/^\/chats\/[^/]+$/.test(location.pathname) && <Navbar />}
+    <DarkModeProvider>
+      <main className="bg-black-main text-white">
+        <section className="w-full font-poppins flex flex-col justify-center items-center min-h-screen">
+          {!/^\/chats\/[^/]+$/.test(location.pathname) && <Navbar />}
 
-        <div className="flex w-full flex-1">
-          <Routes location={location} key={location.pathname}>
-            <Route
-              path="/"
-              element={
-                /* authUser == null ? (
+          <div className="flex w-full flex-1">
+            <Routes location={location} key={location.pathname}>
+              <Route
+                path="/"
+                element={
+                  /* authUser == null ? (
                   <LandingPage />
                 ) : authUser.user.tipo_de_cuenta === "CLIENTE" ? (
                   <Navigate to="/barbers" />
                 ) : authUser.user.tipo_de_cuenta === "BARBERO" ? (
                   <Navigate to="/dashboard" />
                 ) : ( */
-                <LandingPage />
-                /*  ) */
-              }
-            />
+                  <LandingPage />
+                  /*  ) */
+                }
+              />
 
-            <Route
-              path="/terms-and-conditions"
-              element={<TermsAndConditions />}
-            />
+              <Route
+                path="/terms-and-conditions"
+                element={<TermsAndConditions />}
+              />
 
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
-            <Route
-              path="/prices"
-              element={
-                <ProtectedRoute>
-                  <PricesPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/prices"
+                element={
+                  <ProtectedRoute>
+                    <PricesPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/barbers"
-              element={
-                <ProtectedRoute>
-                  <BarbersPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/barbers"
+                element={
+                  <ProtectedRoute>
+                    <BarbersPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/barbers/:id"
-              element={
-                <ProtectedRoute>
-                  <BarberByIdPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/barbers/:id"
+                element={
+                  <ProtectedRoute>
+                    <BarberByIdPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/profile/appointments"
-              element={
-                <ProtectedRoute>
-                  <ProfileAppointmentPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/profile/appointments"
+                element={
+                  <ProtectedRoute>
+                    <ProfileAppointmentPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/profile/reviews"
-              element={
-                <ProtectedRoute>
-                  <ProfileReviewsPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/profile/reviews"
+                element={
+                  <ProtectedRoute>
+                    <ProfileReviewsPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/chats"
-              element={
-                <ProtectedRoute>
-                  <ChatsPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/chats"
+                element={
+                  <ProtectedRoute>
+                    <ChatsPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/chats/:id"
-              element={
-                <ProtectedRoute>
-                  <ChatByIdPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/chats/:id"
+                element={
+                  <ProtectedRoute>
+                    <ChatByIdPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/auth" element={<AuthPage />} />
+              <Route path="/auth" element={<AuthPage />} />
 
-            <Route
-              path="/auth/password-recovery"
-              element={<PasswordRecoveryPage />}
-            />
+              <Route
+                path="/auth/password-recovery"
+                element={<PasswordRecoveryPage />}
+              />
 
-            <Route
-              path="/auth/iniciar-sesion"
-              element={
-                /* Cookies.get("token") ? <Navigate to="/" /> :  */ <LoginPage />
-              }
-            />
+              <Route
+                path="/auth/iniciar-sesion"
+                element={
+                  /* Cookies.get("token") ? <Navigate to="/" /> :  */ <LoginPage />
+                }
+              />
 
-            <Route
-              path="/auth/registrarse"
-              element={
-                Cookies.get("token") ? <Navigate to="/" /> : <RegisterPage />
-              }
-            />
+              <Route
+                path="/auth/registrarse"
+                element={
+                  Cookies.get("token") ? <Navigate to="/" /> : <RegisterPage />
+                }
+              />
 
-            {/* Dashboard Barbers */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtecteBarberRoute>
-                  <DashboardPage />
-                </ProtecteBarberRoute>
-              }
-            />
+              {/* Dashboard Barbers */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtecteBarberRoute>
+                    <DashboardPage />
+                  </ProtecteBarberRoute>
+                }
+              />
 
-            <Route
-              path="/dashboard/barber"
-              element={
-                <ProtecteBarberRoute>
-                  <BarberPage />
-                </ProtecteBarberRoute>
-              }
-            />
+              <Route
+                path="/dashboard/barber"
+                element={
+                  <ProtecteBarberRoute>
+                    <BarberPage />
+                  </ProtecteBarberRoute>
+                }
+              />
 
-            <Route
-              path="/dashboard/barber/update"
-              element={
-                <ProtecteBarberRoute>
-                  <UpdateBarberPage />
-                </ProtecteBarberRoute>
-              }
-            />
+              <Route
+                path="/dashboard/barber/update"
+                element={
+                  <ProtecteBarberRoute>
+                    <UpdateBarberPage />
+                  </ProtecteBarberRoute>
+                }
+              />
 
-            <Route
-              path="/dashboard/barber/appointments"
-              element={
-                <ProtecteBarberRoute>
-                  <AppointmentsPage />
-                </ProtecteBarberRoute>
-              }
-            />
-            <Route
-              path="/dashboard/barber/reviews"
-              element={
-                <ProtecteBarberRoute>
-                  <ReviewsPage />
-                </ProtecteBarberRoute>
-              }
-            />
+              <Route
+                path="/dashboard/barber/appointments"
+                element={
+                  <ProtecteBarberRoute>
+                    <AppointmentsPage />
+                  </ProtecteBarberRoute>
+                }
+              />
+              <Route
+                path="/dashboard/barber/reviews"
+                element={
+                  <ProtecteBarberRoute>
+                    <ReviewsPage />
+                  </ProtecteBarberRoute>
+                }
+              />
 
-            {/* Dashboard Admins */}
-            <Route
-              path="admins/dashboard"
-              element={
-                <ProtectedAdminRoute>
-                  <AdminsPage />
-                </ProtectedAdminRoute>
-              }
-            />
+              {/* Dashboard Admins */}
+              <Route
+                path="admins/dashboard"
+                element={
+                  <ProtectedAdminRoute>
+                    <AdminsPage />
+                  </ProtectedAdminRoute>
+                }
+              />
 
-            <Route
-              path="admins/dashboard/barbers/disabled"
-              element={
-                <ProtectedAdminRoute>
-                  <DisabledBarbersPage />
-                </ProtectedAdminRoute>
-              }
-            />
+              <Route
+                path="admins/dashboard/barbers/disabled"
+                element={
+                  <ProtectedAdminRoute>
+                    <DisabledBarbersPage />
+                  </ProtectedAdminRoute>
+                }
+              />
 
-            <Route
-              path="admins/dashboard/plans"
-              element={
-                <ProtectedAdminRoute>
-                  <PlansPage />
-                </ProtectedAdminRoute>
-              }
-            />
+              <Route
+                path="admins/dashboard/plans"
+                element={
+                  <ProtectedAdminRoute>
+                    <PlansPage />
+                  </ProtectedAdminRoute>
+                }
+              />
 
-            <Route
-              path="admins/dashboard/firebase"
-              element={
-                <ProtectedAdminRoute>
-                  <FirebasePage />
-                </ProtectedAdminRoute>
-              }
-            />
+              <Route
+                path="admins/dashboard/firebase"
+                element={
+                  <ProtectedAdminRoute>
+                    <FirebasePage />
+                  </ProtectedAdminRoute>
+                }
+              />
 
-            <Route path="/404" element={<NotFoundPage />} />
-            <Route path="/*" element={<Navigate to="/404" replace />} />
-            <Route path="/mantenimiento" element={<MaintenancePage />} />
-          </Routes>
-        </div>
+              <Route path="/404" element={<NotFoundPage />} />
+              <Route path="/*" element={<Navigate to="/404" replace />} />
+              <Route path="/mantenimiento" element={<MaintenancePage />} />
+            </Routes>
+          </div>
 
-        {!/^\/chats\/[^/]+$/.test(location.pathname) && <Footer />}
-      </section>
-      
-      {/* Contenedor de notificaciones FCM */}
-      <NotificationContainer />
-      
-      {/* Toaster para otras notificaciones */}
-      <Toaster position="bottom-right" reverseOrder={true} />
-    </main>
+          {!/^\/chats\/[^/]+$/.test(location.pathname) && <Footer />}
+        </section>
+
+        {/* Contenedor de notificaciones FCM */}
+        <NotificationContainer />
+
+        {/* Toaster para otras notificaciones */}
+        <Toaster position="bottom-right" reverseOrder={true} />
+      </main>
+    </DarkModeProvider>
   );
 }
 
