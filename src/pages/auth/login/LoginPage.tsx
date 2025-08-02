@@ -10,7 +10,7 @@ import { recoveryPasswordFunction } from "@/services/AuthService" */
 import { loginSchema } from "@/utils/schemas/loginSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import useReCaptcha from "@/hooks/useReCaptcha"
+// import useReCaptcha from "@/hooks/useReCaptcha"
 
 const LoginPage = () => {
   document.title = "Cortate bien | Iniciar sesión"
@@ -19,9 +19,9 @@ const LoginPage = () => {
   /*   const [success, setSuccess] = useState("") */
   /*   const [recoveryPassword, setRecoveryPassword] = useState(false) */
   const [loginError, setLoginError] = useState("")
-  const { executeRecaptcha, error } = useReCaptcha({
-    siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-  })
+  // const { executeRecaptcha, error } = useReCaptcha({
+  //   siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+  // })
   const {
     register,
     handleSubmit,
@@ -124,11 +124,11 @@ const LoginPage = () => {
                     </small>
                   )}
 
-                  {error && (
+                  {/* {error && (
                     <small className="font-bold text-center text-[#ff4444]">
                       Creemos que eres un robot 🤖, prueba de nuevo más tarde.
                     </small>
-                  )}
+                  )} */}
 
                   <div className="flex flex-col gap-3 relative group">
                     <Button
