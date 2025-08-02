@@ -1,99 +1,92 @@
-import { useAuthContext } from "./contexts/authContext"
-import { ProtectedRoute } from "./components/shared/ProtectedRoute"
-import { ProtecteBarberRoute } from "./components/shared/ProtectedBarber"
-import { ProtectedAdminRoute } from "./components/shared/ProtectedAdminRoute"
-import { useLocation, Routes, Route, Navigate } from "react-router-dom"
-import toast, { Toaster } from "react-hot-toast"
-import Footer from "./components/shared/Footer"
-import Navbar from "./components/shared/Navbar"
-import NotFoundPage from "./pages/notFound/NotFoundPage"
-import LoginPage from "./pages/auth/login/LoginPage"
-import AuthPage from "./pages/auth/auth/AuthPage"
-import RegisterPage from "./pages/auth/register/RegisterPage"
-import LandingPage from "./pages/landing/LandingPage"
-import DashboardPage from "./pages/dashboard/DashboardPage"
-import AppointmentsPage from "./pages/dashboard/appointment/AppointmentsPage"
-import ReviewsPage from "./pages/dashboard/review/ReviewsPage"
-import BarberPage from "./pages/dashboard/barber/BarberPage"
-import AdminsPage from "./pages/admins/AdminsPage"
-import PricesPage from "./pages/prices/PricesPage"
-import BarbersPage from "./pages/barbers/BarbersPage"
-import DisabledBarbersPage from "./pages/admins/disabledBarbers/DisabledBarbersPage"
-import PlansPage from "./pages/admins/plans/PlansPage"
-import ProfilePage from "./pages/profile/ProfilePage"
-import TermsAndConditions from "./components/shared/footer/TermsAndConditions"
-import PrivacyPolicy from "./components/shared/footer/PrivacyPolicy"
-import ProfileAppointmentPage from "./pages/profile/appointment/ProfileAppointmentPage"
-import ProfileReviewsPage from "./pages/profile/reviews/ProfileReviewsPage"
-import PasswordRecoveryPage from "./pages/auth/PasswordRecovery/PasswordRecoveryPage"
-import BarberByIdPage from "./pages/barbers/barberById/BarberByIdPage"
-import UpdateBarberPage from "./pages/dashboard/updateBarber/UpdateBarberPage"
-import MaintenancePage from "./pages/maintenance/MaintenancePage"
-import Cookies from "js-cookie"
-import FirebasePage from "./pages/admins/firebase/FirebasePage"
-/* import DisabledBarbersByIdPage from "./pages/admins/disabledBarbers/disabledBarbersById/DisabledBarbersByIdPage" */
-import { getToken, onMessage } from "firebase/messaging"
-import { messaging } from "./firebase"
-import { useEffect } from "react"
-import { useMutation } from "@tanstack/react-query"
-import { getFirebaseToken } from "./services/FirebaseService"
-import { Button } from "./components/ui/button"
-import ChatsPage from "./pages/chats/ChatsPage"
-import ChatByIdPage from "./pages/chats/chatById/ChatByIdPage"
+import { useAuthContext } from "./contexts/authContext";
+import { ProtectedRoute } from "./components/shared/ProtectedRoute";
+import { ProtecteBarberRoute } from "./components/shared/ProtectedBarber";
+import { ProtectedAdminRoute } from "./components/shared/ProtectedAdminRoute";
+import { useLocation, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import Footer from "./components/shared/Footer";
+import Navbar from "./components/shared/Navbar";
+import NotFoundPage from "./pages/notFound/NotFoundPage";
+import LoginPage from "./pages/auth/login/LoginPage";
+import AuthPage from "./pages/auth/auth/AuthPage";
+import RegisterPage from "./pages/auth/register/RegisterPage";
+import LandingPage from "./pages/landing/LandingPage";
+import DashboardPage from "./pages/dashboard/DashboardPage";
+import AppointmentsPage from "./pages/dashboard/appointment/AppointmentsPage";
+import ReviewsPage from "./pages/dashboard/review/ReviewsPage";
+import BarberPage from "./pages/dashboard/barber/BarberPage";
+import AdminsPage from "./pages/admins/AdminsPage";
+import PricesPage from "./pages/prices/PricesPage";
+import BarbersPage from "./pages/barbers/BarbersPage";
+import DisabledBarbersPage from "./pages/admins/disabledBarbers/DisabledBarbersPage";
+import PlansPage from "./pages/admins/plans/PlansPage";
+import ProfilePage from "./pages/profile/ProfilePage";
+import TermsAndConditions from "./components/shared/footer/TermsAndConditions";
+import PrivacyPolicy from "./components/shared/footer/PrivacyPolicy";
+import ProfileAppointmentPage from "./pages/profile/appointment/ProfileAppointmentPage";
+import ProfileReviewsPage from "./pages/profile/reviews/ProfileReviewsPage";
+import PasswordRecoveryPage from "./pages/auth/PasswordRecovery/PasswordRecoveryPage";
+import BarberByIdPage from "./pages/barbers/barberById/BarberByIdPage";
+import UpdateBarberPage from "./pages/dashboard/updateBarber/UpdateBarberPage";
+import MaintenancePage from "./pages/maintenance/MaintenancePage";
+import Cookies from "js-cookie";
+import FirebasePage from "./pages/admins/firebase/FirebasePage";
+import { useMutation } from "@tanstack/react-query";
+import { getFirebaseToken } from "./services/FirebaseService";
+import ChatsPage from "./pages/chats/ChatsPage";
+import ChatByIdPage from "./pages/chats/chatById/ChatByIdPage";
+import { useFirebaseMessaging } from "./hooks/fmc/useFirebaseMessaging";
+import { NotificationData, useFCMNotifications,  } from "./hooks/fmc/useFCMNotifications";
 
 function App() {
-  const location = useLocation()
-  const { authUser, setAuthUser } = useAuthContext()
+  const location = useLocation();
+  const { authUser, setAuthUser } = useAuthContext();
 
   const { mutate } = useMutation({
     mutationKey: ["get-firebase-token"],
     mutationFn: async (token: string) => {
-      if (authUser == null) return
-      return getFirebaseToken(token)
+      if (authUser == null) return;
+      return getFirebaseToken(token);
     },
-  })
-  const activarMensajes = async () => {
-    const active = localStorage.getItem("active")
-    const token = await getToken(messaging, {
-      vapidKey: import.meta.env.VITE_VAPID_KEY,
-    }).catch((error) =>
-      console.log("Error al obtener el token de Firebase:", error)
-    )
+  });
 
-    if (token && authUser?.user) {
-      setAuthUser({ ...authUser, fcmToken: token })
-      if (active != "true") {
-        mutate(token)
-        localStorage.setItem("active", "true")
+  useFirebaseMessaging({
+    authUser,
+    setAuthUser,
+    mutate,
+  });
+
+  // Usar el nuevo hook de notificaciones FCM
+  const { NotificationContainer } = useFCMNotifications({
+    maxNotifications: 5,
+    defaultDuration: 5000,
+    onNotificationAction: (action: string, notification: NotificationData) => {
+      console.log('Acción de notificación:', action, notification);
+      
+      // Manejar diferentes tipos de acciones
+      switch (action) {
+        case 'view_appointment':
+          // Navegar a citas
+          window.location.href = '/profile/appointments';
+          break;
+        case 'view_chat':
+          // Navegar a chats
+          window.location.href = '/chats';
+          break;
+        case 'view_profile':
+          // Navegar a perfil
+          window.location.href = '/profile';
+          break;
+        default:
+          console.log('Acción no reconocida:', action);
       }
-    }
-  }
-  useEffect(() => {
-    if (authUser == null) return
-    if (authUser.fcmToken == undefined || authUser.fcmToken == null) {
-      activarMensajes()
-    }
-    onMessage(messaging, (message) => {
-      toast.custom((t) => (
-        <div className="flex flex-col gap-2 bg-black-main p-4 rounded-lg text-white max-w-md">
-          <span className="text-sm font-bold">
-            {message.notification?.title}
-          </span>
-          <p className="text-sm">{message.notification?.body}</p>
+    },
+  });
 
-          <Button variant="secondary" onClick={() => toast.dismiss(t.id)}>
-            Cerrar
-          </Button>
-        </div>
-      ))
-    })
-  }, [])
   return (
     <main className="bg-black-main text-white">
       <section className="w-full font-poppins flex flex-col justify-center items-center min-h-screen">
-        {
-          !/^\/chats\/[^/]+$/.test(location.pathname) && <Navbar/>
-        }
+        {!/^\/chats\/[^/]+$/.test(location.pathname) && <Navbar />}
 
         <div className="flex w-full flex-1">
           <Routes location={location} key={location.pathname}>
@@ -276,15 +269,6 @@ function App() {
               }
             />
 
-            {/* <Route
-              path="admins/dashboard/barbers/disabled/id"
-              element={
-                <ProtectedAdminRoute>
-                  <DisabledBarbersByIdPage />
-                </ProtectedAdminRoute>
-              }
-            /> */}
-
             <Route
               path="admins/dashboard/plans"
               element={
@@ -309,13 +293,16 @@ function App() {
           </Routes>
         </div>
 
-        {
-          !/^\/chats\/[^/]+$/.test(location.pathname) && <Footer />
-        }
+        {!/^\/chats\/[^/]+$/.test(location.pathname) && <Footer />}
       </section>
+      
+      {/* Contenedor de notificaciones FCM */}
+      <NotificationContainer />
+      
+      {/* Toaster para otras notificaciones */}
       <Toaster position="bottom-right" reverseOrder={true} />
     </main>
-  )
+  );
 }
 
-export default App
+export default App;

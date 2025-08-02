@@ -48,7 +48,7 @@ const LoginPage = () => {
 
   const loginFunction = handleSubmit(async (values) => {
     try {
-      await executeRecaptcha("login")
+      // await executeRecaptcha("login")
       await login(values)
     } catch (error: any) {
       console.error(error)
