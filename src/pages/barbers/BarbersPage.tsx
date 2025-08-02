@@ -131,7 +131,7 @@ const BarbersPage = () => {
         </section>
 
         {/* Filters Section */}
-        <section className="w-full max-w-7xl px-4 md:px-6">
+        <section className="w-full max-w-7xl px-4 md:px-6 z-50">
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 p-6 shadow-lg">
             <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
               <Icon
@@ -149,7 +149,7 @@ const BarbersPage = () => {
                   <Label className="text-gray-300 text-sm font-medium">
                     Ubicación actual
                   </Label>
-                  <div className="flex items-center gap-3 bg-gray-700/50 px-4 py-3 rounded-lg border border-gray-600">
+                  <div className="flex items-center gap-3 bg-gray-700/50 px-4 py-3 rounded-lg border border-gray-600 min-w-40 min-h-14 max-h-14 overflow-hidden">
                     <Icon
                       icon="mdi:map-marker"
                       className="text-blue-400"
@@ -183,7 +183,7 @@ const BarbersPage = () => {
                       <Label className="text-gray-300 text-sm font-medium">
                         Ubicación
                       </Label>
-                      <div className="flex items-center gap-3 bg-green-700/20 border border-green-600/50 px-4 py-3 rounded-lg">
+                      <div className="flex items-center gap-3 bg-green-700/20 border border-green-600/50 px-4 py-3 rounded-lg min-w-40 min-h-14 max-h-14 overflow-hidden">
                         <Icon
                           icon="mdi:crosshairs-gps"
                           className="text-green-400"
@@ -270,7 +270,7 @@ const BarbersPage = () => {
                     if (order === "ASC") return setOrder("DESC");
                     setOrder("ASC");
                   }}
-                  className="flex items-center gap-2 bg-gray-700/50 hover:bg-gray-600/50 border border-gray-600 px-4 py-3 rounded-lg transition-all duration-200"
+                  className="flex items-center gap-2 bg-gray-700/50 hover:bg-gray-600/50 border border-gray-600 px-4 py-3 rounded-lg transition-all duration-200 min-w-40 min-h-14"
                 >
                   <Icon icon="mdi:sort" className="text-blue-400" width={20} />
                   {order === "ASC" ? (
