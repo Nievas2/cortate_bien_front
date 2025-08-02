@@ -84,7 +84,7 @@ export const Background = ({ children }: BackgroundProps) => {
         }}
       />
 
-      {children}
+      <div className="relative w-full h-full">{children}</div>
     </main>
   );
 };
