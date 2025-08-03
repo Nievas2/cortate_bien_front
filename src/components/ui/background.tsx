@@ -10,7 +10,7 @@ export const Background = ({ children }: BackgroundProps) => {
   return (
     <main
       ref={mainRef}
-      className="relative flex flex-col items-center justify-center w-full min-h-screen pt-5 overflow-hidden pb-10"
+      className="relative flex flex-col items-center justify-center w-full min-h-screen overflow-hidden"
       style={{
         background: `
             radial-gradient(circle at 20% 30%, rgba(96, 165, 250, 0.15) 0%, transparent 50%),
