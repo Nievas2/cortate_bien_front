@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, useMap, Tooltip } from "react-leaflet"
+import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import IconMarker from "@/components/IconMarker"
 import { Icon } from "@iconify/react";
