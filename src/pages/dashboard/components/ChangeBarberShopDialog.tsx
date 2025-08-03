@@ -369,6 +369,11 @@ export function ChangeBarberShopDialog({
                     lat: Number(position.lat),
                     lng: Number(position.lng),
                   }}
+                  onChangePosition={(lat, lng) => {
+                    setValue("latitud", lat.toString());
+                    setValue("longitud", lng.toString());
+                    setPosition({ lat, lng });
+                  }}
                 />
               </div>
             )}
