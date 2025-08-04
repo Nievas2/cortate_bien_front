@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app"/* 
 import { getAnalytics } from "firebase/analytics" */
-import { getMessaging } from "firebase/messaging"
+import { getMessaging, isSupported } from "firebase/messaging"
 const firebaseConfig = {
   apiKey: "AIzaSyAmtjoBetgu4amRmN6-j7nu69PGudeUYMk",
   authDomain: "cortate-bien-4e07a.firebaseapp.com",
@@ -14,4 +14,14 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
 /* const analytics = getAnalytics(app) */
-export const messaging = getMessaging(app)
+let messaging: ReturnType<typeof getMessaging> | null = null;
+
+export const getMessagingIfSupported = async () => {
+  if (await isSupported()) {
+    if (!messaging) {
+      messaging = getMessaging(app);
+    }
+    return messaging;
+  }
+  return null;
+};

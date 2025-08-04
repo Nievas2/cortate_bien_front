@@ -7,7 +7,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(true)
 
   return (
-    <div className="flex relative w-full">
+    <div className="flex relative w-full h-full">
       <SideBar open={open} />
 
       <div className="relative">

@@ -1,59 +1,56 @@
-import { useAuthContext } from "@/contexts/authContext"
-import { completeRegistration, getUserById } from "@/services/UserService"
-import { useQuery } from "@tanstack/react-query"
-import Layout from "./Layout"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
-import { useState } from "react"
-import { getCountries } from "@/services/CountryService"
-import CountrySelect from "../dashboard/components/CountrySelect"
-import StateSelect from "../dashboard/components/StateSelect"
-import CitySelect from "../dashboard/components/CitySelect"
+import { useAuthContext } from "@/contexts/authContext";
+import { completeRegistration, getUserById } from "@/services/UserService";
+import { useQuery } from "@tanstack/react-query";
+import Layout from "./Layout";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { getCountries } from "@/services/CountryService";
+import CountrySelect from "../dashboard/components/CountrySelect";
+import StateSelect from "../dashboard/components/StateSelect";
+import CitySelect from "../dashboard/components/CitySelect";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { updateUserSchema } from "@/utils/schemas/userSchema"
-import { Button } from "@/components/ui/button"
-import { useLocation } from "react-router-dom"
-import CountryNumberSelect from "../dashboard/components/CountryNumberSelect"
-import { decodeJwt } from "@/utils/decodeJwt"
-import { setCookieAsync } from "@/hooks/useLogin"
+} from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { updateUserSchema } from "@/utils/schemas/userSchema";
+import { Button } from "@/components/ui/button";
+import { useLocation } from "react-router-dom";
+import CountryNumberSelect from "../dashboard/components/CountryNumberSelect";
+import { decodeJwt } from "@/utils/decodeJwt";
+import { setCookieAsync } from "@/hooks/useLogin";
+import { Background } from "@/components/ui/background";
 
-const ProfilePage = () => {
-  document.title = "Cortate bien | Perfil"
-  const [selectCountryNumber, setSelectCountryNumber] = useState<
-    undefined | string
-  >()
-  const [countryId, setCountryId] = useState<undefined | number>()
-  const [stateId, setStateId] = useState<undefined | number>()
-  const [error, setError] = useState<undefined | string>()
-  const location = useLocation()
-  const required = location.search.split("=")[1]
-  const { authUser, setAuthUser } = useAuthContext()
+export default function ProfilePage() {
+  document.title = "Cortate Bien | Perfil";
+  const [selectCountryNumber, setSelectCountryNumber] = useState(undefined);
+  const [countryId, setCountryId] = useState(undefined);
+  const [stateId, setStateId] = useState(undefined);
+  const [error, setError] = useState("");
+  const location = useLocation();
+  const required =
+    new URLSearchParams(location.search).get("required") === "true";
+  const { authUser, setAuthUser } = useAuthContext();
 
-  const { data, isSuccess: isSuccessCountries } = useQuery({
+  const { data: countries } = useQuery({
     queryKey: ["countries"],
     queryFn: getCountries,
+    staleTime: 86400000,
     refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 60 * 24,
-  })
+  });
 
-  const { data: user } = useQuery({
-    queryKey: ["get-user-by-id"],
-    queryFn: async () => {
-      if (authUser != null) return await getUserById(authUser.user.sub)
-    },
+  const { data: user, isLoading: isUserLoading } = useQuery({
+    queryKey: ["get-user-by-id", authUser?.user.sub],
+    queryFn: () => authUser && getUserById(authUser.user.sub),
+    enabled: !!authUser,
+    staleTime: 86400000,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    staleTime: 1000 * 60 * 60 * 24,
-    retry: 1,
-  })
+  });
 
   const {
     register,
@@ -61,194 +58,198 @@ const ProfilePage = () => {
     handleSubmit,
     setValue,
   } = useForm({
-    values: {
+    defaultValues: {
       telefono: "",
       ciudad_id: "",
       fechaNacimiento: new Date().toISOString().split("T")[0],
       tipoDeCuenta: "",
     },
     resolver: zodResolver(updateUserSchema),
-  })
+  });
 
-  const updateUserFunction = handleSubmit(async (values) => {
+  const onSubmit = handleSubmit(async (values) => {
     try {
       if (!selectCountryNumber) {
-        return setError("Debes seleccionar la caracteristica del pais")
+        setError("Seleccione el prefijo del país.");
+        return;
       }
       const res = await completeRegistration({
         ciudad_id: Number(values.ciudad_id),
         telefono: `+${selectCountryNumber}${values.telefono}`,
-        fechaNacimiento: new Date(values.fechaNacimiento)
-          .toISOString()
-          .split("T")[0],
+        fechaNacimiento: values.fechaNacimiento,
         tipoDeCuenta: values.tipoDeCuenta,
-      })
-      const user = decodeJwt(res.data.accesToken)
-      const userAuth = {
-        user: user,
-        token: res.data.accesToken,
-      }
-      setAuthUser(userAuth)
-
+      });
+      const payload = decodeJwt(res.data.accesToken);
+      setAuthUser({ user: payload, token: res.data.accesToken });
       await setCookieAsync("token", res.data.accesToken, {
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
-      })
-      window.location.href = "/barbers"
-      return res
-    } catch (error) {
-      setError("Error al actualizar la informacion")
-      throw error
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+      });
+      window.location.href = "/barbers";
+    } catch {
+      setError("Error al actualizar la información.");
     }
-  })
+  });
 
   return (
-    <Layout>
-      <main className="flex flex-col w-full min-h-screen h-full gap-8 p-4">
-        <section className="flex flex-col gap-4 min-h-44">
-          <h2 className="text-2xl font-semibold">Informacion personal</h2>
-          <div className="flex flex-col gap-2">
-            <p>Nombre: {user?.data.nombre}</p>
-            <p>Apellido: {user?.data.apellido}</p>
-            <p>Correo: {user?.data.email}</p>
-            <p>Telefono: {user?.data.telefono}</p>
-            <p>
-              Fecha de nacimiento: {user?.data.fechaNacimiento.split("T")[0]}
-            </p>
-          </div>
-        </section>
-
-        {required == "true" && (
-          <section className="flex flex-col items-center justify-center w-full gap-8">
-            <h2 className="text-2xl text-center font-semibold">
-              Actualizar información personal
+    <Background>
+      <Layout>
+        <div className="max-w-3xl mx-auto py-8 px-4 space-y-8">
+          {/* Personal Info Card */}
+          <section className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-blue-200 bg-clip-text text-transparent mb-4">
+              Información personal
             </h2>
-            <p className="text-red-500">
-              Por favor, completa todos los campos para usar su cuenta
-            </p>
-            <form
-              className="flex flex-col gap-4 max-w-96 w-full"
-              onSubmit={updateUserFunction}
-            >
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-row gap-2 items-end">
-                  <Label>Telefono</Label>
-                </div>
-                <div className="flex flex-row gap-2">
-                  {isSuccessCountries && Array.isArray(data?.data) && (
-                    <CountryNumberSelect
-                      countries={data?.data}
-                      onChange={(e: any) => setSelectCountryNumber(e)}
-                    />
-                  )}
-                  <Input
-                    type="telefono"
-                    {...register("telefono")}
-                    placeholder="1234567890"
-                  />
-                </div>
-
-                {errors.telefono?.message && (
-                  <small className="font-bold text-red-500">
-                    {errors.telefono?.message.toString()}
-                  </small>
-                )}
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-row gap-2 items-end">
-                  <Label>Fecha de nacimiento</Label>
-                </div>
-
-                <Input
-                  type="date"
-                  {...register("fechaNacimiento")}
-                  onChange={(e) => setValue("fechaNacimiento", e.target.value)} // Directamente el string en formato "YYYY-MM-DD"
-                  placeholder="YYYY-MM-DD"
-                />
-
-                {errors.fechaNacimiento?.message && (
-                  <small className="font-bold text-red-500">
-                    {errors.fechaNacimiento?.message.toString()}
-                  </small>
-                )}
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <Label>Pais</Label>
-                {isSuccessCountries && Array.isArray(data?.data) ? (
-                  <CountrySelect
-                    countries={data?.data}
-                    onChange={(id: any) => setCountryId(id)}
-                  />
-                ) : (
-                  <span className="text-sm text-red-500">
-                    Algo salio mal en la busqueda del listado de los paises
-                  </span>
-                )}
-              </div>
-
-              {countryId && (
-                <div className="flex flex-col gap-2">
-                  <Label>Estado / provincia</Label>
-                  <StateSelect
-                    countryId={countryId}
-                    onChange={(state: number) => setStateId(state)}
-                  />
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {isUserLoading ? (
+                <p className="text-center col-span-2">Cargando...</p>
+              ) : (
+                [
+                  ["Nombre", user?.data.nombre],
+                  ["Apellido", user?.data.apellido],
+                  ["Correo", user?.data.email],
+                  ["Teléfono", user?.data.telefono],
+                  ["Nacimiento", user?.data.fechaNacimiento.split("T")[0]],
+                ].map(([label, value]) => (
+                  <div key={label}>
+                    <span className="block text-sm uppercase text-gray-500 dark:text-gray-400">
+                      {label}
+                    </span>
+                    <span className="block font-medium text-gray-900 dark:text-white">
+                      {value}
+                    </span>
+                  </div>
+                ))
               )}
-
-              {stateId && (
-                <div className="flex flex-col gap-2">
-                  <Label>Ciudad</Label>
-                  <CitySelect
-                    stateId={stateId}
-                    onChange={(city: number) =>
-                      setValue("ciudad_id", city.toString())
-                    }
-                  />
-                </div>
-              )}
-
-              {errors.ciudad_id && errors.ciudad_id.message && (
-                <span className="text-sm text-red-500">
-                  {errors.ciudad_id?.message.toString()}
-                </span>
-              )}
-
-              <div className="flex flex-col w-full">
-                <Select onValueChange={(e) => setValue("tipoDeCuenta", e)}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Tipo de cuenta" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-main text-white w-full">
-                    <SelectItem value="BARBERO">Barbero</SelectItem>
-                    <SelectItem value="CLIENTE">Cliente</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <small className="font-bold text-red-500">
-                  {errors.tipoDeCuenta && "El tipo de cuenta es requerido"}
-                </small>
-              </div>
-              {error && (
-                <small className="font-bold text-red-500">{error}</small>
-              )}
-
-              <Button
-                variant="auth"
-                className="w-full rounded-lg"
-                type="submit"
-                id="register"
-                aria-label="Register"
-                role="button"
-              >
-                Actualizar informacion
-              </Button>
-            </form>
+            </div>
           </section>
-        )}
-      </main>
-    </Layout>
-  )
+
+          {/* Update Info Form */}
+          {required && (
+            <section className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6">
+              <h2 className="text-2xl font-bold text-center mb-2">
+                Completa tu perfil
+              </h2>
+              <p className="text-sm text-red-500 text-center mb-4">
+                Para continuar, completa todos los campos.
+              </p>
+              <form className="space-y-6" onSubmit={onSubmit}>
+                {/* Phone & Prefix */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+                  <div>
+                    <Label htmlFor="telefono">Teléfono</Label>
+                    <div className="mt-1 flex">
+                      {Array.isArray(countries?.data) && (
+                        <CountryNumberSelect
+                          countries={countries.data}
+                          onChange={setSelectCountryNumber}
+                        />
+                      )}
+                      <Input
+                        id="telefono"
+                        {...register("telefono")}
+                        placeholder="1234567890"
+                      />
+                    </div>
+                    {errors.telefono && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.telefono.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="fechaNacimiento">Fecha de nacimiento</Label>
+                    <Input
+                      type="date"
+                      id="fechaNacimiento"
+                      {...register("fechaNacimiento")}
+                      onChange={(e) =>
+                        setValue("fechaNacimiento", e.target.value)
+                      }
+                    />
+                    {errors.fechaNacimiento && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.fechaNacimiento.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Location Selectors */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <Label>País</Label>
+                    {Array.isArray(countries?.data) ? (
+                      <CountrySelect
+                        countries={countries.data}
+                        onChange={setCountryId}
+                      />
+                    ) : (
+                      <p className="text-sm text-red-500">
+                        Error al cargar países
+                      </p>
+                    )}
+                  </div>
+
+                  {countryId && (
+                    <div>
+                      <Label>Provincia</Label>
+                      <StateSelect
+                        countryId={countryId}
+                        onChange={setStateId}
+                      />
+                    </div>
+                  )}
+
+                  {stateId && (
+                    <div>
+                      <Label>Ciudad</Label>
+                      <CitySelect
+                        stateId={stateId}
+                        onChange={(id : number) => setValue("ciudad_id", id.toString())}
+                      />
+                      {errors.ciudad_id && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.ciudad_id.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Account Type */}
+                <div>
+                  <Label>Tipo de cuenta</Label>
+                  <Select
+                    onValueChange={(val) => setValue("tipoDeCuenta", val)}
+                  >
+                    <SelectTrigger className="w-full mt-1">
+                      <SelectValue placeholder="Selecciona tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="BARBERO">Barbero</SelectItem>
+                      <SelectItem value="CLIENTE">Cliente</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.tipoDeCuenta && (
+                    <p className="mt-1 text-sm text-red-500">
+                      El tipo de cuenta es requerido
+                    </p>
+                  )}
+                </div>
+
+                {error && (
+                  <p className="text-center text-sm text-red-500">{error}</p>
+                )}
+
+                <Button type="submit" className="w-full py-3 rounded-full">
+                  Actualizar Perfil
+                </Button>
+              </form>
+            </section>
+          )}
+        </div>
+      </Layout>
+    </Background>
+  );
 }
-export default ProfilePage
