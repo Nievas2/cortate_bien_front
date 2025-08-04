@@ -44,6 +44,24 @@ export async function createService(service: Servicio, id: string) {
   }
 }
 
+export async function updateService(service: Servicio, id: string) {
+  try {
+    const res = await axiosInstance.put("servicio/update/" + id, service)
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function deleteService(id: string) {
+  try {
+    const res = await axiosInstance.delete("servicio/delete/" + id)
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+
 export async function updateBarber(
   barber: Barber,
   id: string,
