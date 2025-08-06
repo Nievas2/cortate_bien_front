@@ -1,76 +1,77 @@
-import { Button } from "@/components/ui/button";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { useForm } from "react-hook-form";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useEffect, useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { barberSchema } from "@/utils/schemas/barberSchema";
-import { getCountries } from "@/services/CountryService";
+import { Button } from "@/components/ui/button"
+import { Icon } from "@iconify/react/dist/iconify.js"
+import { useForm } from "react-hook-form"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useEffect, useState } from "react"
+import { Textarea } from "@/components/ui/textarea"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { barberSchema } from "@/utils/schemas/barberSchema"
+import { getCountries } from "@/services/CountryService"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 
-import CountrySelect from "./CountrySelect";
-import { Hour } from "@/interfaces/Hour";
-import { createbarber, updateBarber } from "@/services/BarberService";
-import { Barber } from "@/interfaces/Barber";
-import StateSelect from "./StateSelect";
-import CitySelect from "./CitySelect";
-import MapSelector from "@/hooks/dashboard/MapSelector";
-import { useDropzone } from "react-dropzone";
-import { postImage } from "@/services/ImagesService";
+import CountrySelect from "./CountrySelect"
+import { Hour } from "@/interfaces/Hour"
+import { createbarber, updateBarber } from "@/services/BarberService"
+import { Barber } from "@/interfaces/Barber"
+import StateSelect from "./StateSelect"
+import CitySelect from "./CitySelect"
+import MapSelector from "@/hooks/dashboard/MapSelector"
+import { useDropzone } from "react-dropzone"
+import { postImage } from "@/services/ImagesService"
 
 // Componente del diálogo mejorado
 interface ChangeBarberShopDialogProps {
-  barber?: Barber;
-  refetch?: Function;
+  barber?: Barber
+  refetch?: Function
 }
 
 export function ChangeBarberShopDialog({
   barber,
   refetch,
 }: ChangeBarberShopDialogProps) {
-  const [countryId, setCountryId] = useState<undefined | number>();
-  const [stateId, setStateId] = useState<undefined | number>();
-  const [images, setImages] = useState([]);
-  const [profilePicture, setProfilePicture] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [countryId, setCountryId] = useState<undefined | number>()
+  const [stateId, setStateId] = useState<undefined | number>()
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [profilePicture, setProfilePicture] = useState([])
+  const [images, setImages] = useState([])
+  const [loading, setLoading] = useState(false)
 
   if (barber != undefined) {
     barber.horarios.forEach((element) => {
-      if (element.pausa_inicio == null) element.pausa_inicio = "";
-      if (element.pausa_fin == null) element.pausa_fin = "";
-    });
+      if (element.pausa_inicio == null) element.pausa_inicio = ""
+      if (element.pausa_fin == null) element.pausa_fin = ""
+    })
   }
 
   const [hours, setHours] = useState<Hour[] | undefined>(
     barber?.horarios ? barber?.horarios : undefined
-  );
+  )
 
   const { data, isSuccess: isSuccessCountries } = useQuery({
     queryKey: ["countries"],
     queryFn: getCountries,
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
-  });
+  })
 
   const { mutate, isSuccess, isPending } = useMutation({
     mutationKey: ["create-barber"],
     mutationFn: (values: any) => {
-      return createbarber(values);
+      return createbarber(values)
     },
     onSuccess: () => {
-      setLoading(false);
-      if (refetch) return refetch();
+      setLoading(false)
+      if (refetch) return refetch()
     },
-  });
+  })
 
   const {
     mutate: update,
@@ -80,14 +81,14 @@ export function ChangeBarberShopDialog({
     mutationKey: ["update-barber"],
     mutationFn: (values: any) => {
       if (barber != undefined) {
-        return updateBarber(barber, barber.id!, values);
+        return updateBarber(barber, barber.id!, values)
       }
-      throw new Error("Barberia no encontrada");
+      throw new Error("Barberia no encontrada")
     },
     onSuccess: () => {
-      setLoading(false);
+      setLoading(false)
     },
-  });
+  })
 
   const {
     register,
@@ -110,31 +111,31 @@ export function ChangeBarberShopDialog({
       imagenes: barber?.imagenes ? barber?.imagenes : [],
     },
     resolver: zodResolver(barberSchema),
-  });
+  })
 
   const handleSubmitForm = async (data: any) => {
-    setLoading(true);
-    const { imagenes, imagen_perfil } = await handleSubmitImages();
-    if (imagenes.length === 0 && !imagen_perfil) return setLoading(false);
+    setLoading(true)
+    const { imagenes, imagen_perfil } = await handleSubmitImages()
+    if (imagenes.length === 0 && !imagen_perfil) return setLoading(false)
 
     if (barber !== undefined) {
       const formData = {
         ...data,
         imagenes,
         imagen_perfil: barber.imagen_perfil,
-      };
-      return update(formData);
+      }
+      return update(formData)
     }
     const formData = {
       ...data,
       imagenes,
       imagen_perfil,
-    };
-    mutate(formData);
-  };
+    }
+    mutate(formData)
+  }
 
   function handleSelectCountry(country: number) {
-    setCountryId(country);
+    setCountryId(country)
   }
 
   function handleAddHour() {
@@ -144,53 +145,53 @@ export function ChangeBarberShopDialog({
       hora_cierre: "",
       pausa_inicio: "",
       pausa_fin: "",
-    };
-    if (hours === null || hours == undefined) {
-      return setHours([data]);
     }
-    const updatedHours = [...hours];
-    updatedHours.push(data);
-    setHours(updatedHours);
+    if (hours === null || hours == undefined) {
+      return setHours([data])
+    }
+    const updatedHours = [...hours]
+    updatedHours.push(data)
+    setHours(updatedHours)
   }
 
   const handleRemoveHour = (index: number) => {
     if (hours != null && hours != undefined) {
-      const newhours = hours.filter((_: any, i: number) => i !== index);
-      setHours(newhours);
+      const newhours = hours.filter((_: any, i: number) => i !== index)
+      setHours(newhours)
     }
-  };
+  }
 
   const [position, setPosition] = useState({
     lat: barber?.latitud ? barber.latitud.toString() : 0,
     lng: barber?.longitud ? barber.longitud.toString() : 0,
-  });
-  const [error, setError] = useState("");
+  })
+  const [error, setError] = useState("")
 
   useEffect(() => {
-    if (barber != undefined) return;
+    if (barber != undefined) return
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setValue("latitud", position.coords.latitude.toString());
-        setValue("longitud", position.coords.longitude.toString());
+        setValue("latitud", position.coords.latitude.toString())
+        setValue("longitud", position.coords.longitude.toString())
         setPosition({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
-        });
+        })
       },
       (error) => {
-        setError(error.message || "Error al obtener la ubicación");
+        setError(error.message || "Error al obtener la ubicación")
       },
       { enableHighAccuracy: true }
-    );
-  }, []);
+    )
+  }, [])
 
   const onDrop = (acceptedFiles: any) => {
-    setImages(acceptedFiles);
-  };
+    setImages(acceptedFiles)
+  }
 
   const onDropProfile = (acceptedFiles: any) => {
-    setProfilePicture(acceptedFiles);
-  };
+    setProfilePicture(acceptedFiles)
+  }
 
   const {
     getRootProps: getRootPropsProfile,
@@ -204,7 +205,7 @@ export function ChangeBarberShopDialog({
     accept: {
       "image/*": [],
     },
-  });
+  })
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } =
     useDropzone({
@@ -214,62 +215,65 @@ export function ChangeBarberShopDialog({
       accept: {
         "image/*": [],
       },
-    });
+    })
 
   const handleSubmitImages = (): Promise<{
-    imagenes: string[];
-    imagen_perfil: string;
+    imagenes: string[]
+    imagen_perfil: string
   }> => {
+    setUploadingImage(true)
     return new Promise(async (resolve, reject) => {
       try {
-        let imagesUploadUrl: string[] = [];
-        let profilePictureUrl = "";
+        let imagesUploadUrl: string[] = []
+        let profilePictureUrl = ""
 
         if (typeof profilePicture !== "string") {
-          const imagesUpload = [...profilePicture];
+          const imagesUpload = [...profilePicture]
           for (const imageUp of imagesUpload) {
             if (imageUp !== undefined) {
-              const formData = new FormData();
-              formData.append("image", imageUp);
+              const formData = new FormData()
+              formData.append("image", imageUp)
               try {
-                const response = await postImage(formData);
-                profilePictureUrl = response.data.directLink;
+                const response = await postImage(formData)
+                profilePictureUrl = response.data.directLink
               } catch (error) {
-                reject({ imagenes: [], imagen_perfil: "" });
-                return;
+                reject({ imagenes: [], imagen_perfil: "" })
+                return
               }
             }
           }
         }
 
-        const imagesUpload = [...images];
+        const imagesUpload = [...images]
         for (const imageUp of imagesUpload) {
           if (imageUp !== undefined) {
-            const formData = new FormData();
-            formData.append("image", imageUp);
+            const formData = new FormData()
+            formData.append("image", imageUp)
             try {
-              const response = await postImage(formData);
-              imagesUploadUrl.push(response.data.directLink);
+              const response = await postImage(formData)
+              imagesUploadUrl.push(response.data.directLink)
             } catch (error) {
-              reject({ imagenes: [], imagen_perfil: "" });
-              return;
+              reject({ imagenes: [], imagen_perfil: "" })
+              return
             }
           }
         }
         resolve({
           imagenes: imagesUploadUrl,
           imagen_perfil: profilePictureUrl,
-        });
+        })
       } catch (error) {
-        reject({ imagenes: [], imagen_perfil: "" });
+        reject({ imagenes: [], imagen_perfil: "" })
+      } finally {
+        setUploadingImage(false)
       }
-    });
-  };
+    })
+  }
 
   function handleRemoveImage(index: any) {
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    setImages(newImages);
+    const newImages = [...images]
+    newImages.splice(index, 1)
+    setImages(newImages)
   }
 
   return (
@@ -307,7 +311,7 @@ export function ChangeBarberShopDialog({
                   type="text"
                   placeholder="Ej: Barbería El Corte Perfecto"
                   {...register("nombre")}
-                  disabled={isPending || isPendingUpdate}
+                  disabled={isPending || isPendingUpdate || uploadingImage}
                   className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
                 />
                 {errors.nombre?.message && (
@@ -325,7 +329,7 @@ export function ChangeBarberShopDialog({
                   type="number"
                   placeholder="30"
                   {...register("cantidadDeMinutosPorTurno")}
-                  disabled={isPending || isPendingUpdate}
+                  disabled={isPending || isPendingUpdate || uploadingImage}
                   className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
                 />
                 {errors.cantidadDeMinutosPorTurno?.message && (
@@ -344,7 +348,7 @@ export function ChangeBarberShopDialog({
                 placeholder="Describe tu barbería, servicios y ambiente..."
                 {...register("descripcion")}
                 rows={4}
-                disabled={isPending || isPendingUpdate}
+                disabled={isPending || isPendingUpdate || uploadingImage}
                 className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400 resize-none"
               />
               {errors.descripcion?.message && (
@@ -370,9 +374,9 @@ export function ChangeBarberShopDialog({
                     lng: Number(position.lng),
                   }}
                   onChangePosition={(lat, lng) => {
-                    setValue("latitud", lat.toString());
-                    setValue("longitud", lng.toString());
-                    setPosition({ lat, lng });
+                    setValue("latitud", lat.toString())
+                    setValue("longitud", lng.toString())
+                    setPosition({ lat, lng })
                   }}
                 />
               </div>
@@ -398,21 +402,21 @@ export function ChangeBarberShopDialog({
                   placeholder="-34.6037"
                   value={position.lat || ""}
                   onChange={(e) => {
-                    const value = e.target.value;
-                    const parsedValue = parseFloat(value);
+                    const value = e.target.value
+                    const parsedValue = parseFloat(value)
 
                     if (!isNaN(parsedValue)) {
-                      setValue("latitud", value);
+                      setValue("latitud", value)
                       setPosition({
                         ...position,
                         lat: parsedValue,
-                      });
+                      })
                     } else if (value === "") {
-                      setValue("latitud", "");
-                      setPosition((prev) => ({ ...prev, lat: 0 }));
+                      setValue("latitud", "")
+                      setPosition((prev) => ({ ...prev, lat: 0 }))
                     }
                   }}
-                  disabled={isPending || isPendingUpdate}
+                  disabled={isPending || isPendingUpdate || uploadingImage}
                   className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
                 />
                 {errors.latitud?.message && (
@@ -432,21 +436,21 @@ export function ChangeBarberShopDialog({
                   placeholder="-58.3816"
                   value={position.lng || ""}
                   onChange={(e) => {
-                    const value = e.target.value;
-                    const parsedValue = parseFloat(value);
+                    const value = e.target.value
+                    const parsedValue = parseFloat(value)
 
                     if (!isNaN(parsedValue)) {
-                      setValue("longitud", value);
+                      setValue("longitud", value)
                       setPosition({
                         ...position,
                         lng: parsedValue,
-                      });
+                      })
                     } else if (value === "") {
-                      setValue("longitud", "");
-                      setPosition((prev) => ({ ...prev, lng: 0 }));
+                      setValue("longitud", "")
+                      setPosition((prev) => ({ ...prev, lng: 0 }))
                     }
                   }}
-                  disabled={isPending || isPendingUpdate}
+                  disabled={isPending || isPendingUpdate || uploadingImage}
                   className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
                 />
                 {errors.longitud?.message && (
@@ -465,7 +469,7 @@ export function ChangeBarberShopDialog({
                 type="text"
                 placeholder="Ej: Av. Corrientes 1234, CABA, Argentina"
                 {...register("direccion")}
-                disabled={isPending || isPendingUpdate}
+                disabled={isPending || isPendingUpdate || uploadingImage}
                 className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
               />
               {errors.direccion?.message && (
@@ -557,8 +561,8 @@ export function ChangeBarberShopDialog({
                     isDragActiveProfile
                       ? "border-blue-400 bg-blue-50 dark:bg-blue-900/20"
                       : isDragRejectProfile
-                        ? "border-red-400 bg-red-50 dark:bg-red-900/20"
-                        : "border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                      ? "border-red-400 bg-red-50 dark:bg-red-900/20"
+                      : "border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                   }`}
                 >
                   <input {...getInputPropsProfile()} disabled={isPending} />
@@ -640,8 +644,8 @@ export function ChangeBarberShopDialog({
                   isDragActive
                     ? "border-blue-400 bg-blue-50 dark:bg-blue-900/20"
                     : isDragReject
-                      ? "border-red-400 bg-red-50 dark:bg-red-900/20"
-                      : "border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                    ? "border-red-400 bg-red-50 dark:bg-red-900/20"
+                    : "border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 }`}
               >
                 <input {...getInputProps()} disabled={isPending} />
@@ -715,7 +719,7 @@ export function ChangeBarberShopDialog({
               <Button
                 type="button"
                 onClick={handleAddHour}
-                disabled={isPending || isPendingUpdate}
+                disabled={isPending || isPendingUpdate || uploadingImage}
                 className="bg-blue-600 hover:bg-blue-700 text-white"
                 size="sm"
               >
@@ -753,7 +757,9 @@ export function ChangeBarberShopDialog({
                       <Button
                         type="button"
                         onClick={() => handleRemoveHour(index)}
-                        disabled={isPending || isPendingUpdate}
+                        disabled={
+                          isPending || isPendingUpdate || uploadingImage
+                        }
                         variant="outline"
                         size="sm"
                         className="text-red-600 border-red-300 hover:bg-red-50 dark:text-red-400 dark:border-red-700 dark:hover:bg-red-900/20"
@@ -770,16 +776,18 @@ export function ChangeBarberShopDialog({
                       </Label>
                       <Select
                         onValueChange={(e) => {
-                          const updatedHours = [...hours];
+                          const updatedHours = [...hours]
                           updatedHours[index] = {
                             ...updatedHours[index],
                             dia: e,
-                          };
-                          setValue(`horarios.${index}.dia`, e);
-                          setHours(updatedHours);
+                          }
+                          setValue(`horarios.${index}.dia`, e)
+                          setHours(updatedHours)
                         }}
                         value={hour.dia}
-                        disabled={isPending || isPendingUpdate}
+                        disabled={
+                          isPending || isPendingUpdate || uploadingImage
+                        }
                       >
                         <SelectTrigger className="border-gray-300 dark:border-gray-600">
                           <SelectValue placeholder="Selecciona un día" />
@@ -809,7 +817,9 @@ export function ChangeBarberShopDialog({
                         placeholder="09:00"
                         type="text"
                         {...register(`horarios.${index}.hora_apertura`)}
-                        disabled={isPending || isPendingUpdate}
+                        disabled={
+                          isPending || isPendingUpdate || uploadingImage
+                        }
                         className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
                       />
                       {errors.horarios?.[index]?.hora_apertura?.message && (
@@ -827,7 +837,9 @@ export function ChangeBarberShopDialog({
                         placeholder="18:00"
                         type="text"
                         {...register(`horarios.${index}.hora_cierre`)}
-                        disabled={isPending || isPendingUpdate}
+                        disabled={
+                          isPending || isPendingUpdate || uploadingImage
+                        }
                         className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
                       />
                       {errors.horarios?.[index]?.hora_cierre?.message && (
@@ -847,7 +859,9 @@ export function ChangeBarberShopDialog({
                         placeholder="13:00"
                         type="text"
                         {...register(`horarios.${index}.pausa_inicio`)}
-                        disabled={isPending || isPendingUpdate}
+                        disabled={
+                          isPending || isPendingUpdate || uploadingImage
+                        }
                         className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
                       />
                       {errors.horarios?.[index]?.pausa_inicio?.message && (
@@ -865,7 +879,9 @@ export function ChangeBarberShopDialog({
                         placeholder="14:00"
                         type="text"
                         {...register(`horarios.${index}.pausa_fin`)}
-                        disabled={isPending || isPendingUpdate}
+                        disabled={
+                          isPending || isPendingUpdate || uploadingImage
+                        }
                         className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
                       />
                       {errors.horarios?.[index]?.pausa_fin?.message && (
@@ -879,6 +895,22 @@ export function ChangeBarberShopDialog({
               ))}
             </div>
           </div>
+
+          {uploadingImage && (
+            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <p className="text-sm text-blue-800 dark:text-blue-200 font-medium">
+                Subiendo imágenes, por favor espera...
+              </p>
+            </div>
+          )}
+
+          {isPending && (
+            <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+              <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium">
+                Guardando cambios, por favor espera...
+              </p>
+            </div>
+          )}
 
           {/* Botón de envío */}
           <div className="flex justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
@@ -907,5 +939,5 @@ export function ChangeBarberShopDialog({
         </form>
       )}
     </div>
-  );
+  )
 }
