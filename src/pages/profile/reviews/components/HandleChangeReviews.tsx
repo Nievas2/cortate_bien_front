@@ -28,7 +28,6 @@ const HandleChangeReviews = ({
   );
   const [hoveredStar, setHoveredStar] = useState<number>(0);
 
-  const isEditing = !!review;
   const isCreating = !!idBarber;
 
   const {
