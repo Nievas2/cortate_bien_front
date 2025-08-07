@@ -1,255 +1,170 @@
-import { useAuthContext } from "@/contexts/authContext";
-import { completeRegistration, getUserById } from "@/services/UserService";
-import { useQuery } from "@tanstack/react-query";
-import Layout from "./Layout";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { getCountries } from "@/services/CountryService";
-import CountrySelect from "../dashboard/components/CountrySelect";
-import StateSelect from "../dashboard/components/StateSelect";
-import CitySelect from "../dashboard/components/CitySelect";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { updateUserSchema } from "@/utils/schemas/userSchema";
-import { Button } from "@/components/ui/button";
-import { useLocation } from "react-router-dom";
-import CountryNumberSelect from "../dashboard/components/CountryNumberSelect";
-import { decodeJwt } from "@/utils/decodeJwt";
-import { setCookieAsync } from "@/hooks/useLogin";
+import { useSearchParams } from "react-router-dom";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import ProfileAppointments from "./appointment/ProfileAppointmentPage";
+import ProfileReviews from "./reviews/ProfileReviewsPage";
+import { ProfileInfo } from "./profileInfo/ProfileInfo";
 import { Background } from "@/components/ui/background";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ProfilePage() {
   document.title = "Cortate Bien | Perfil";
-  const [selectCountryNumber, setSelectCountryNumber] = useState(undefined);
-  const [countryId, setCountryId] = useState(undefined);
-  const [stateId, setStateId] = useState(undefined);
-  const [error, setError] = useState("");
-  const location = useLocation();
-  const required =
-    new URLSearchParams(location.search).get("required") === "true";
-  const { authUser, setAuthUser } = useAuthContext();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const { data: countries } = useQuery({
-    queryKey: ["countries"],
-    queryFn: getCountries,
-    staleTime: 86400000,
-    refetchOnWindowFocus: false,
-  });
+  // Obtener la sección activa desde los parámetros de URL
+  const activeSection = searchParams.get("section") || "info";
 
-  const { data: user, isLoading: isUserLoading } = useQuery({
-    queryKey: ["get-user-by-id", authUser?.user.sub],
-    queryFn: () => authUser && getUserById(authUser.user.sub),
-    enabled: !!authUser,
-    staleTime: 86400000,
-    refetchOnWindowFocus: false,
-  });
+  // Función para cambiar de sección
+  const handleSectionChange = (section: string) => {
+    setSearchParams({ section });
+  };
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    setValue,
-  } = useForm({
-    defaultValues: {
-      telefono: "",
-      ciudad_id: "",
-      fechaNacimiento: new Date().toISOString().split("T")[0],
-      tipoDeCuenta: "",
-    },
-    resolver: zodResolver(updateUserSchema),
-  });
-
-  const onSubmit = handleSubmit(async (values) => {
-    try {
-      if (!selectCountryNumber) {
-        setError("Seleccione el prefijo del país.");
-        return;
-      }
-      const res = await completeRegistration({
-        ciudad_id: Number(values.ciudad_id),
-        telefono: `+${selectCountryNumber}${values.telefono}`,
-        fechaNacimiento: values.fechaNacimiento,
-        tipoDeCuenta: values.tipoDeCuenta,
-      });
-      const payload = decodeJwt(res.data.accesToken);
-      setAuthUser({ user: payload, token: res.data.accesToken });
-      await setCookieAsync("token", res.data.accesToken, {
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-      });
-      window.location.href = "/barbers";
-    } catch {
-      setError("Error al actualizar la información.");
+  const getTitle = () => {
+    switch (activeSection) {
+      case "info":
+        return "Información Personal";
+      case "appointments":
+        return "Mis Turnos";
+      case "reviews":
+        return "Mis Reseñas";
+      default:
+        return "Perfil";
     }
-  });
+  };
+
+  const getSubtitle = () => {
+    switch (activeSection) {
+      case "info":
+        return "Gestiona tu información personal y preferencias de cuenta";
+      case "appointments":
+        return "Administra tus citas y turnos programados";
+      case "reviews":
+        return "Gestiona todas las reseñas que has dejado";
+      default:
+        return "Perfil";
+    }
+  };
+
+  // Renderizar el contenido según la sección activa con animación
+  const renderContent = () => {
+    const variants = {
+      initial: { opacity: 0, y: 30 },
+      animate: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5, type: "spring" },
+      },
+      exit: { opacity: 0, y: -30, transition: { duration: 0.3 } },
+    };
+    let content;
+    switch (activeSection) {
+      case "appointments":
+        content = <ProfileAppointments />;
+        break;
+      case "reviews":
+        content = <ProfileReviews />;
+        break;
+      case "info":
+        content = <ProfileInfo />;
+        break;
+      default:
+        content = (
+          <div>
+            <p className="text-center text-gray-400">Sección no encontrada.</p>
+          </div>
+        );
+    }
+    return (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeSection}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          variants={variants}
+        >
+          {content}
+        </motion.div>
+      </AnimatePresence>
+    );
+  };
 
   return (
     <Background>
-      <Layout>
-        <div className="max-w-3xl mx-auto py-8 px-4 space-y-8">
-          {/* Personal Info Card */}
-          <section className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-blue-200 bg-clip-text text-transparent mb-4">
-              Información personal
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {isUserLoading ? (
-                <p className="text-center col-span-2">Cargando...</p>
-              ) : (
-                [
-                  ["Nombre", user?.data.nombre],
-                  ["Apellido", user?.data.apellido],
-                  ["Correo", user?.data.email],
-                  ["Teléfono", user?.data.telefono],
-                  ["Nacimiento", user?.data.fechaNacimiento.split("T")[0]],
-                ].map(([label, value]) => (
-                  <div key={label}>
-                    <span className="block text-sm uppercase text-gray-500 dark:text-gray-400">
-                      {label}
-                    </span>
-                    <span className="block font-medium text-gray-900 dark:text-white">
-                      {value}
-                    </span>
-                  </div>
-                ))
-              )}
+      <div className="flex h-full w-full items-start justify-center gap-2 sm:gap-4 md:gap-6 px-2 sm:px-4 py-2 sm:py-4 md:px-6 lg:px-8 overflow-y-auto min-h-screen">
+        <div className="w-full max-w-2xl space-y-6 sm:space-y-8 animate-in fade-in duration-500">
+          {/* Header */}
+          <div className="text-center space-y-1 sm:space-y-2 px-2">
+            <AnimatePresence mode="wait">
+              <motion.h1
+                key={activeSection + "-title"}
+                className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4, type: "spring" }}
+              >
+                {getTitle()}
+              </motion.h1>
+            </AnimatePresence>
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={activeSection + "-subtitle"}
+                className="text-gray-400 max-w-md mx-auto"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4, delay: 0.1, type: "spring" }}
+              >
+                {getSubtitle()}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+
+          {/* Navigation Tabs */}
+          <div className="flex justify-center w-full">
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-1 sm:p-2 w-full max-w-md">
+              <div className="flex flex-wrap gap-1 w-full justify-center">
+                <button
+                  onClick={() => handleSectionChange("info")}
+                  className={`cursor-pointer w-full sm:w-auto px-3 sm:px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 justify-center text-sm sm:text-base ${
+                    activeSection === "info"
+                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+                      : "text-gray-400 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  <Icon icon="tabler:user" className="h-4 w-4" />
+                  Información
+                </button>
+                <button
+                  onClick={() => handleSectionChange("appointments")}
+                  className={`cursor-pointer w-full sm:w-auto px-3 sm:px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 justify-center text-sm sm:text-base ${
+                    activeSection === "appointments"
+                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+                      : "text-gray-400 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  <Icon icon="tabler:calendar-check" className="h-4 w-4" />
+                  Turnos
+                </button>
+                <button
+                  onClick={() => handleSectionChange("reviews")}
+                  className={`cursor-pointer w-full sm:w-auto px-3 sm:px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 justify-center text-sm sm:text-base ${
+                    activeSection === "reviews"
+                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+                      : "text-gray-400 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  <Icon icon="tabler:star" className="h-4 w-4" />
+                  Reseñas
+                </button>
+              </div>
             </div>
-          </section>
+          </div>
 
-          {/* Update Info Form */}
-          {required && (
-            <section className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6">
-              <h2 className="text-2xl font-bold text-center mb-2">
-                Completa tu perfil
-              </h2>
-              <p className="text-sm text-red-500 text-center mb-4">
-                Para continuar, completa todos los campos.
-              </p>
-              <form className="space-y-6" onSubmit={onSubmit}>
-                {/* Phone & Prefix */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
-                  <div>
-                    <Label htmlFor="telefono">Teléfono</Label>
-                    <div className="mt-1 flex">
-                      {Array.isArray(countries?.data) && (
-                        <CountryNumberSelect
-                          countries={countries.data}
-                          onChange={setSelectCountryNumber}
-                        />
-                      )}
-                      <Input
-                        id="telefono"
-                        {...register("telefono")}
-                        placeholder="1234567890"
-                      />
-                    </div>
-                    {errors.telefono && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.telefono.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor="fechaNacimiento">Fecha de nacimiento</Label>
-                    <Input
-                      type="date"
-                      id="fechaNacimiento"
-                      {...register("fechaNacimiento")}
-                      onChange={(e) =>
-                        setValue("fechaNacimiento", e.target.value)
-                      }
-                    />
-                    {errors.fechaNacimiento && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.fechaNacimiento.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Location Selectors */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <Label>País</Label>
-                    {Array.isArray(countries?.data) ? (
-                      <CountrySelect
-                        countries={countries.data}
-                        onChange={setCountryId}
-                      />
-                    ) : (
-                      <p className="text-sm text-red-500">
-                        Error al cargar países
-                      </p>
-                    )}
-                  </div>
-
-                  {countryId && (
-                    <div>
-                      <Label>Provincia</Label>
-                      <StateSelect
-                        countryId={countryId}
-                        onChange={setStateId}
-                      />
-                    </div>
-                  )}
-
-                  {stateId && (
-                    <div>
-                      <Label>Ciudad</Label>
-                      <CitySelect
-                        stateId={stateId}
-                        onChange={(id : number) => setValue("ciudad_id", id.toString())}
-                      />
-                      {errors.ciudad_id && (
-                        <p className="mt-1 text-sm text-red-500">
-                          {errors.ciudad_id.message}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* Account Type */}
-                <div>
-                  <Label>Tipo de cuenta</Label>
-                  <Select
-                    onValueChange={(val) => setValue("tipoDeCuenta", val)}
-                  >
-                    <SelectTrigger className="w-full mt-1">
-                      <SelectValue placeholder="Selecciona tipo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="BARBERO">Barbero</SelectItem>
-                      <SelectItem value="CLIENTE">Cliente</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errors.tipoDeCuenta && (
-                    <p className="mt-1 text-sm text-red-500">
-                      El tipo de cuenta es requerido
-                    </p>
-                  )}
-                </div>
-
-                {error && (
-                  <p className="text-center text-sm text-red-500">{error}</p>
-                )}
-
-                <Button type="submit" className="w-full py-3 rounded-full">
-                  Actualizar Perfil
-                </Button>
-              </form>
-            </section>
-          )}
+          {/* Content */}
+          {renderContent()}
         </div>
-      </Layout>
+      </div>
     </Background>
   );
 }

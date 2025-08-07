@@ -45,7 +45,7 @@ const ChangeBarberShop = ({
 
   return (
     <Background>
-      <div className="min-h-screen relative w-full">
+      <div className="min-h-screen relative w-full pt-10">
         {/* Header con gradiente mejorado */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
