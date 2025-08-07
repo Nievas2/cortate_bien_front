@@ -610,16 +610,18 @@ export function ChangeBarberShopDialog({
                   profilePicture.map((image: any) => (
                     <div key={crypto.randomUUID()} className="relative group">
                       <img
+                        className="size-24 object-cover rounded-lg shadow-md cursor-pointer"
                         src={URL.createObjectURL(image)}
-                        className="w-24 h-24 object-cover rounded-lg shadow-md cursor-pointer"
-                        alt="Nueva imagen"
-                        onClick={() => setProfilePicture([])}
                       />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors rounded-lg flex items-center justify-center">
-                        <Icon
-                          icon="tabler:x"
-                          className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                        />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors rounded-lg flex items-center justify-center z-40">
+                        <Button
+                          className="rounded-lg items-center justify-center hidden group-hover:flex"
+                          variant="ghost"
+                          onClick={() => setProfilePicture([])}
+                          type="button"
+                        >
+                          <Icon icon="tabler:x" className="w-6 h-6" />
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -695,13 +697,16 @@ export function ChangeBarberShopDialog({
                         src={URL.createObjectURL(image)}
                         className="w-24 h-24 object-cover rounded-lg shadow-md cursor-pointer"
                         alt="Nueva imagen"
-                        onClick={() => handleRemoveImage(index)}
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors rounded-lg flex items-center justify-center">
-                        <Icon
-                          icon="tabler:x"
-                          className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                        />
+                        <Button
+                          className="rounded-lg items-center justify-center hidden group-hover:flex"
+                          onClick={() => handleRemoveImage(index)}
+                          variant="ghost"
+                          type="button"
+                        >
+                          <Icon icon="tabler:x" className="w-6 h-6" />
+                        </Button>
                       </div>
                     </div>
                   ))}
