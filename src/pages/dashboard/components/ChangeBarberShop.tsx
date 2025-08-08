@@ -19,6 +19,7 @@ import { motion } from "framer-motion";
 import { RenderBarbersCardDashboardSkeletons } from "../skeletons/BarbersCardDashboardSkeleton";
 import { Background } from "@/components/ui/background";
 import { ChangeBarberShopDialog } from "./ChangeBarberShopDialog";
+import toast from "react-hot-toast";
 
 interface ChangeBarberShopProps {
   Barbers?: Barber[];
@@ -40,6 +41,7 @@ const ChangeBarberShop = ({
     },
     onSuccess: () => {
       if (refetch) return refetch();
+      toast.success("Barbería eliminada con éxito");
     },
   });
 
