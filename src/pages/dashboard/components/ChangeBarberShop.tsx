@@ -151,7 +151,7 @@ const ChangeBarberShop = ({
                       {/* Botón eliminar mejorado */}
                       <Dialog>
                         <DialogTrigger asChild>
-                          <button className="absolute top-3 right-3 z-20 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-lg">
+                          <button className="absolute top-3 right-3 z-20 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-lg cursor-pointer">
                             <Icon
                               icon="material-symbols:delete"
                               className="w-4 h-4"
@@ -199,13 +199,13 @@ const ChangeBarberShop = ({
                               </div>
                               <div className="flex gap-3 justify-end">
                                 <DialogClose asChild>
-                                  <Button variant="outline" className="px-6">
+                                  <Button variant="outline" className="px-6 cursor-pointer">
                                     Cancelar
                                   </Button>
                                 </DialogClose>
                                 <Button
                                   variant="destructive"
-                                  className="px-6"
+                                  className="px-6 cursor-pointer"
                                   onClick={() => {
                                     if (barber.id == undefined) return;
                                     deleteFunction(barber.id);

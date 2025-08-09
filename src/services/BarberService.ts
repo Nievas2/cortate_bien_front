@@ -1,11 +1,12 @@
 import axiosInstance from "@/api/axiosInstance"
-import { Barber, BarberBasic, BarberProfile } from "@/interfaces/Barber"
+import { Barber, BarberBasic, BarberGet, BarberProfile } from "@/interfaces/Barber"
 import { Servicio } from "@/interfaces/Servicio"
 
 export async function getBarberById(id: string) {
   try {
     const res = await axiosInstance.get(`barberia/find/${id}`)
-    return res
+    const barber: BarberGet = res.data
+    return barber
   } catch (error) {
     throw error
   }

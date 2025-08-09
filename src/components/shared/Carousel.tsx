@@ -167,17 +167,7 @@ export const CarouselMobile = ({ images, isLoading }: CarouselMobileProps) => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        
-        {/* Custom navigation buttons */}
-        <CarouselPrevious 
-          className="left-4 w-12 h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-0 shadow-lg hover:bg-white dark:hover:bg-gray-700 transition-all duration-200"
-          onClick={handleUserInteraction}
-        />
-        <CarouselNext 
-          className="right-4 w-12 h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-0 shadow-lg hover:bg-white dark:hover:bg-gray-700 transition-all duration-200"
-          onClick={handleUserInteraction}
-        />
-        
+  
         {/* Enhanced pagination dots */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 bg-black/40 backdrop-blur-sm px-4 py-2 rounded-full">
           {Array.from({ length: count }).map((_, index) => (
@@ -197,18 +187,6 @@ export const CarouselMobile = ({ images, isLoading }: CarouselMobileProps) => {
           ))}
         </div>
 
-        {/* Image counter */}
-        <div className="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm">
-          {current} / {count}
-        </div>
-
-        {/* Auto-play indicator */}
-        {isAutoPlaying && (
-          <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/60 text-white px-3 py-1 rounded-full text-xs backdrop-blur-sm">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            Auto
-          </div>
-        )}
       </Carousel>
     </div>
   )
