@@ -1,5 +1,5 @@
 import { Hour } from "./Hour"
-import { Servicio, ServicioWithId } from "./Servicio"
+import { ServicioWithId } from "./Servicio"
 
 export interface Barber {
   id?: string
