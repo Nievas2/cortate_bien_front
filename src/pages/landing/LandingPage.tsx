@@ -64,16 +64,12 @@ const LandingPage = () => {
       window.matchMedia("(display-mode: standalone)").matches
 
     const dismissed = localStorage.getItem("pwa-install-dismissed") === "true"
-    const dismissedTime = localStorage.getItem("pwa-install-dismissed-time")
-
-    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
-    const shouldReshow = dismissedTime && parseInt(dismissedTime) < sevenDaysAgo
 
     setIsIOS(iOS)
     setIsStandalone(standalone)
-    setInstallPromptDismissed(dismissed && !shouldReshow)
+    setInstallPromptDismissed(dismissed)
 
-    if (iOS && !standalone && (!dismissed || shouldReshow)) {
+    if (iOS && !standalone && !dismissed) {
       const timer = setTimeout(() => {
         setShowInstall(true)
       }, 3000)
@@ -181,8 +177,8 @@ const LandingPage = () => {
       <div className="fixed bottom-4 left-4 right-4 z-50">
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg shadow-lg p-4">
           <div className="flex flex-col sm:flex-row items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="text-2xl">📱</div>
+            <div className="flex items-center justify-center space-x-3">
+              <div className="text-4xl">📱</div>
               <div>
                 <h3 className="font-semibold">¡Instala la app!</h3>
                 <p className="text-sm opacity-90">
@@ -190,7 +186,7 @@ const LandingPage = () => {
                 </p>
               </div>
             </div>
-            <div className="flex space-x-2 items-center justify-center">
+            <div className="flex flex-col space-x-2 items-center justify-center">
               <button
                 onClick={handleDismiss}
                 className="px-3 py-1 text-sm bg-white/20 rounded hover:bg-white/30 transition"
