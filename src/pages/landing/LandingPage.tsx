@@ -46,7 +46,13 @@ const LandingPage = () => {
 
   // Detectar si es móvil
   useEffect(() => {
-    const mobileCheck = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+    const isTouchDevice =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0
+    const isSmallScreen = window.innerWidth <= 1024 // tablets/móviles
+    const mobileCheck =
+      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      (isTouchDevice && isSmallScreen)
+
     setIsMobile(mobileCheck)
   }, [])
 
