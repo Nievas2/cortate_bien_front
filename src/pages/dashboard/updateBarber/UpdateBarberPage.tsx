@@ -1,47 +1,47 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import Layout from "../layout"
-import { basicBarberFormSchema } from "@/utils/schemas/barber/basicBarberForm"
-import { useForm } from "react-hook-form"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { useDropzone } from "react-dropzone"
-import { useState } from "react"
-import { Barber } from "@/interfaces/Barber"
-import { useLocation } from "react-router-dom"
+import { zodResolver } from "@hookform/resolvers/zod";
+import Layout from "../layout";
+import { basicBarberFormSchema } from "@/utils/schemas/barber/basicBarberForm";
+import { useForm } from "react-hook-form";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useDropzone } from "react-dropzone";
+import { useState } from "react";
+import { Barber } from "@/interfaces/Barber";
+import { useLocation } from "react-router-dom";
 import {
   getBarberById,
   updateBarberBasic,
   updateBarberProfile,
-} from "@/services/BarberService"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { Button } from "@/components/ui/button"
-import { AxiosError } from "axios"
-import { postImage } from "@/services/ImagesService"
-import { profileBarberFormSchema } from "@/utils/schemas/barber/profileBarberForm"
-import MapSelector from "@/hooks/dashboard/MapSelector"
-import { Hour } from "@/interfaces/Hour"
-import CountrySelect from "../components/CountrySelect"
-import StateSelect from "../components/StateSelect"
-import CitySelect from "../components/CitySelect"
+} from "@/services/BarberService";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { AxiosError } from "axios";
+import { postImage } from "@/services/ImagesService";
+import { profileBarberFormSchema } from "@/utils/schemas/barber/profileBarberForm";
+import MapSelector from "@/hooks/dashboard/MapSelector";
+import { Hour } from "@/interfaces/Hour";
+import CountrySelect from "../components/CountrySelect";
+import StateSelect from "../components/StateSelect";
+import CitySelect from "../components/CitySelect";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Icon } from "@iconify/react/dist/iconify.js"
-import { getCountries } from "@/services/CountryService"
+} from "@/components/ui/select";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { getCountries } from "@/services/CountryService";
 import {
   ProfileFormSkeleton,
   BasicFormSkeleton,
-} from "./components/SkeletonForms"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+} from "./components/SkeletonForms";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const UpdateBarberPage = () => {
-  const { search } = useLocation()
-  const id = search.split("=")[1]
+  const { search } = useLocation();
+  const id = search.split("=")[1];
 
   const { data, isLoading } = useQuery({
     queryKey: ["barber-by-id", id],
@@ -50,7 +50,7 @@ const UpdateBarberPage = () => {
     refetchOnMount: false,
     staleTime: 1000 * 60 * 60 * 24,
     enabled: !!id,
-  })
+  });
   return (
     <Layout>
       <main className="flex flex-col gap-8 items-center justify-center w-full h-full">
@@ -78,42 +78,38 @@ const UpdateBarberPage = () => {
               {isLoading ? (
                 <ProfileFormSkeleton />
               ) : (
-                <ProfileForm barber={data?.data} ciudad={data?.data.ciudad} />
+                <ProfileForm barber={data} ciudad={data?.ciudad} />
               )}
             </section>
           </TabsContent>
           <TabsContent value="BasicForm">
             <section className="flex flex-col gap-4 items-center justify-center w-full bg-gray-main rounded-lg p-4">
               <h1 className="text-3xl font-semibold">Actualizar Servicios</h1>
-              {isLoading ? (
-                <BasicFormSkeleton />
-              ) : (
-                <BasicForm barber={data?.data} />
-              )}
+              {isLoading ? <BasicFormSkeleton /> : <BasicForm barber={data} />}
             </section>
           </TabsContent>
         </Tabs>
       </main>
     </Layout>
-  )
-}
-export default UpdateBarberPage
+  );
+};
+export default UpdateBarberPage;
 
 const ProfileForm = ({
   barber,
   ciudad,
 }: {
-  barber: Barber
-  ciudad: string
+  barber: Barber | undefined;
+  ciudad: string | undefined;
 }) => {
   const [position, setPosition] = useState({
     lat: barber?.latitud ? barber.latitud.toString() : 0,
     lng: barber?.longitud ? barber.longitud.toString() : 0,
-  })
-  const [error, setError] = useState("")
-  const [countryId, setCountryId] = useState<undefined | number>()
-  const [stateId, setStateId] = useState<undefined | number>()
-  const [changeCity, setChangeCity] = useState(false)
+  });
+  const [error, setError] = useState("");
+  const [countryId, setCountryId] = useState<undefined | number>();
+  const [stateId, setStateId] = useState<undefined | number>();
+  const [changeCity, setChangeCity] = useState(false);
   const [hours, setHours] = useState<Hour[] | undefined>(
     barber?.horarios?.map((hour: Hour) => ({
       dia: hour.dia,
@@ -122,7 +118,7 @@ const ProfileForm = ({
       pausa_inicio: hour.pausa_inicio == null ? "" : hour.pausa_inicio,
       pausa_fin: hour.pausa_fin == null ? "" : hour.pausa_fin,
     })) || []
-  )
+  );
 
   const { data, isSuccess: isSuccessCountries } = useQuery({
     queryKey: ["countries"],
@@ -130,7 +126,7 @@ const ProfileForm = ({
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     staleTime: 1000 * 60 * 60 * 24,
-  })
+  });
 
   const {
     register,
@@ -148,7 +144,7 @@ const ProfileForm = ({
       horarios: hours,
     },
     resolver: zodResolver(profileBarberFormSchema),
-  })
+  });
 
   const {
     mutate: update,
@@ -159,14 +155,14 @@ const ProfileForm = ({
     mutationKey: ["update-barber-basic"],
     mutationFn: (values: any) => {
       if (barber != undefined) {
-        return updateBarberBasic(barber, barber.id!, values)
+        return updateBarberBasic(barber, barber.id!, values);
       }
-      throw new Error("Barberia no encontrada")
+      throw new Error("Barberia no encontrada");
     } /* 
     onSuccess: () => {
       setLoading(false)
     }, */,
-  })
+  });
 
   function handleAddHour() {
     const data = {
@@ -175,41 +171,41 @@ const ProfileForm = ({
       hora_cierre: "",
       pausa_inicio: "",
       pausa_fin: "",
-    }
+    };
     if (hours === null || hours == undefined) {
-      return setHours([data])
+      return setHours([data]);
     }
-    const updatedHours = [...hours]
-    updatedHours.push(data)
-    setHours(updatedHours)
+    const updatedHours = [...hours];
+    updatedHours.push(data);
+    setHours(updatedHours);
   }
 
   const handleRemoveHour = (index: number) => {
     if (hours != null && hours != undefined) {
-      const newhours = hours.filter((_: any, i: number) => i !== index)
-      setHours(newhours)
+      const newhours = hours.filter((_: any, i: number) => i !== index);
+      setHours(newhours);
     }
-  }
+  };
 
   const handleSubmitForm = async (data: any) => {
-    return update(data)
-  }
+    return update(data);
+  };
 
   function getLocation() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setValue("latitud", position.coords.latitude.toString())
-        setValue("longitud", position.coords.longitude.toString())
+        setValue("latitud", position.coords.latitude.toString());
+        setValue("longitud", position.coords.longitude.toString());
         setPosition({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
-        })
+        });
       },
       (error) => {
-        setError(error.message || "Error al obtener la ubicación")
+        setError(error.message || "Error al obtener la ubicación");
       },
       { enableHighAccuracy: true }
-    )
+    );
   }
   return (
     <form
@@ -254,19 +250,19 @@ const ProfileForm = ({
             placeholder="latitud"
             value={position.lat || ""}
             onChange={(e) => {
-              const value = e.target.value
-              const parsedValue = parseFloat(value)
+              const value = e.target.value;
+              const parsedValue = parseFloat(value);
 
               if (!isNaN(parsedValue)) {
-                setValue("latitud", value)
+                setValue("latitud", value);
                 setPosition({
                   ...position,
                   lat: parsedValue,
-                })
+                });
               } else if (value === "") {
                 // Manejar campo vacío
-                setValue("latitud", "")
-                setPosition((prev) => ({ ...prev, lat: 0 })) // O usa un valor por defecto válido
+                setValue("latitud", "");
+                setPosition((prev) => ({ ...prev, lat: 0 })); // O usa un valor por defecto válido
               }
             }}
             disabled={isPendingUpdate}
@@ -283,19 +279,19 @@ const ProfileForm = ({
             placeholder="longitud"
             value={position.lng || ""}
             onChange={(e) => {
-              const value = e.target.value
-              const parsedValue = parseFloat(value)
+              const value = e.target.value;
+              const parsedValue = parseFloat(value);
 
               if (!isNaN(parsedValue)) {
-                setValue("longitud", value)
+                setValue("longitud", value);
                 setPosition({
                   ...position,
                   lng: parsedValue,
-                })
+                });
               } else if (value === "") {
                 // Manejar campo vacío
-                setValue("longitud", "")
-                setPosition((prev) => ({ ...prev, lng: 0 })) // O usa un valor por defecto válido
+                setValue("longitud", "");
+                setPosition((prev) => ({ ...prev, lng: 0 })); // O usa un valor por defecto válido
               }
             }}
             disabled={isPendingUpdate}
@@ -394,11 +390,11 @@ const ProfileForm = ({
         hours.map(
           (
             hour: {
-              dia: string
-              hora_apertura: string
-              hora_cierre: string
-              pausa_inicio: string | null
-              pausa_fin: string | null
+              dia: string;
+              hora_apertura: string;
+              hora_cierre: string;
+              pausa_inicio: string | null;
+              pausa_fin: string | null;
             },
             index: number
           ) => (
@@ -407,13 +403,13 @@ const ProfileForm = ({
                 <Label>Dia</Label>
                 <Select
                   onValueChange={(e) => {
-                    const updatedHours = [...hours] // Crear una copia del array
+                    const updatedHours = [...hours]; // Crear una copia del array
                     updatedHours[index] = {
                       ...updatedHours[index], // Mantener los otros valores del objeto
                       dia: e, // Actualizar solo el campo "dia"
-                    }
-                    setValue(`horarios.${index}.dia`, e)
-                    setHours(updatedHours) // Actualizar el estado con el nuevo array
+                    };
+                    setValue(`horarios.${index}.dia`, e);
+                    setHours(updatedHours); // Actualizar el estado con el nuevo array
                   }}
                   value={hour.dia}
                   disabled={isPendingUpdate}
@@ -515,7 +511,7 @@ const ProfileForm = ({
             type="button"
             onClick={() => {
               if (hours != undefined && hours.length > 1)
-                return handleRemoveHour(hours?.length - 1)
+                return handleRemoveHour(hours?.length - 1);
             }}
             disabled={isPendingUpdate}
           >
@@ -541,26 +537,26 @@ const ProfileForm = ({
         Actualizar datos de la barberia
       </Button>
     </form>
-  )
-}
+  );
+};
 
-const BasicForm = ({ barber }: { barber: Barber }) => {
-  const [images, setImages] = useState(barber.imagenes)
-  const [profilePicture, setProfilePicture] = useState([barber.imagen_perfil])
+const BasicForm = ({ barber }: { barber: Barber | undefined }) => {
+  const [images, setImages] = useState(barber?.imagenes);
+  const [profilePicture, setProfilePicture] = useState([barber?.imagen_perfil]);
   const onDrop = (acceptedFiles: any) => {
     // Aquí puedes manejar los archivos aceptados
-    const newImages = [...images, ...acceptedFiles]
+    const newImages = [...(images ? images : []), ...acceptedFiles];
     // Limitar a 3 imágenes
     if (newImages.length > 3) {
-      newImages.splice(0, newImages.length - 3)
+      newImages.splice(0, newImages.length - 3);
     }
-    setImages(newImages)
-  }
+    setImages(newImages);
+  };
 
   const onDropProfile = (acceptedFiles: any) => {
     // Aquí puedes manejar los archivos aceptados
-    setProfilePicture(acceptedFiles)
-  }
+    setProfilePicture(acceptedFiles);
+  };
 
   const {
     getRootProps: getRootPropsProfile,
@@ -574,7 +570,7 @@ const BasicForm = ({ barber }: { barber: Barber }) => {
     accept: {
       "image/*": [], // Aceptar solo imágenes
     },
-  })
+  });
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } =
     useDropzone({
@@ -584,14 +580,14 @@ const BasicForm = ({ barber }: { barber: Barber }) => {
       accept: {
         "image/*": [], // Aceptar solo imágenes
       },
-    })
+    });
   const { register, handleSubmit } = useForm({
     defaultValues: {
       nombre: barber?.nombre,
       descripcion: barber?.descripcion,
     },
     resolver: zodResolver(basicBarberFormSchema),
-  })
+  });
 
   const {
     mutate: update,
@@ -602,23 +598,23 @@ const BasicForm = ({ barber }: { barber: Barber }) => {
     mutationKey: ["update-barber-profile"],
     mutationFn: (values: any) => {
       if (barber != undefined) {
-        return updateBarberProfile(barber, barber.id!, values)
+        return updateBarberProfile(barber, barber.id!, values);
       }
-      throw new Error("Barberia no encontrada")
+      throw new Error("Barberia no encontrada");
     } /* 
     onSuccess: () => {
       setLoading(false)
     }, */,
-  })
+  });
 
   const handleSubmitImages = (): Promise<{
-    imagenes: string[]
-    imagen_perfil: string
+    imagenes: string[];
+    imagen_perfil: string;
   }> => {
     return new Promise(async (resolve, reject) => {
       try {
-        let imagesUploadUrl: string[] = []
-        let profilePictureUrl = ""
+        let imagesUploadUrl: string[] = [];
+        let profilePictureUrl = "";
 
         // Manejo de la imagen de perfil
         if (
@@ -626,17 +622,17 @@ const BasicForm = ({ barber }: { barber: Barber }) => {
           profilePicture.length > 0 &&
           typeof profilePicture[0] !== "string"
         ) {
-          const imagesUpload = [...profilePicture]
+          const imagesUpload = [...profilePicture];
           for (const imageUp of imagesUpload) {
             if (imageUp && typeof imageUp === "object" && "path" in imageUp) {
-              const formData = new FormData()
-              formData.append("image", imageUp)
+              const formData = new FormData();
+              formData.append("image", imageUp);
               try {
-                const response = await postImage(formData)
-                profilePictureUrl = response.data.directLink
+                const response = await postImage(formData);
+                profilePictureUrl = response.data.directLink;
               } catch (error) {
-                reject({ imagenes: [], imagen_perfil: "" })
-                return
+                reject({ imagenes: [], imagen_perfil: "" });
+                return;
               }
             }
           }
@@ -644,50 +640,53 @@ const BasicForm = ({ barber }: { barber: Barber }) => {
           Array.isArray(profilePicture) &&
           typeof profilePicture[0] === "string"
         ) {
-          profilePictureUrl = profilePicture[0]
+          profilePictureUrl = profilePicture[0];
         }
 
         // Manejo de las imágenes adicionales
-        const imagesUpload = [...images]
+        const imagesUpload = [...(images ? images : [])];
         for (const imageUp of imagesUpload) {
           if (imageUp && typeof imageUp === "object" && "path" in imageUp) {
-            const formData = new FormData()
-            formData.append("image", imageUp)
+            const formData = new FormData();
+            formData.append("image", imageUp);
             try {
-              const response = await postImage(formData)
-              imagesUploadUrl.push(response.data.directLink)
+              const response = await postImage(formData);
+              imagesUploadUrl.push(response.data.directLink);
             } catch (error) {
-              reject({ imagenes: [], imagen_perfil: "" })
-              return
+              reject({ imagenes: [], imagen_perfil: "" });
+              return;
             }
           } else if (typeof imageUp === "string") {
-            imagesUploadUrl.push(imageUp)
+            imagesUploadUrl.push(imageUp);
           }
         }
 
-        resolve({ imagenes: imagesUploadUrl, imagen_perfil: profilePictureUrl })
+        resolve({
+          imagenes: imagesUploadUrl,
+          imagen_perfil: profilePictureUrl,
+        });
       } catch (error) {
-        reject({ imagenes: [], imagen_perfil: "" })
+        reject({ imagenes: [], imagen_perfil: "" });
       }
-    })
-  }
+    });
+  };
 
   function handleRemoveImage(index: any) {
-    const newImages = [...images]
-    newImages.splice(index, 1)
-    setImages(newImages)
+    const newImages = [...(images ? images : [])];
+    newImages.splice(index, 1);
+    setImages(newImages);
   }
 
   const handleSubmitForm = async (data: any) => {
-    const { imagenes, imagen_perfil } = await handleSubmitImages()
+    const { imagenes, imagen_perfil } = await handleSubmitImages();
 
     const formData = {
       ...data,
       imagenes: imagenes,
       imagen_perfil: imagen_perfil,
-    }
-    return update(formData)
-  }
+    };
+    return update(formData);
+  };
 
   return (
     <form
@@ -750,9 +749,9 @@ const BasicForm = ({ barber }: { barber: Barber }) => {
                   height={100}
                   key={crypto.randomUUID()}
                   onClick={() => {
-                    const newImages = [...profilePicture]
-                    newImages.splice(index, 1)
-                    setProfilePicture(newImages)
+                    const newImages = [...profilePicture];
+                    newImages.splice(index, 1);
+                    setProfilePicture(newImages);
                   }}
                 />
               ))}
@@ -762,7 +761,7 @@ const BasicForm = ({ barber }: { barber: Barber }) => {
         <Label>Agregar imagenes</Label>
 
         <div className="flex flex-col gap-6">
-          {images.length < 3 && (
+          {images && images.length < 3 && (
             <div
               {...getRootProps()}
               className="hover:bg-black-main/80 hover:text-white bg-black-main text-white transition-colors duration-300 px-4 py-2 rounded-md h-32 cursor-pointer"
@@ -787,7 +786,8 @@ const BasicForm = ({ barber }: { barber: Barber }) => {
           )}
 
           <div className="flex flex-wrap justify-around items-center">
-            {images.length > 0 &&
+            {images &&
+              images.length > 0 &&
               images.map((image: any, index: number) => (
                 <img
                   src={
@@ -801,7 +801,7 @@ const BasicForm = ({ barber }: { barber: Barber }) => {
                   height={100}
                   key={image.name}
                   onClick={() => {
-                    handleRemoveImage(index)
+                    handleRemoveImage(index);
                   }}
                 />
               ))}
@@ -824,5 +824,5 @@ const BasicForm = ({ barber }: { barber: Barber }) => {
         Actualizar datos del perfil
       </Button>
     </form>
-  )
-}
+  );
+};

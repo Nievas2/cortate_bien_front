@@ -1,4 +1,5 @@
 import { Hour } from "./Hour"
+import { ServicioWithId } from "./Servicio"
 
 export interface Barber {
   id?: string
@@ -30,6 +31,9 @@ export interface BarberGet {
   imagen_perfil: string
   horarios: Hour[]
   barbero: string
+  servicios?: ServicioWithId[];
+  precioPromedio?: number;
+  idPropietario?: string;
 }
 
 export interface BarberProfile {

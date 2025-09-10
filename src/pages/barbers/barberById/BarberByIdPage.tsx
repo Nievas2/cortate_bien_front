@@ -1,9 +1,9 @@
-import CarouselDesktop, { CarouselMobile } from "@/components/shared/Carousel"
-import { getBarberById, getServicesByBarberId } from "@/services/BarberService"
-import { Icon } from "@iconify/react/dist/iconify.js"
-import { useQuery } from "@tanstack/react-query"
-import { useNavigate, useParams } from "react-router-dom"
-import { Button } from "@/components/ui/button"
+import CarouselDesktop, { CarouselMobile } from "@/components/shared/Carousel";
+import { getBarberById } from "@/services/BarberService";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,53 +11,53 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogClose,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { appointmentSchema } from "@/utils/schemas/appointmentSchema"
-import { Textarea } from "@/components/ui/textarea"
-import { createAppointment } from "@/services/AppointmentService"
-import { useMutation } from "@tanstack/react-query"
-import { useState } from "react"
-import { getCheckReview, getReviews } from "@/services/ReviewService"
-import HandleChangeReviews from "@/pages/profile/reviews/components/HandleChangeReviews"
-import { createOrGetChat } from "@/services/ChatService"
-import { useAuthContext } from "@/contexts/authContext"
-import moment from "moment"
-import { DayEnum } from "@/interfaces/Day"
-import toast from "react-hot-toast"
-import { Background } from "@/components/ui/background"
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { appointmentSchema } from "@/utils/schemas/appointmentSchema";
+import { Textarea } from "@/components/ui/textarea";
+import { createAppointment } from "@/services/AppointmentService";
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import { getCheckReview, getReviews } from "@/services/ReviewService";
+import HandleChangeReviews from "@/pages/profile/reviews/components/HandleChangeReviews";
+import { createOrGetChat } from "@/services/ChatService";
+import { useAuthContext } from "@/contexts/authContext";
+import moment from "moment";
+import { DayEnum } from "@/interfaces/Day";
+import toast from "react-hot-toast";
+import { Background } from "@/components/ui/background";
 
 export function getDiaByDate(date: Date): DayEnum {
-  const dia = moment(date).day() // Devuelve 0 (Domingo) - 6 (Sábado)
+  const dia = moment(date).day(); // Devuelve 0 (Domingo) - 6 (Sábado)
 
   switch (dia) {
     case 0:
-      return DayEnum.DOMINGO
+      return DayEnum.DOMINGO;
     case 1:
-      return DayEnum.LUNES
+      return DayEnum.LUNES;
     case 2:
-      return DayEnum.MARTES
+      return DayEnum.MARTES;
     case 3:
-      return DayEnum.MIERCOLES
+      return DayEnum.MIERCOLES;
     case 4:
-      return DayEnum.JUEVES
+      return DayEnum.JUEVES;
     case 5:
-      return DayEnum.VIERNES
+      return DayEnum.VIERNES;
     case 6:
-      return DayEnum.SABADO
+      return DayEnum.SABADO;
     default:
-      throw new Error("Día inválido")
+      throw new Error("Día inválido");
   }
 }
 
 const BarberByIdPage = () => {
-  const [success, setSuccess] = useState(false)
-  const { authUser } = useAuthContext()
-  const params = useParams()
-  const navigate = useNavigate()
+  const [success, setSuccess] = useState(false);
+  const { authUser } = useAuthContext();
+  const params = useParams();
+  const navigate = useNavigate();
   const {
     mutate,
     error,
@@ -65,13 +65,13 @@ const BarberByIdPage = () => {
   } = useMutation({
     mutationKey: ["create-appointment"],
     mutationFn: async (values: any) => {
-      if (params.id == undefined) return
-      return await createAppointment(values, params.id)
+      if (params.id == undefined) return;
+      return await createAppointment(values, params.id);
     },
     onSuccess() {
-      setSuccess(true)
+      setSuccess(true);
     },
-  })
+  });
 
   const {
     register: registerForm,
@@ -86,23 +86,23 @@ const BarberByIdPage = () => {
       nota: "",
     },
     resolver: zodResolver(appointmentSchema),
-  })
+  });
 
   const appointmentFunction = async (values: any) => {
-    mutate(values)
-  }
+    mutate(values);
+  };
 
   const { data, isLoading } = useQuery({
     queryKey: ["barber", params.id],
     queryFn: () => {
       if (params.id === undefined)
-        return Promise.reject("Barberia no encontrada")
-      return getBarberById(params.id)
+        return Promise.reject("Barberia no encontrada");
+      return getBarberById(params.id);
     },
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
     retry: false,
-  })
+  });
 
   const { data: reviews } = useQuery({
     queryKey: ["review-barber", params.id],
@@ -110,7 +110,7 @@ const BarberByIdPage = () => {
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
     retry: false,
-  })
+  });
 
   const { data: checkReview, refetch: refetchCheck } = useQuery({
     queryKey: ["check-review", params.id],
@@ -118,60 +118,55 @@ const BarberByIdPage = () => {
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
     retry: false,
-  })
-
-  const { data: services, isLoading: isLoadingServices } = useQuery({
-    queryKey: ["get-services", params.id],
-    queryFn: () => getServicesByBarberId(params.id as string),
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 60 * 24,
-    retry: false,
-  })
+  });
 
   const { mutate: initiateChat, isPending: isCreatingChat } = useMutation({
     mutationFn: () => {
       if (!data) {
         throw new Error(
           "La información de la barbería o del barbero no está disponible."
-        )
+        );
       }
-      return createOrGetChat(data.data.idPropietario, data.data.id)
+      if (!data.idPropietario || !data.id) {
+        throw new Error("ID del propietario o de la barbería no disponible.");
+      }
+      return createOrGetChat(data.idPropietario, data.id);
     },
     onSuccess: (chatData) => {
-      navigate(`/chats/${chatData.id}`)
+      navigate(`/chats/${chatData.id}`);
     },
     onError: (err) => {
-      console.log(err)
+      console.log(err);
     },
-  })
+  });
 
   const handleInitiateChat = () => {
-    if (data?.data.idPropietario === authUser?.user.sub) {
-      toast.error("No puedes iniciar un chat con tu propia barbería")
-      return
+    if (data?.idPropietario === authUser?.user.sub) {
+      toast.error("No puedes iniciar un chat con tu propia barbería");
+      return;
     }
-    initiateChat()
-  }
+    initiateChat();
+  };
 
-  const hoyEnum = getDiaByDate(new Date())
+  const hoyEnum = getDiaByDate(new Date());
 
   const isOpen = (() => {
-    if (!data?.data.horarios) return false
-    const horarioHoy = data.data.horarios.find(
+    if (!data?.horarios) return false;
+    const horarioHoy = data.horarios.find(
       (horario: any) => horario.dia === hoyEnum
-    )
-    if (!horarioHoy) return false
+    );
+    if (!horarioHoy) return false;
 
-    const now = moment()
-    const horaApertura = moment(horarioHoy.hora_apertura, "HH:mm")
-    const horaCierre = moment(horarioHoy.hora_cierre, "HH:mm")
+    const now = moment();
+    const horaApertura = moment(horarioHoy.hora_apertura, "HH:mm");
+    const horaCierre = moment(horarioHoy.hora_cierre, "HH:mm");
 
     if (horaCierre.isAfter(horaApertura)) {
-      return now.isBetween(horaApertura, horaCierre)
+      return now.isBetween(horaApertura, horaCierre);
     } else {
-      return now.isAfter(horaApertura) || now.isBefore(horaCierre)
+      return now.isAfter(horaApertura) || now.isBefore(horaCierre);
     }
-  })()
+  })();
 
   return (
     <Background>
@@ -223,8 +218,8 @@ const BarberByIdPage = () => {
           <div className="static sm:hidden w-full h-full">
             <CarouselMobile
               images={[
-                data?.data.imagen_perfil,
-                ...(data?.data.imagenes || []),
+                data?.imagen_perfil ? data?.imagen_perfil : "",
+                ...(data?.imagenes || []),
               ]}
               isLoading={isLoading}
             />
@@ -241,8 +236,8 @@ const BarberByIdPage = () => {
             <div className="hidden sm:flex max-w-[450px]">
               <CarouselDesktop
                 images={[
-                  data?.data.imagen_perfil,
-                  ...(data?.data.imagenes || []),
+                  data?.imagen_perfil ? data?.imagen_perfil : "",
+                  ...(data?.imagenes || []),
                 ]}
                 isLoading={isLoading}
               />
@@ -251,15 +246,15 @@ const BarberByIdPage = () => {
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  {data?.data.nombre}
+                  {data?.nombre}
                 </h1>
 
                 {/* Rating Display */}
-                {data?.data.puntaje > 0 && (
+                {data?.puntaje && data?.puntaje > 0 && (
                   <div className="flex items-center gap-2 bg-yellow-50 dark:bg-yellow-900/20 px-4 py-2 rounded-full">
                     <div className="flex items-center">
                       {Array.from({
-                        length: Math.floor(data?.data.puntaje),
+                        length: Math.floor(data?.puntaje),
                       }).map((_, index) => (
                         <Icon
                           key={index}
@@ -268,7 +263,7 @@ const BarberByIdPage = () => {
                           width={18}
                         />
                       ))}
-                      {!Number.isInteger(data?.data.puntaje) && (
+                      {!Number.isInteger(data?.puntaje) && (
                         <Icon
                           icon="material-symbols:star-half"
                           color="gold"
@@ -276,7 +271,7 @@ const BarberByIdPage = () => {
                         />
                       )}
                       {Array.from({
-                        length: 5 - Math.ceil(data?.data.puntaje),
+                        length: 5 - Math.ceil(data?.puntaje),
                       }).map((_, index) => (
                         <Icon
                           key={index}
@@ -287,7 +282,7 @@ const BarberByIdPage = () => {
                       ))}
                     </div>
                     <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                      {data?.data.puntaje.toFixed(1)}
+                      {data?.puntaje.toFixed(1)}
                     </span>
                   </div>
                 )}
@@ -298,11 +293,11 @@ const BarberByIdPage = () => {
                 <div className="flex justify-between items-center">
                   <div className="flex flex-col gap-1">
                     <p className="text-blue-100 text-sm">Barbero</p>
-                    <p className="font-semibold">{data?.data.barbero}</p>
+                    <p className="font-semibold">{data?.barbero}</p>
                     <p className="text-blue-100 text-sm">
                       Duración aproximada por turno:{" "}
                       <span className="font-semibold text-white">
-                        {data?.data.cantidadDeMinutosPorTurno} min
+                        {data?.cantidadDeMinutosPorTurno} min
                       </span>
                     </p>
                   </div>
@@ -346,7 +341,7 @@ const BarberByIdPage = () => {
                 </h2>
               </div>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                {data?.data.descripcion}
+                {data?.descripcion}
               </p>
 
               {/* Schedule - Desktop */}
@@ -364,7 +359,7 @@ const BarberByIdPage = () => {
                   </h3>
                 </div>
                 <div className="space-y-2">
-                  {data?.data.horarios.map((horario: any) => (
+                  {data?.horarios.map((horario: any) => (
                     <div
                       key={crypto.randomUUID()}
                       className="flex justify-between items-center py-2 px-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
@@ -404,7 +399,7 @@ const BarberByIdPage = () => {
                     width={16}
                   />
                   <span className="text-gray-600 dark:text-gray-300">
-                    {data?.data.direccion}
+                    {data?.direccion}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -414,7 +409,7 @@ const BarberByIdPage = () => {
                     width={16}
                   />
                   <span className="text-gray-600 dark:text-gray-300">
-                    {data?.data.ciudad}
+                    {data?.ciudad}
                   </span>
                 </div>
               </div>
@@ -425,13 +420,13 @@ const BarberByIdPage = () => {
                 title="Ubicación de la barbería en el mapa"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                src={`https://www.google.com/maps?q=${data?.data.latitud},${data?.data.longitud}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                src={`https://www.google.com/maps?q=${data?.latitud},${data?.longitud}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
               />
             </div>
           </div>
 
           {/* Services Section */}
-          {services?.data.length > 0 && (
+          {data?.servicios && data?.servicios?.length > 0 && (
             <div className="bg-white/80 dark:bg-gray-800/40 rounded-2xl p-6 shadow-lg">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
@@ -445,47 +440,29 @@ const BarberByIdPage = () => {
                   Nuestros Servicios
                 </h2>
               </div>
-
-              {isLoadingServices ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl animate-pulse"
-                    >
-                      <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
-                      <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-20"></div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                services?.data &&
-                services.data.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {services.data.map((service: any) => (
-                      <div
-                        key={service.id}
-                        className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/50 dark:to-gray-600/50 p-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-300"
-                      >
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center gap-3">
-                            <div>
-                              <h3 className="font-semibold text-gray-900 dark:text-white">
-                                {service.nombre}
-                              </h3>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-lg font-bold text-green-600 dark:text-green-400">
-                              ${service.precio.toLocaleString()}
-                            </p>
-                          </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {data.servicios.map((service: any) => (
+                  <div
+                    key={service.id}
+                    className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/50 dark:to-gray-600/50 p-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-300"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-3">
+                        <div>
+                          <h3 className="font-semibold text-gray-900 dark:text-white">
+                            {service.nombre}
+                          </h3>
                         </div>
                       </div>
-                    ))}
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-green-600 dark:text-green-400">
+                          ${service.precio.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                )
-              )}
+                ))}
+              </div>
             </div>
           )}
 
@@ -504,7 +481,7 @@ const BarberByIdPage = () => {
               </h2>
             </div>
             <div className="space-y-2">
-              {data?.data.horarios.map((horario: any) => (
+              {data?.horarios.map((horario: any) => (
                 <div
                   key={crypto.randomUUID()}
                   className="flex justify-between items-center py-3 px-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
@@ -652,7 +629,7 @@ const BarberByIdPage = () => {
                         <DialogTitle>Dejar una reseña</DialogTitle>
                       </DialogHeader>
                       <HandleChangeReviews
-                        idBarber={data?.data.id}
+                        idBarber={data?.id}
                         refetch={refetchCheck}
                       />
                     </DialogContent>
@@ -697,10 +674,10 @@ const BarberByIdPage = () => {
                         No se encontraron más reseñas
                       </p>
                     </div>
-                  )
+                  );
                 }
                 if (resena.id === checkReview?.data?.resena?.id) {
-                  return null
+                  return null;
                 }
                 return (
                   <div
@@ -755,7 +732,7 @@ const BarberByIdPage = () => {
                       {resena.descripcion}
                     </p>
                   </div>
-                )
+                );
               })}
 
               {reviews?.data.results.length == 0 && (
@@ -836,8 +813,8 @@ const BarberByIdPage = () => {
                         <Button
                           variant="outline"
                           onClick={() => {
-                            reset()
-                            setSuccess(false)
+                            reset();
+                            setSuccess(false);
                           }}
                           className="w-full"
                         >
@@ -939,6 +916,6 @@ const BarberByIdPage = () => {
         </section>
       </main>
     </Background>
-  )
-}
-export default BarberByIdPage
+  );
+};
+export default BarberByIdPage;
