@@ -143,7 +143,7 @@ const LandingPage = () => {
   }
 
   const renderInstallButton = () => {
-    if (isStandalone || installPromptDismissed) return null
+    if (isStandalone || installPromptDismissed || !isMobile) return null
 
     if (isIOS) {
       return (
