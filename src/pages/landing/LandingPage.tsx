@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import FeatureSection from "./components/FeatureSection"
 import HeroSection from "./components/HeroSection"
 import SubscriptionSection from "./components/SubscriptionSection"
@@ -15,8 +15,6 @@ interface BeforeInstallPromptEvent extends Event {
 const LandingPage = () => {
   const { setAuthUser } = useAuthContext()
   const { search } = useLocation()
-  const [deferredPrompt, setDeferredPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null)
   const [showInstall, setShowInstall] = useState(false)
   const [isIOS, setIsIOS] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
@@ -41,13 +39,13 @@ const LandingPage = () => {
   }, [search, setAuthUser])
 
   useEffect(() => {
-    // Detectar móvil
-    const isTouchDevice =
-      "ontouchstart" in window || navigator.maxTouchPoints > 0
     const isSmallScreen = window.innerWidth <= 1024
+
     const mobileCheck =
-      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
-      (isTouchDevice && isSmallScreen)
+      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || isSmallScreen
+
+    console.log(mobileCheck)
+
     setIsMobile(mobileCheck)
 
     // Detectar iOS y standalone
@@ -72,30 +70,17 @@ const LandingPage = () => {
     const handler = (e: BeforeInstallPromptEvent) => {
       e.preventDefault()
       if (!dismissed) {
-        setDeferredPrompt(e)
         setShowInstall(true)
       }
     }
 
     window.addEventListener("beforeinstallprompt", handler as EventListener)
-    return () => window.removeEventListener("beforeinstallprompt", handler as EventListener)
+    return () =>
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handler as EventListener
+      )
   }, [])
-
-  const handleInstall = async () => {
-    if (!deferredPrompt) return
-    try {
-      await deferredPrompt.prompt()
-      const { outcome } = await deferredPrompt.userChoice
-      if (outcome === "accepted") {
-        console.log("PWA installed")
-        localStorage.setItem("pwa-install-dismissed", "true")
-      }
-    } catch (error) {
-      console.error("Error during installation:", error)
-    }
-    setDeferredPrompt(null)
-    setShowInstall(false)
-  }
 
   const handleDismiss = () => {
     localStorage.setItem("pwa-install-dismissed", "true")
@@ -108,24 +93,31 @@ const LandingPage = () => {
 
     if (isIOS) {
       return (
-        <div className="fixed bottom-4 left-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50">
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0 text-blue-500">📱</div>
-            <div className="flex-grow">
-              <h3 className="text-sm font-medium text-gray-900">
-                Instalar Cortate bien
-              </h3>
-              <p className="text-xs text-gray-600 mt-1">
-                Para instalar la app: toca el botón compartir
-                <span className="inline-block mx-1">⬆️</span>y luego "Agregar a pantalla de inicio"
-              </p>
+        <div className="fixed bottom-4 left-4 right-4 rounded-lg shadow-lg z-50">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg shadow-lg p-4 relative">
+            <div className="flex flex-col sm:flex-row items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="flex text-4xl items-center justify-center text-blue-500">
+                  📱
+                </div>
+                <div className="flex-grow">
+                  <h3 className="text-sm font-medium ">
+                    Instalar Cortate bien
+                  </h3>
+                  <p className="text-xs  mt-1">
+                    Para instalar la app: toca el botón compartir
+                    <span className="inline-block mx-1">⬆️</span>y luego
+                    "Agregar a pantalla de inicio"
+                  </p>
+                </div>
+                <button
+                  onClick={handleDismiss}
+                  className="absolute top-2 right-2 z-[100] text-gray-400 hover:text-gray-600 cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
-            <button
-              onClick={handleDismiss}
-              className="flex-shrink-0 text-gray-400 hover:text-gray-600 cursor-pointer"
-            >
-              ✕
-            </button>
           </div>
         </div>
       )
@@ -136,25 +128,33 @@ const LandingPage = () => {
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg shadow-lg p-4">
           <div className="flex flex-col sm:flex-row items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="text-2xl">📱</div>
+              <div className="text-4xl">📱</div>
               <div>
                 <h3 className="font-semibold">¡Instala la app!</h3>
-                <p className="text-sm opacity-90">Acceso rápido desde tu pantalla de inicio</p>
+                <p className="text-sm opacity-90">
+                  Acceso rápido desde tu pantalla de inicio
+                </p>
               </div>
             </div>
-            <div className="flex space-x-2 items-center justify-center mt-2 sm:mt-0">
+            <div className="flex flex-row gap-2 items-center justify-center mt-2 sm:mt-0">
               <button
                 onClick={handleDismiss}
-                className="px-3 py-1 text-sm bg-white/20 rounded hover:bg-white/30 transition cursor-pointer"
+                className="px-4 py-2 text-sm bg-white/20 rounded hover:bg-white/30 transition cursor-pointer"
               >
                 Ahora no
               </button>
-              <button
-                onClick={handleInstall}
-                className="px-4 py-2 text-sm bg-white text-blue-600 rounded font-medium hover:bg-gray-100 transition cursor-pointer"
+
+              <Link
+                to="https://play.google.com/store/apps/details?id=com.cortate_bien_app"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                Instalar
-              </button>
+                <button
+                  className="px-4 py-2 text-sm bg-white text-blue-600 rounded font-medium hover:bg-gray-100 transition cursor-pointer"
+                >
+                  Instalar
+                </button>
+              </Link>
             </div>
           </div>
         </div>
