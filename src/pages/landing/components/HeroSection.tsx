@@ -1,6 +1,6 @@
 import GradientText from "@/utils/functions/GradientText"
 import { Icon } from "@iconify/react/dist/iconify.js"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 
 const HeroSection = () => {
@@ -8,6 +8,20 @@ const HeroSection = () => {
   const phoneRef = useRef<HTMLDivElement>(null)
   const floatingElementsRef = useRef<(HTMLDivElement | null)[]>([])
   const textRef = useRef<HTMLHeadingElement>(null)
+  
+  const [isIOS, setIsIOS] = useState(false)
+  const [isStandalone, setIsStandalone] = useState(false)
+  const [showIOSInstructions, setShowIOSInstructions] = useState(false)
+
+  useEffect(() => {
+    // Detectar iOS y modo standalone
+    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    const standalone = (window.navigator as any).standalone === true || 
+                     window.matchMedia('(display-mode: standalone)').matches
+
+    setIsIOS(iOS)
+    setIsStandalone(standalone)
+  }, [])
 
   useEffect(() => {
     // Simular GSAP - Animaciones de entrada
@@ -45,6 +59,50 @@ const HeroSection = () => {
       })
     }
   }, [])
+
+  const handleIOSInstall = () => {
+    setShowIOSInstructions(true)
+  }
+
+  const renderStoreButton = () => {
+    if (isIOS && !isStandalone) {
+      return (
+        <div className="flex items-center justify-center lg:justify-start">
+          <button
+            onClick={handleIOSInstall}
+            className="flex items-center gap-4 p-4 rounded-2xl border border-gray-700/50 bg-gray-800/30 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300 hover:scale-105"
+          >
+            <div className="w-12 h-12 flex items-center justify-center">
+              <Icon icon="material-symbols:add-to-home-screen" width={48} height={48} className="text-blue-400" />
+            </div>
+            <div className="flex flex-col items-start">
+              <p className="text-gray-400 text-sm">Instalar en</p>
+              <p className="text-white text-xl font-bold">iOS</p>
+            </div>
+          </button>
+        </div>
+      )
+    }
+
+    // Para Android/Desktop - Google Play Store
+    return (
+      <Link
+        to="https://play.google.com/store/apps/details?id=com.cortate_bien_app"
+        target="_blank"
+        className="flex items-center justify-center lg:justify-start"
+      >
+        <div className="flex items-center gap-4 p-4 rounded-2xl border border-gray-700/50 bg-gray-800/30 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300 hover:scale-105">
+          <div className="w-12 h-12 flex items-center justify-center">
+            <Icon icon="logos:google-play-icon" width={48} height={48} />
+          </div>
+          <div className="flex flex-col items-start">
+            <p className="text-gray-400 text-sm">Disponible en</p>
+            <p className="text-white text-xl font-bold">Google Play</p>
+          </div>
+        </div>
+      </Link>
+    )
+  }
 
   return (
     <>
@@ -168,22 +226,8 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Google Play Store */}
-            <Link
-              to="https://play.google.com/store/apps/details?id=com.cortate_bien_app"
-              target="_blank"
-              className="flex items-center justify-center lg:justify-start"
-            >
-              <div className="flex items-center gap-4 p-4 rounded-2xl border border-gray-700/50 bg-gray-800/30 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300 hover:scale-105">
-                <div className="w-12 h-12 flex items-center justify-center">
-                  <Icon icon="logos:google-play-icon" width={48} height={48} />
-                </div>
-                <div className="flex flex-col items-start">
-                  <p className="text-gray-400 text-sm">Disponible en</p>
-                  <p className="text-white text-xl font-bold">Google Play</p>
-                </div>
-              </div>
-            </Link>
+            {/* Botón dinámico de descarga/instalación */}
+            {renderStoreButton()}
           </section>
 
           {/* Sección de capturas de pantalla */}
@@ -249,6 +293,53 @@ const HeroSection = () => {
           </section>
         </div>
       </main>
+
+      {/* Modal de instrucciones para iOS */}
+      {showIOSInstructions && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 bg-blue-500/20 rounded-full flex items-center justify-center">
+                <Icon icon="material-symbols:add-to-home-screen" width={32} height={32} className="text-blue-400" />
+              </div>
+              
+              <h3 className="text-xl font-bold text-white mb-3">
+                Instalar en iOS
+              </h3>
+              
+              <div className="text-left space-y-3 text-gray-300 text-sm">
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                  <p>Toca el botón <strong>Compartir</strong> <Icon icon="ph:share" className="inline w-4 h-4" /> en la barra de navegación</p>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                  <p>Busca y toca <strong>"Agregar a pantalla de inicio"</strong></p>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                  <p>Toca <strong>"Agregar"</strong> para confirmar</p>
+                </div>
+              </div>
+              
+              <div className="mt-6 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                <p className="text-blue-300 text-xs">
+                  💡 Una vez instalada, podrás abrir la app directamente desde tu pantalla de inicio
+                </p>
+              </div>
+              
+              <button
+                onClick={() => setShowIOSInstructions(false)}
+                className="mt-6 w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+              >
+                Entendido
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
