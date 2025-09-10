@@ -9,17 +9,19 @@ import { useAuthContext } from "@/contexts/authContext"
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>
 }
 
 const LandingPage = () => {
   const { setAuthUser } = useAuthContext()
   const { search } = useLocation()
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null)
   const [showInstall, setShowInstall] = useState(false)
   const [isIOS, setIsIOS] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
   const [installPromptDismissed, setInstallPromptDismissed] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   document.title = "Cortate bien | Inicio"
 
@@ -42,25 +44,29 @@ const LandingPage = () => {
     }
   }, [search])
 
+  // Detectar si es móvil
+  useEffect(() => {
+    const mobileCheck = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+    setIsMobile(mobileCheck)
+  }, [])
+
   // Detectar iOS y si ya está instalada
   useEffect(() => {
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-    const standalone = (window.navigator as any).standalone === true || 
-                     window.matchMedia('(display-mode: standalone)').matches
+    const standalone =
+      (window.navigator as any).standalone === true ||
+      window.matchMedia("(display-mode: standalone)").matches
 
-    // Verificar si el usuario ya rechazó el prompt anteriormente
-    const dismissed = localStorage.getItem('pwa-install-dismissed') === 'true'
-    const dismissedTime = localStorage.getItem('pwa-install-dismissed-time')
-    
-    // Si fue rechazado hace más de 7 días, volver a mostrar
-    const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
+    const dismissed = localStorage.getItem("pwa-install-dismissed") === "true"
+    const dismissedTime = localStorage.getItem("pwa-install-dismissed-time")
+
+    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
     const shouldReshow = dismissedTime && parseInt(dismissedTime) < sevenDaysAgo
 
     setIsIOS(iOS)
     setIsStandalone(standalone)
     setInstallPromptDismissed(dismissed && !shouldReshow)
 
-    // Para iOS, mostrar instrucciones después de un tiempo solo si no fue rechazado
     if (iOS && !standalone && (!dismissed || shouldReshow)) {
       const timer = setTimeout(() => {
         setShowInstall(true)
@@ -69,20 +75,19 @@ const LandingPage = () => {
     }
   }, [])
 
-  // Escuchar el evento de instalación PWA (Android/Desktop)
+  // Escuchar el evento de instalación PWA (Android)
   useEffect(() => {
     const handler = (e: BeforeInstallPromptEvent) => {
-      console.log('beforeinstallprompt event fired')
+      console.log("beforeinstallprompt event fired")
       e.preventDefault()
-      
-      // Verificar si el usuario ya rechazó el prompt
-      const dismissed = localStorage.getItem('pwa-install-dismissed') === 'true'
-      const dismissedTime = localStorage.getItem('pwa-install-dismissed-time')
-      
-      // Si fue rechazado hace más de 7 días, volver a mostrar
-      const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
-      const shouldReshow = dismissedTime && parseInt(dismissedTime) < sevenDaysAgo
-      
+
+      const dismissed = localStorage.getItem("pwa-install-dismissed") === "true"
+      const dismissedTime = localStorage.getItem("pwa-install-dismissed-time")
+
+      const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+      const shouldReshow =
+        dismissedTime && parseInt(dismissedTime) < sevenDaysAgo
+
       if (!dismissed || shouldReshow) {
         setDeferredPrompt(e)
         setShowInstall(true)
@@ -94,68 +99,65 @@ const LandingPage = () => {
 
     window.addEventListener("beforeinstallprompt", handler as EventListener)
 
-    // También verificar si el service worker está registrado
-    if ('serviceWorker' in navigator) {
+    if ("serviceWorker" in navigator) {
       navigator.serviceWorker.ready.then(() => {
-        console.log('Service Worker is ready')
+        console.log("Service Worker is ready")
       })
     }
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", handler as EventListener)
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handler as EventListener
+      )
     }
   }, [])
 
   const handleInstall = async () => {
     if (!deferredPrompt) return
-    
+
     try {
       await deferredPrompt.prompt()
       const { outcome } = await deferredPrompt.userChoice
       console.log("User response:", outcome)
-      
-      if (outcome === 'accepted') {
-        console.log('PWA installed')
-        // Limpiar localStorage si se instaló exitosamente
-        localStorage.removeItem('pwa-install-dismissed')
-        localStorage.removeItem('pwa-install-dismissed-time')
+
+      if (outcome === "accepted") {
+        console.log("PWA installed")
+        localStorage.removeItem("pwa-install-dismissed")
+        localStorage.removeItem("pwa-install-dismissed-time")
       }
     } catch (error) {
-      console.error('Error during installation:', error)
+      console.error("Error during installation:", error)
     }
-    
+
     setDeferredPrompt(null)
     setShowInstall(false)
   }
 
   const handleDismiss = () => {
-    // Guardar que el usuario rechazó la instalación
-    localStorage.setItem('pwa-install-dismissed', 'true')
-    localStorage.setItem('pwa-install-dismissed-time', Date.now().toString())
-    
+    localStorage.setItem("pwa-install-dismissed", "true")
+    localStorage.setItem("pwa-install-dismissed-time", Date.now().toString())
+
     setShowInstall(false)
     setInstallPromptDismissed(true)
   }
 
   const renderInstallButton = () => {
-    // No mostrar si ya está instalada o si el usuario ya lo rechazó
     if (isStandalone || installPromptDismissed) return null
 
     if (isIOS) {
       return (
         <div className="fixed bottom-4 left-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50">
           <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0 text-blue-500">
-              📱
-            </div>
+            <div className="flex-shrink-0 text-blue-500">📱</div>
             <div className="flex-grow">
               <h3 className="text-sm font-medium text-gray-900">
                 Instalar Cortate bien
               </h3>
               <p className="text-xs text-gray-600 mt-1">
-                Para instalar la app: toca el botón compartir 
-                <span className="inline-block mx-1">⬆️</span>
-                y luego "Agregar a pantalla de inicio"
+                Para instalar la app: toca el botón compartir
+                <span className="inline-block mx-1">⬆️</span>y luego "Agregar a
+                pantalla de inicio"
               </p>
             </div>
             <button
@@ -177,7 +179,9 @@ const LandingPage = () => {
               <div className="text-2xl">📱</div>
               <div>
                 <h3 className="font-semibold">¡Instala la app!</h3>
-                <p className="text-sm opacity-90">Acceso rápido desde tu pantalla de inicio</p>
+                <p className="text-sm opacity-90">
+                  Acceso rápido desde tu pantalla de inicio
+                </p>
               </div>
             </div>
             <div className="flex space-x-2 items-center justify-center">
@@ -206,7 +210,7 @@ const LandingPage = () => {
       <FeatureSection />
       <SubscriptionSection />
 
-      {showInstall && renderInstallButton()}
+      {isMobile && showInstall && renderInstallButton()}
     </div>
   )
 }
