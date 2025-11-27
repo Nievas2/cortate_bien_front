@@ -1,95 +1,94 @@
-import { Link, useLocation } from "react-router-dom"
-import FeatureSection from "./components/FeatureSection"
-import HeroSection from "./components/HeroSection"
-import SubscriptionSection from "./components/SubscriptionSection"
-import { useEffect, useState } from "react"
-import Cookies from "js-cookie"
-import { decodeJwt } from "@/utils/decodeJwt"
-import { useAuthContext } from "@/contexts/authContext"
-
+import { Link, useLocation } from "react-router-dom";
+import FeatureSection from "./components/FeatureSection";
+import HeroSection from "./components/HeroSection";
+import SubscriptionSection from "./components/SubscriptionSection";
+import { useEffect, useState } from "react";
+import { useUpdateSession } from "@/hooks/useUpdateSession";
 interface BeforeInstallPromptEvent extends Event {
-  prompt(): Promise<void>
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
 const LandingPage = () => {
-  const { setAuthUser } = useAuthContext()
-  const { search } = useLocation()
-  const [showInstall, setShowInstall] = useState(false)
-  const [isIOS, setIsIOS] = useState(false)
-  const [isStandalone, setIsStandalone] = useState(false)
-  const [installPromptDismissed, setInstallPromptDismissed] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const { search } = useLocation();
+  const [showInstall, setShowInstall] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
+  const [installPromptDismissed, setInstallPromptDismissed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const { updateSession } = useUpdateSession();
 
-  document.title = "Cortate bien | Inicio"
+  document.title = "Cortate bien | Inicio";
 
   // Guardar token si viene en query
   useEffect(() => {
-    const params = new URLSearchParams(search)
-    const token = params.get("token")
+    const params = new URLSearchParams(search);
+    const token = params.get("token");
     if (token) {
-      Cookies.set("token", token, {
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-      })
-      setAuthUser({ user: decodeJwt(token), token })
-      window.location.href = "/"
+      updateSession(token).then((success) => {
+        if (success) {
+          window.location.href = "/";
+        } else {
+          window.location.href = "/login";
+        }
+      });
     } else if (search) {
-      window.location.href = "/"
+      window.location.href = "/login";
     }
-  }, [search, setAuthUser])
+  }, [search]);
 
   useEffect(() => {
-    const isSmallScreen = window.innerWidth <= 1024
+    const isSmallScreen = window.innerWidth <= 1024;
 
     const mobileCheck =
-      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || isSmallScreen
+      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || isSmallScreen;
 
-    console.log(mobileCheck)
+    console.log(mobileCheck);
 
-    setIsMobile(mobileCheck)
+    setIsMobile(mobileCheck);
 
     // Detectar iOS y standalone
-    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     const standalone =
       (window.navigator as any).standalone === true ||
-      window.matchMedia("(display-mode: standalone)").matches
-    setIsIOS(iOS)
-    setIsStandalone(standalone)
+      window.matchMedia("(display-mode: standalone)").matches;
+    setIsIOS(iOS);
+    setIsStandalone(standalone);
 
     // Revisar si ya fue descartado
-    const dismissed = localStorage.getItem("pwa-install-dismissed") === "true"
-    setInstallPromptDismissed(dismissed)
+    const dismissed = localStorage.getItem("pwa-install-dismissed") === "true";
+    setInstallPromptDismissed(dismissed);
 
     // Mostrar cartel en iOS si corresponde
     if (iOS && !standalone && !dismissed) {
-      const timer = setTimeout(() => setShowInstall(true), 3000)
-      return () => clearTimeout(timer)
+      const timer = setTimeout(() => setShowInstall(true), 3000);
+      return () => clearTimeout(timer);
     }
 
     // Manejar evento en Android
     const handler = (e: BeforeInstallPromptEvent) => {
-      e.preventDefault()
+      e.preventDefault();
       if (!dismissed) {
-        setShowInstall(true)
+        setShowInstall(true);
       }
-    }
+    };
 
-    window.addEventListener("beforeinstallprompt", handler as EventListener)
+    window.addEventListener("beforeinstallprompt", handler as EventListener);
     return () =>
       window.removeEventListener(
         "beforeinstallprompt",
         handler as EventListener
-      )
-  }, [])
+      );
+  }, []);
 
   const handleDismiss = () => {
-    localStorage.setItem("pwa-install-dismissed", "true")
-    setShowInstall(false)
-    setInstallPromptDismissed(true)
-  }
+    localStorage.setItem("pwa-install-dismissed", "true");
+    setShowInstall(false);
+    setInstallPromptDismissed(true);
+  };
 
   const renderInstallButton = () => {
-    if (!isMobile || isStandalone || installPromptDismissed) return null
+    if (!isMobile || isStandalone || installPromptDismissed) return null;
 
     if (isIOS) {
       return (
@@ -120,7 +119,7 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
-      )
+      );
     }
 
     return (
@@ -149,9 +148,7 @@ const LandingPage = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <button
-                  className="px-4 py-2 text-sm bg-white text-blue-600 rounded font-medium hover:bg-gray-100 transition cursor-pointer"
-                >
+                <button className="px-4 py-2 text-sm bg-white text-blue-600 rounded font-medium hover:bg-gray-100 transition cursor-pointer">
                   Instalar
                 </button>
               </Link>
@@ -159,8 +156,8 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="flex flex-col w-full">
@@ -169,7 +166,7 @@ const LandingPage = () => {
       <SubscriptionSection />
       {showInstall && renderInstallButton()}
     </div>
-  )
-}
+  );
+};
 
-export default LandingPage
+export default LandingPage;

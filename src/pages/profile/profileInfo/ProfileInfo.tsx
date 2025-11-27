@@ -16,8 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { completeRegistration, getUserById } from "@/services/UserService";
 import { useForm } from "react-hook-form";
 import { updateUserSchema } from "@/utils/schemas/userSchema";
-import { decodeJwt } from "@/utils/decodeJwt";
-import { setCookieAsync } from "@/hooks/useLogin";
+import { useUpdateSession } from "@/hooks/useUpdateSession";
 import CountryNumberSelect from "@/pages/dashboard/components/CountryNumberSelect";
 import CountrySelect from "@/pages/dashboard/components/CountrySelect";
 import StateSelect from "@/pages/dashboard/components/StateSelect";
@@ -33,10 +32,11 @@ export const ProfileInfo = () => {
   const [stateId, setStateId] = useState(undefined);
   const [error, setError] = useState("");
   const location = useLocation();
-  
+
   const required =
     new URLSearchParams(location.search).get("required") === "true";
-  const { authUser, setAuthUser } = useAuthContext();
+  const { authUser } = useAuthContext();
+  const { updateSession } = useUpdateSession();
 
   const { data: countries } = useQuery({
     queryKey: ["countries"],
@@ -80,12 +80,15 @@ export const ProfileInfo = () => {
         fechaNacimiento: values.fechaNacimiento,
         tipoDeCuenta: values.tipoDeCuenta,
       });
-      const payload = decodeJwt(res.data.accesToken);
-      setAuthUser({ user: payload, token: res.data.accesToken });
-      await setCookieAsync("token", res.data.accesToken, {
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-      });
-      window.location.href = "/barbers";
+
+      const success = await updateSession(
+        res.data.access_token || res.data.accesToken
+      ); // Handle potential typo in backend response if not fixed there yet, though we saw TokenDto has access_token
+      if (success) {
+        window.location.href = "/barbers";
+      } else {
+        setError("Error al actualizar la sesión.");
+      }
     } catch {
       setError("Error al actualizar la información.");
     }

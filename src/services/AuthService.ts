@@ -18,7 +18,7 @@ export interface Register {
 
 export function login(user: Login) {
   try {
-    const response = axiosInstance.post("/login", user)
+    const response = axiosInstance.post("auth/login", user)
     return response
   } catch (error) {
     throw error

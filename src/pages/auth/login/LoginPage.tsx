@@ -23,6 +23,7 @@ const LoginPage = () => {
   // const { executeRecaptcha, error } = useReCaptcha({
   //   siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
   // })
+
   const {
     register,
     handleSubmit,
@@ -53,7 +54,9 @@ const LoginPage = () => {
       await login(values);
     } catch (error: any) {
       console.error(error);
-      setLoginError(error.response.data.message);
+      setLoginError(
+        error.response?.data?.message || "Ocurrió un error al iniciar sesión"
+      );
     }
   });
 
