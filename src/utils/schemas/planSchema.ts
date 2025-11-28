@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "zod";
 
 export const planSchema = z.object({
   nombre: z
@@ -34,5 +34,7 @@ export const planSchema = z.object({
   barberos: z.boolean().default(false),
   autoActivacion: z.boolean().default(false),
   soportePrioritario: z.boolean().default(false),
-
-})
+  planTipo: z.enum(["COMPRABLE", "ASIGNABLE", "CANGELABLE", "GRATIS"], {
+    errorMap: () => ({ message: "El tipo de plan es requerido" }),
+  }),
+});
