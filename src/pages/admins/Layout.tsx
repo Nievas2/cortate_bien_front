@@ -5,7 +5,7 @@ import SideBarAdmins from "./components/SideBarAdmins";
 import { Background } from "@/components/ui/background";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   return (
     <Background>
@@ -14,14 +14,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
         <div className="relative">
           <Button
-            className={`z-[202] transition-all duration-300 fixed top-24 left-4 ${
+            className={`z-[202] transition-all duration-300 fixed top-[50%] left-2 ${
               open ? "opacity-0 pointer-events-none" : "opacity-100"
             }`}
             variant="secondary"
             size="icon"
             onClick={() => setOpen(true)}
           >
-            <Icon icon="tabler:menu-2" height={20} width={20} />
+            <Icon icon="maki:arrow" height={15} width={15} />
           </Button>
         </div>
 
