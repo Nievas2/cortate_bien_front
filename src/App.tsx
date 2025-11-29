@@ -34,7 +34,6 @@ import FirebasePage from "./pages/admins/firebase/FirebasePage"
 import { useMutation } from "@tanstack/react-query"
 import { getFirebaseToken } from "./services/FirebaseService"
 import ChatsPage from "./pages/chats/ChatsPage"
-import ChatByIdPage from "./pages/chats/chatById/ChatByIdPage"
 import { useFirebaseMessaging } from "./hooks/fmc/useFirebaseMessaging"
 import {
   NotificationData,
@@ -42,6 +41,7 @@ import {
 } from "./hooks/fmc/useFCMNotifications"
 import { DarkModeProvider } from "./contexts/DarkModeContext"
 import BarberService from "./pages/dashboard/servicesBarber/BarberService"
+import { ChatByIdPage } from "./pages/chats/chatById/ChatByIdPage"
 
 function App() {
   const location = useLocation()

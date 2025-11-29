@@ -133,13 +133,13 @@ export const MobileNavbar = ({
         
         {/* Panel del menú deslizante con animaciones */}
         <div
-          className={`absolute top-0 left-0 w-80 h-full bg-slate-950 shadow-2xl transform transition-all duration-300 ease-out ${
+          className={`absolute top-0 left-0 w-80 h-screen max-h-screen bg-slate-950 shadow-2xl transform transition-all duration-300 ease-out ${
             open ? "translate-x-0 opacity-100" : "-translate-x-full opacity-90"
           }`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header del menú con animación */}
-          <div className="flex items-center justify-between p-6 border-b border-slate-800 bg-gradient-to-r from-slate-950 to-slate-900">
+          <div className="flex items-center justify-between p-6 border-b border-slate-800 bg-gradient-to-r from-slate-950 to-slate-900 flex-shrink-0">
             <div className="transform transition-all duration-200 hover:scale-105">
               <img 
                 src="/logo.png" 
@@ -163,9 +163,9 @@ export const MobileNavbar = ({
           </div>
 
           {/* Contenido del menú */}
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-[calc(100%-82px)]">
             {/* Items de navegación con animaciones escalonadas */}
-            <div className="flex-1 px-6 py-4 space-y-2 overflow-y-auto">
+            <div className="flex-1 px-6 py-4 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
               <div className={`space-y-1 transition-all duration-500 ease-out ${
                 open 
                   ? "transform translate-x-0 opacity-100" 
@@ -183,6 +183,7 @@ export const MobileNavbar = ({
                       location="/"
                       pathname={pathname}
                       setOpen={setOpen}
+                      icon="heroicons:home-20-solid"
                     />
                   </motion.div>
                 )}
@@ -197,6 +198,7 @@ export const MobileNavbar = ({
                     location="/barbers"
                     pathname={pathname}
                     setOpen={setOpen}
+                    icon="mdi:content-cut"
                   />
                 </motion.div>
 
@@ -211,6 +213,7 @@ export const MobileNavbar = ({
                       location="/prices"
                       pathname={pathname}
                       setOpen={setOpen}
+                      icon="heroicons:currency-dollar-20-solid"
                     />
                   </motion.div>
                 )}
@@ -226,6 +229,7 @@ export const MobileNavbar = ({
                       location="/profile"
                       pathname={pathname}
                       setOpen={setOpen}
+                      icon="heroicons:user-circle-20-solid"
                     />
                   </motion.div>
                 )}
@@ -241,6 +245,7 @@ export const MobileNavbar = ({
                       location="/dashboard"
                       pathname={pathname}
                       setOpen={setOpen}
+                      icon="heroicons:chart-bar-20-solid"
                     />
                   </motion.div>
                 )}
@@ -256,6 +261,7 @@ export const MobileNavbar = ({
                       location="/chats"
                       pathname={pathname}
                       setOpen={setOpen}
+                      icon="heroicons:chat-bubble-left-right-20-solid"
                     />
                   </motion.div>
                 )}
@@ -271,6 +277,7 @@ export const MobileNavbar = ({
                       location="/admins/dashboard"
                       pathname={pathname}
                       setOpen={setOpen}
+                      icon="heroicons:shield-check-20-solid"
                     />
                   </motion.div>
                 )}
@@ -286,6 +293,7 @@ export const MobileNavbar = ({
                       location="/profile"
                       pathname={pathname}
                       setOpen={setOpen}
+                      icon="heroicons:cog-6-tooth-20-solid"
                     />
                   </motion.div>
                 )}
