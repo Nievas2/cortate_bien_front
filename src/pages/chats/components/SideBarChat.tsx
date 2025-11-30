@@ -158,8 +158,8 @@ const SideBarChat = ({ open }: { open: boolean }) => {
                     {[...chats]
                       .sort(
                         (a, b) =>
-                          new Date(b.ultimaActividad).getTime() -
-                          new Date(a.ultimaActividad).getTime()
+                          new Date(b.ultimaActividad || 0).getTime() -
+                          new Date(a.ultimaActividad || 0).getTime()
                       )
                       .map((chat: ChatResponseDto, index) => {
                         const otherUser = getOtherUser(chat)
@@ -224,11 +224,11 @@ const SideBarChat = ({ open }: { open: boolean }) => {
                                     </Tooltip>
                                   </TooltipProvider>
 
-                                  <span className="text-xs text-gray-500 flex-shrink-0 ml-2">
+                                  {chat.ultimaActividad && <span className="text-xs text-gray-500 flex-shrink-0 ml-2">
                                     {formatTime(chat.ultimaActividad)}
-                                  </span>
+                                  </span>}
                                 </div>
-
+                                    
                                 {/* Badge de rol */}
                                 <div className="flex items-center gap-1.5 mb-1.5">
                                   <Icon
@@ -244,15 +244,15 @@ const SideBarChat = ({ open }: { open: boolean }) => {
                                 <div className="flex items-center gap-1.5">
                                   {chat.ultimoMensaje && (
                                     <>
-                                      {chat.ultimoMensaje.remitente === authUser?.user.sub && (
+                                      {chat.ultimoMensaje.remitente.id == authUser?.user.id && (
                                         <Icon
                                           icon={
-                                            chat.ultimoMensaje.visto
+                                            chat.ultimoMensaje.leido
                                               ? "mdi:check-all"
                                               : "material-symbols:check"
                                           }
                                           className={`size-4 flex-shrink-0 ${
-                                            chat.ultimoMensaje.visto
+                                            chat.ultimoMensaje.leido
                                               ? "text-blue-400"
                                               : "text-gray-500"
                                           }`}

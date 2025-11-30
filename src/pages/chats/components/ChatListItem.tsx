@@ -61,7 +61,7 @@ export const ChatListItem = ({
             {otherUser.nombre} {otherUser.apellido}
           </h3>
           <span className="text-xs text-gray-500 flex-shrink-0 ml-2">
-            {formatTime(chat.ultimaActividad)}
+            {chat.ultimaActividad && formatTime(chat.ultimaActividad)}
           </span>
         </div>
 
@@ -69,7 +69,7 @@ export const ChatListItem = ({
         <div className="flex items-center gap-1.5">
           {chat.ultimoMensaje && (
             <>
-              {chat.ultimoMensaje.remitente === authUserId && (
+              {chat.ultimoMensaje.remitente.id === authUserId && (
                 <span
                   className={`text-xs flex-shrink-0 ${
                     !chat.visto ? "text-white font-medium" : "text-gray-500"
