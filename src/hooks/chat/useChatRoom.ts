@@ -1,9 +1,9 @@
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query"
+import { useInfiniteQuery, useQueryClient, useMutation, useQuery } from "@tanstack/react-query"
 import { useDebouncedCallback } from "use-debounce"
 import { useEffect, useState, useCallback } from "react"
 import { useAuthContext } from "@/contexts/authContext"
-import { getChatMessages } from "@/services/ChatService"
-import { MessageResponseDto } from "@/interfaces/Chat"
+import { getChatMessages, blockChat, unblockChat, getBlockStatus } from "@/services/ChatService"
+import { MessageResponseDto, BlockStatusDto } from "@/interfaces/Chat"
 import { useSocket } from "@/contexts/socketContext"
 
 export const useChatRoom = (chatId: string) => {
@@ -13,6 +13,33 @@ export const useChatRoom = (chatId: string) => {
   const [isTyping, setIsTyping] = useState(false)
   const [typingUser, setTypingUser] = useState<string | null>(null)
   const [isOnline, setIsOnline] = useState(false)
+
+  // Query para obtener el estado de bloqueo
+  const { data: blockStatus, refetch: refetchBlockStatus } = useQuery<BlockStatusDto>({
+    queryKey: ["blockStatus", chatId],
+    queryFn: () => getBlockStatus(chatId),
+    enabled: !!chatId,
+    staleTime: 0,
+  })
+
+  // Mutation para bloquear
+  const blockMutation = useMutation({
+    mutationFn: () => blockChat(chatId),
+    onSuccess: () => {
+      refetchBlockStatus()
+      queryClient.invalidateQueries({ queryKey: ["chats"] })
+    },
+  })
+
+  // Mutation para desbloquear
+  const unblockMutation = useMutation({
+    mutationFn: () => unblockChat(chatId),
+    onSuccess: () => {
+      refetchBlockStatus()
+      queryClient.invalidateQueries({ queryKey: ["chats"] })
+      queryClient.invalidateQueries({ queryKey: ["chatMessages", chatId] })
+    },
+  })
 
   const {
     data,
@@ -140,7 +167,8 @@ export const useChatRoom = (chatId: string) => {
     socket.on(
       "user_online_in_chat",
       (data: { userId: string; isOnline: boolean }) => {
-        if (data.userId !== authUser?.user?.sub) {
+        // No mostrar online si hay bloqueo
+        if (data.userId !== authUser?.user?.sub && !blockStatus?.bloqueado) {
           setIsOnline(data.isOnline)
         }
       }
@@ -157,20 +185,42 @@ export const useChatRoom = (chatId: string) => {
     socket.on(
       "user_online_in_chat",
       (data: { userId: string; chatId: boolean }) => {
-        if (data.userId !== authUser?.user?.sub) {
+        // No mostrar online si hay bloqueo
+        if (data.userId !== authUser?.user?.sub && !blockStatus?.bloqueado) {
           console.log("se conectó el usuario", data.userId, data.chatId)
           setIsOnline(true)
         }
       }
     )
 
+    // Escuchar eventos de bloqueo/desbloqueo
+    const handleChatBlocked = (data: { chatId: string; bloqueadoPor: string }) => {
+      if (data.chatId === chatId) {
+        refetchBlockStatus()
+        // Si hay bloqueo, ocultar estado online
+        setIsOnline(false)
+      }
+    }
+
+    const handleChatUnblocked = (data: { chatId: string; desbloqueadoPor: string }) => {
+      if (data.chatId === chatId) {
+        refetchBlockStatus()
+        queryClient.invalidateQueries({ queryKey: ["chatMessages", chatId] })
+      }
+    }
+
+    socket.on("chat_blocked", handleChatBlocked)
+    socket.on("chat_unblocked", handleChatUnblocked)
+
     return () => {
       socket.emit("leave_chat", { chatId })
       socket.off("new_message", handleNewMessage)
       socket.off("messages_read", handleMessagesRead)
       socket.off("user_typing", handleUserTyping)
+      socket.off("chat_blocked", handleChatBlocked)
+      socket.off("chat_unblocked", handleChatUnblocked)
     }
-  }, [socket, chatId, queryClient, authUser?.user?.sub])
+  }, [socket, chatId, queryClient, authUser?.user?.sub, blockStatus?.bloqueado, refetchBlockStatus])
 
   // Marcar mensajes como leídos
   const markAsRead = useCallback(
@@ -308,7 +358,13 @@ export const useChatRoom = (chatId: string) => {
     handleTypingChange,
     isTyping,
     typingUser,
-    isOnline,
+    isOnline: blockStatus?.bloqueado ? false : isOnline, // No mostrar online si hay bloqueo
     setIsOnline,
+    // Funciones y estado de bloqueo
+    blockStatus,
+    blockUser: blockMutation.mutate,
+    unblockUser: unblockMutation.mutate,
+    isBlocking: blockMutation.isPending,
+    isUnblocking: unblockMutation.isPending,
   }
 }

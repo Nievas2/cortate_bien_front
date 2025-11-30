@@ -71,14 +71,63 @@ export const useChatsList = () => {
       queryClient.invalidateQueries({ queryKey: ["chats"] })
     }
 
+    // Escucha eventos de bloqueo/desbloqueo para actualizar la lista
+    const handleChatBlocked = (data: { chatId: string; bloqueadoPor: string }) => {
+      queryClient.setQueryData(["chats"], (oldChats: ChatResponseDto[] | undefined) => {
+        if (!oldChats) return oldChats
+
+        return oldChats.map((chat) => {
+          if (chat.id === data.chatId) {
+            const yoBloqueAlOtro = data.bloqueadoPor === authUser?.user.sub
+            return {
+              ...chat,
+              bloqueado: true,
+              yoBloqueAlOtro: yoBloqueAlOtro || chat.yoBloqueAlOtro,
+              elOtroMeBloqueo: !yoBloqueAlOtro || chat.elOtroMeBloqueo,
+              fechaMiBloqueo: yoBloqueAlOtro ? new Date() : chat.fechaMiBloqueo,
+              fechaBloqueoDelOtro: !yoBloqueAlOtro ? new Date() : chat.fechaBloqueoDelOtro,
+            }
+          }
+          return chat
+        })
+      })
+    }
+
+    const handleChatUnblocked = (data: { chatId: string; desbloqueadoPor: string }) => {
+      queryClient.setQueryData(["chats"], (oldChats: ChatResponseDto[] | undefined) => {
+        if (!oldChats) return oldChats
+
+        return oldChats.map((chat) => {
+          if (chat.id === data.chatId) {
+            const yoDesbloquee = data.desbloqueadoPor === authUser?.user.sub
+            const newYoBloqueAlOtro = yoDesbloquee ? false : chat.yoBloqueAlOtro
+            const newElOtroMeBloqueo = !yoDesbloquee ? false : chat.elOtroMeBloqueo
+            return {
+              ...chat,
+              bloqueado: newYoBloqueAlOtro || newElOtroMeBloqueo,
+              yoBloqueAlOtro: newYoBloqueAlOtro,
+              elOtroMeBloqueo: newElOtroMeBloqueo,
+              fechaMiBloqueo: yoDesbloquee ? null : chat.fechaMiBloqueo,
+              fechaBloqueoDelOtro: !yoDesbloquee ? null : chat.fechaBloqueoDelOtro,
+            }
+          }
+          return chat
+        })
+      })
+    }
+
     socket.on("new_message", handleNewMessage)
     socket.on("messages_read", handleMessagesRead)
     socket.on("new_chat", handleNewChat)
+    socket.on("chat_blocked", handleChatBlocked)
+    socket.on("chat_unblocked", handleChatUnblocked)
 
     return () => {
       socket.off("new_message", handleNewMessage)
       socket.off("messages_read", handleMessagesRead)
       socket.off("new_chat", handleNewChat)
+      socket.off("chat_blocked", handleChatBlocked)
+      socket.off("chat_unblocked", handleChatUnblocked)
     }
   }, [socket, queryClient, authUser?.user?.sub])
 

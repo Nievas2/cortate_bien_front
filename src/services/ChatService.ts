@@ -31,3 +31,21 @@ export const createOrGetChat = async (
   const response = await axiosInstance.post(`chat`, { barberoId, barberiaId })
   return response.data
 }
+
+// Bloquear usuario en un chat
+export const blockChat = async (chatId: string) => {
+  const response = await axiosInstance.post(`chat/${chatId}/block`)
+  return response.data
+}
+
+// Desbloquear usuario en un chat
+export const unblockChat = async (chatId: string) => {
+  const response = await axiosInstance.post(`chat/${chatId}/unblock`)
+  return response.data
+}
+
+// Obtener estado de bloqueo de un chat
+export const getBlockStatus = async (chatId: string) => {
+  const response = await axiosInstance.get(`chat/${chatId}/block-status`)
+  return response.data
+}

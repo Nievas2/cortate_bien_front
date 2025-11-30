@@ -36,4 +36,19 @@ export interface ChatResponseDto {
   ultimoMensaje?: MessageResponseDto
   mensajesNoLeidos?: number
   visto: boolean
+  // Campos de bloqueo
+  bloqueado: boolean
+  yoBloqueAlOtro: boolean
+  elOtroMeBloqueo: boolean
+  fechaMiBloqueo: Date | null
+  fechaBloqueoDelOtro: Date | null
+}
+
+export interface BlockStatusDto {
+  bloqueado: boolean
+  yoBloqueAlOtro: boolean
+  elOtroMeBloqueo: boolean
+  fechaMiBloqueo: Date | null
+  fechaBloqueoDelOtro: Date | null
+  puedoDesbloquear: boolean
 }
