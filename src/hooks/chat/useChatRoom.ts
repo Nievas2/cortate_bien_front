@@ -47,18 +47,49 @@ export const useChatRoom = (chatId: string) => {
 
   // Lógica de WebSocket
   useEffect(() => {
-    if (!socket) return
+    if (!socket) {
+      console.log("❌ Socket no disponible en useChatRoom")
+      return
+    }
+
+    console.log("✅ Socket disponible, uniéndose al chat:", chatId)
 
     // Unirse a la sala de chat
-    socket.emit("join_chat", { chatId })
+    socket.emit("join_chat", { chatId }, (response: any) => {
+      console.log("📝 Respuesta join_chat:", response)
+    })
 
     const handleNewMessage = (data: {
       message: MessageResponseDto
       chatId: string
     }) => {
+      console.log("📨 Mensaje recibido por socket:", data)
+      
       if (data.chatId === chatId) {
-        //invalido las páginas de mensajes para que se recarguen
-        queryClient.invalidateQueries({ queryKey: ["chatMessages", chatId] })
+        // Solo agregar mensajes de otros usuarios (no los propios que ya están optimistas)
+        if (data.message.remitente.id !== authUser?.user.sub) {
+          console.log("➕ Agregando mensaje de otro usuario al cache")
+          queryClient.setQueryData(["chatMessages", chatId], (oldData: any) => {
+            if (!oldData) return oldData
+
+            const newData = { ...oldData }
+            const lastPage = newData.pages[newData.pages.length - 1]
+            
+            // Verificar si el mensaje ya existe (para evitar duplicados)
+            const messageExists = newData.pages.some((page: any) =>
+              page.results.some((msg: MessageResponseDto) => msg.id === data.message.id)
+            )
+
+            if (!messageExists) {
+              // Agregar el mensaje a la última página
+              lastPage.results = [...lastPage.results, data.message]
+            }
+
+            return newData
+          })
+        } else {
+          console.log("⏭️ Ignorando mensaje propio (ya está optimista)")
+        }
       }
     }
 
@@ -145,20 +176,103 @@ export const useChatRoom = (chatId: string) => {
   const markAsRead = useCallback(
     (messageIds: string[]) => {
       if (socket && messageIds.length > 0) {
+        // Actualizar localmente antes de enviar al servidor
+        queryClient.setQueryData(["chatMessages", chatId], (oldData: any) => {
+          if (!oldData) return oldData
+
+          const newData = { ...oldData }
+          newData.pages = newData.pages.map((page: any) => ({
+            ...page,
+            results: page.results.map((msg: MessageResponseDto) =>
+              messageIds.includes(msg.id) ? { ...msg, leido: true } : msg
+            ),
+          }))
+
+          return newData
+        })
+
         socket.emit("mark_messages_read", { chatId, messageIds })
       }
     },
-    [socket, chatId]
+    [socket, chatId, queryClient]
   )
 
   // Enviar un mensaje
   const sendMessage = (contenido: string) => {
     if (!socket || !contenido.trim()) return
+    
     const messageDto = {
       chatId,
       contenido,
     }
-    socket.emit("send_message", messageDto)
+    
+    // Crear mensaje optimista
+    const optimisticMessage: MessageResponseDto = {
+      id: `temp-${Date.now()}`, // ID temporal
+      contenido,
+      chatId,
+      remitente: {
+        id: authUser?.user.sub || '',
+        nombre: authUser?.user.name || '',
+        apellido: authUser?.user.username || '',
+        email: authUser?.user.email || '',
+        imagen: null,
+      },
+      leido: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+
+    // Agregar mensaje optimista al cache
+    queryClient.setQueryData(["chatMessages", chatId], (oldData: any) => {
+      if (!oldData) return oldData
+
+      const newData = { ...oldData }
+      const lastPage = newData.pages[newData.pages.length - 1]
+      
+      if (lastPage && lastPage.results) {
+        lastPage.results = [...lastPage.results, optimisticMessage]
+      }
+
+      return newData
+    })
+
+    // Enviar mensaje por socket con timeout
+    socket.timeout(5000).emit("send_message", messageDto, (error: any, response: any) => {
+      if (error) {
+        console.error("Error al enviar mensaje:", error)
+        // Remover mensaje optimista si falla
+        queryClient.setQueryData(["chatMessages", chatId], (oldData: any) => {
+          if (!oldData) return oldData
+
+          const newData = { ...oldData }
+          newData.pages = newData.pages.map((page: any) => ({
+            ...page,
+            results: page.results.filter((msg: MessageResponseDto) => msg.id !== optimisticMessage.id),
+          }))
+
+          return newData
+        })
+        return
+      }
+
+      if (response?.success && response?.message) {
+        // Reemplazar mensaje optimista con el real del servidor
+        queryClient.setQueryData(["chatMessages", chatId], (oldData: any) => {
+          if (!oldData) return oldData
+
+          const newData = { ...oldData }
+          newData.pages = newData.pages.map((page: any) => ({
+            ...page,
+            results: page.results.map((msg: MessageResponseDto) =>
+              msg.id === optimisticMessage.id ? response.message : msg
+            ),
+          }))
+
+          return newData
+        })
+      }
+    })
   }
 
   // Emitir evento "typing" con debounce mejorado

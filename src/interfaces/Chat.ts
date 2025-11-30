@@ -1,13 +1,18 @@
 export interface MessageResponseDto {
   id: string
   contenido: string
-  fechaEnvio: Date
+  chatId: string
+  fechaEnvio?: Date
   leido: boolean
   remitente: {
     id: string
     nombre: string
     apellido: string
+    email?: string
+    imagen?: string | null
   }
+  createdAt: string
+  updatedAt: string
 }
 
 export interface ChatResponseDto {
@@ -26,12 +31,9 @@ export interface ChatResponseDto {
     id: string
     nombre: string
   }
-  ultimaActividad: Date
-  ultimoMensaje?: {
-    contenido: string
-    fechaEnvio: Date
-    remitente: string
-    visto: boolean
-  }
+  ultimaActividad?: Date
+  updatedAt: string
+  ultimoMensaje?: MessageResponseDto
+  mensajesNoLeidos?: number
   visto: boolean
 }
