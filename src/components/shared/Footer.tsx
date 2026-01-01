@@ -23,7 +23,7 @@ const Footer = () => {
             Gestiona tu barbería de manera inteligente y profesional.
           </p>
           <p className="text-gray-500 text-xs mt-4">
-            © 2025 Cortate Bien - Todos los derechos reservados.
+            © {new Date().getFullYear()} Cortate Bien - Todos los derechos reservados.
           </p>
         </section>
 
